@@ -15,3 +15,4 @@ COPY /pkg pkg
 COPY /cmd/marvin/tester/main.go main.go
 
 RUN go build -o tester .
+
