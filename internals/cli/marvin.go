@@ -1,6 +1,7 @@
 package cli
 
 import (
+	"dashinette/pkg/constants/marvin"
 	"dashinette/pkg/logger"
 	"dashinette/pkg/parser"
 	"fmt"
@@ -13,18 +14,18 @@ import (
 
 // Constants for the different options in the CLI.
 const (
-	InitializeReposTask         = "Create GitHub Repositories by template"
-	UploadReadmesTask           = "Update README files with Subjects"
-	GrantCollaboratorAccessTask = "Grant Collaborator Write Access"
-	MakeReposReadOnlyTask       = "Configure Repositories as Read-Only"
-	AnalyzeSubmissionsTask      = "Clone and Analyze Submissions to Generate Traces"
-	UploadTracesTask            = "Parse and Upload Traces to 'traces' Branch"
-	GenerateResultsJSONTask     = "Parse Logs and Generate results.json"
-	ExitTask                    = "Exit"
+	MarvinInitializeReposTask         = "Create GitHub Repositories by template"
+	MarvinUploadReadmesTask           = "Update README files with Subjects"
+	MarvinGrantCollaboratorAccessTask = "Grant Collaborator Write Access"
+	MarvinMakeReposReadOnlyTask       = "Configure Repositories as Read-Only"
+	MarvinAnalyzeSubmissionsTask      = "Clone and Analyze Submissions to Generate Traces"
+	MarvinUploadTracesTask            = "Parse and Upload Traces to 'traces' Branch"
+	MarvinGenerateResultsJSONTask     = "Parse Logs and Generate results.json"
+	MarvinExitTask                    = "Exit"
 )
 
 // headerTemplate is the template for the header of the CLI.
-const headerTemplate = `+---------------------------------------------+
+const marvinHeaderTemplate = `+---------------------------------------------+
 |    __  __                  _                |
 |    |  \/  |                (_)              |
 |    | \  / | __ _ _ ____   ___ _ __          |
@@ -32,7 +33,7 @@ const headerTemplate = `+---------------------------------------------+
 |    | |  | | (_| | |   \ V /| | | | |        |
 |    |_|  |_|\__,_|_|    \_/ |_|_| |_|        |
 +---------------------------------------------+
-|    Welcome to the Marvin Dah CLI            |
+|    Welcome to the Marvin Dash CLI           |
 +---------------------------------------------+
 `
 
@@ -69,23 +70,23 @@ func aprovedAction(action string) bool {
 //   - filename: The name of the file to load the participants from.
 //
 // The function uses logs to print the status of the operation.
-func InteractiveCLI(settings parser.Participants) {
+func MarvinInteractiveCLI(settings parser.Participants) {
 	prompt := promptui.Select{
 		Label: "Select an action",
 		Items: []string{
-			InitializeReposTask,
-			UploadReadmesTask,
-			GrantCollaboratorAccessTask,
-			MakeReposReadOnlyTask,
-			AnalyzeSubmissionsTask,
-			UploadTracesTask,
-			GenerateResultsJSONTask,
-			ExitTask,
+			MarvinInitializeReposTask,
+			MarvinUploadReadmesTask,
+			MarvinGrantCollaboratorAccessTask,
+			MarvinMakeReposReadOnlyTask,
+			MarvinAnalyzeSubmissionsTask,
+			MarvinUploadTracesTask,
+			MarvinGenerateResultsJSONTask,
+			MarvinExitTask,
 		},
 		Size:     10,
 		HideHelp: true,
 	}
-	rerenderHeader(headerTemplate)
+	rerenderHeader(marvinHeaderTemplate)
 
 	loop := true
 	for loop {
@@ -93,28 +94,28 @@ func InteractiveCLI(settings parser.Participants) {
 		if err != nil {
 			log.Fatal(err)
 		}
-		rerenderHeader(headerTemplate)
+		rerenderHeader(marvinHeaderTemplate)
 
 		switch result {
-		case InitializeReposTask:
-			createRepos(settings)
-		case UploadReadmesTask:
+		case MarvinInitializeReposTask:
+			createRepos(settings, marvin.TEMPLATE_REPO)
+		case MarvinUploadReadmesTask:
 			if aprovedAction("Push subjects") {
-				pushSubjects(settings)
+				pushSubjects(settings, marvin.SUBJECT_PATH)
 			}
-		case GrantCollaboratorAccessTask:
+		case MarvinGrantCollaboratorAccessTask:
 			addCollaborators(settings)
-		case MakeReposReadOnlyTask:
+		case MarvinMakeReposReadOnlyTask:
 			setReposReadOnly(settings)
-		case AnalyzeSubmissionsTask:
+		case MarvinAnalyzeSubmissionsTask:
 			evaluateAssignments(settings)
-		case UploadTracesTask:
+		case MarvinUploadTracesTask:
 			if aprovedAction("Push traces") {
 				pushTraces(settings)
 			}
-		case GenerateResultsJSONTask:
+		case MarvinGenerateResultsJSONTask:
 			createResults(settings)
-		case ExitTask:
+		case MarvinExitTask:
 			loop = false
 		}
 		logger.Flush()

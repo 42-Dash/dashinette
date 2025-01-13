@@ -6,12 +6,11 @@ import (
 	"dashinette/pkg/github"
 	"dashinette/pkg/logger"
 	"dashinette/pkg/parser"
-	"dashinette/pkg/constants/marvin"
 )
 
-func createRepos(participants parser.Participants) {
+func createRepos(participants parser.Participants, templateRepo string) {
 	for _, team := range participants.Teams {
-		err := github.CreateRepoFromTemplate(team.Name, marvin.TEMPLATE_REPO, true)
+		err := github.CreateRepoFromTemplate(team.Name, templateRepo, true)
 		if err != nil {
 			logger.Error.Printf("Error creating repo for team %s: %v", team.Name, err)
 		} else {
@@ -45,7 +44,7 @@ func cloneRepos(participants parser.Participants) (ok bool) {
 	return
 }
 
-func pushSubjects(participants parser.Participants) {
+func pushSubjects(participants parser.Participants, subject string) {
 	if !cloneRepos(participants) {
 		logger.Error.Println("Error cloning repos, cannot push subjects")
 		return
@@ -53,7 +52,7 @@ func pushSubjects(participants parser.Participants) {
 	for _, team := range participants.Teams {
 		err := github.UploadFileToRoot(
 			parser.GetRepoPath(team.Name),
-			[]string{marvin.SUBJECT_PATH},
+			[]string{subject},
 			"add subject",
 			"main",
 			false,

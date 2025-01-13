@@ -1,0 +1,17 @@
+FROM golang:1.22.5
+
+# All dependencies required to build the Go project
+RUN apt-get update && apt-get install -y curl build-essential sudo cargo
+
+WORKDIR /app
+
+COPY go.sum go.mod ./
+RUN go mod download
+
+COPY config/maps.json config/maps.json
+COPY internals internals
+COPY pkg pkg
+COPY dashes/marvin/maps dashes/marvin/maps
+COPY cmd/marvin/tester/main.go main.go
+
+RUN go build -o tester .

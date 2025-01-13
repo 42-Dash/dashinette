@@ -7,9 +7,8 @@
 .env
 
 # Executables and object files
-bin/*
+bin
 dashinette
-marvin
 dashes/marvin/**/marvin
 dashes/marvin/**/objs/
 *.o
