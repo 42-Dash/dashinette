@@ -24,7 +24,7 @@ func main() {
 	logger.InitLogger()
 	defer logger.CloseFile()
 
-	cli.InteractiveCLI(participants)
+	cli.MarvinInteractiveCLI(participants)
 }
 
 // Checks if all required environment variables are set.
@@ -40,13 +40,11 @@ func init() {
 		}
 	}
 
-	var imageName string = marvin.DOCKER_IMAGE_NAME
-
-	log.Printf("Building docker image %s...", imageName)
-	buildCmd := exec.Command("docker", "build", "-t", imageName, ".")
+	log.Printf("Building docker image %s...", marvin.DOCKER_IMAGE_NAME)
+	buildCmd := exec.Command("docker", "build", "-t", marvin.DOCKER_IMAGE_NAME, "-f", marvin.DOCKERFILE_NAME, ".")
 	buildCmd.Stdout = os.Stdout
 	buildCmd.Stderr = os.Stderr
 	if err := buildCmd.Run(); err != nil {
-		log.Fatalf("Failed to build Docker image %s: %v", imageName, err)
+		log.Fatalf("Failed to build Docker image %s: %v", marvin.DOCKER_IMAGE_NAME, err)
 	}
 }

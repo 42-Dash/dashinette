@@ -11,6 +11,7 @@ const (
 	DOTENV_PATH              = "config/.env"
 	MAPS_CONFIG_FILE         = "config/maps.json"
 	PARTICIPANTS_CONFIG_FILE = "config/participants.json"
+	DOCKERFILE_NAME          = "Dockerfile.marvin"
 )
 
 var REQUIRED_ENVS []string = []string{
