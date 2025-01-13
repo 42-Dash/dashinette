@@ -96,7 +96,7 @@ ooo$
 Multiple solutions can be submitted, but only the latest one ending with a newline will be considered.
 
 ```bash
-> ./beacon input.txt | cat -e
+> ./beacon "3 2 2" input.txt | cat -e
 3,8|3,2|3,13|$
 3,20|2,14|3,3|$
 3,3|4
