@@ -25,10 +25,14 @@ const (
 
 // headerTemplate is the template for the header of the CLI.
 const headerTemplate = `+---------------------------------------------+
-|                    Menu                     |
+|    __  __                  _                |
+|    |  \/  |                (_)              |
+|    | \  / | __ _ _ ____   ___ _ __          |
+|    | |\/| |/ _`+"`"+` | '__\ \ / / | '_ \         |
+|    | |  | | (_| | |   \ V /| | | | |        |
+|    |_|  |_|\__,_|_|    \_/ |_|_| |_|        |
 +---------------------------------------------+
-| Your ad can be here                         |
-| !!  Enable back validateTeams function   !! |
+|    Welcome to the Marvin Dah CLI            |
 +---------------------------------------------+
 `
 
