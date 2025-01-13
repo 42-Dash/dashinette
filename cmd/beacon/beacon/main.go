@@ -2,7 +2,7 @@ package main
 
 import (
 	"dashinette/internals/cli"
-	"dashinette/pkg/constants/marvin"
+	"dashinette/pkg/constants/beacon"
 	"dashinette/pkg/logger"
 	"dashinette/pkg/parser"
 	"log"
@@ -24,27 +24,29 @@ func main() {
 	logger.InitLogger()
 	defer logger.CloseFile()
 
-	cli.MarvinInteractiveCLI(participants)
+	cli.BeaconInteractiveCLI(participants)
 }
 
 // Checks if all required environment variables are set.
 func init() {
-	err := godotenv.Load(marvin.DOTENV_PATH)
+	err := godotenv.Load(beacon.DOTENV_PATH)
 	if err != nil {
 		log.Fatalf("Error loading .env file")
 	}
 
-	for _, env := range marvin.REQUIRED_ENVS {
+	for _, env := range beacon.REQUIRED_ENVS {
 		if os.Getenv(env) == "" {
 			log.Fatalf("Error: %s not found in .env", env)
 		}
 	}
 
-	log.Printf("Building docker image %s...", marvin.DOCKER_IMAGE_NAME)
-	buildCmd := exec.Command("docker", "build", "-t", marvin.DOCKER_IMAGE_NAME, "-f", marvin.DOCKERFILE_NAME, ".")
+	var imageName string = beacon.DOCKER_IMAGE_NAME
+
+	log.Printf("Building docker image %s...", imageName)
+	buildCmd := exec.Command("docker", "build", "-t", imageName, "-f", beacon.DOCKERFILE_NAME, ".")
 	buildCmd.Stdout = os.Stdout
 	buildCmd.Stderr = os.Stderr
 	if err := buildCmd.Run(); err != nil {
-		log.Fatalf("Failed to build Docker image %s: %v", marvin.DOCKER_IMAGE_NAME, err)
+		log.Fatalf("Failed to build Docker image %s: %v", imageName, err)
 	}
 }

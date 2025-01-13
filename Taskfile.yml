@@ -4,8 +4,14 @@ tasks:
   default:
     desc: Run the marvin project
     cmds:
-      - task marvin
-      - ./marvin
+      - task beacon
+      - ./beacon
+      - defer: rm beacon
+
+  beacon:
+    desc: Run the beacon project
+    cmds:
+      - go build -o beacon cmd/beacon/beacon/main.go
 
   marvin:
     desc: Build the marvin project
