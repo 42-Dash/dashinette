@@ -78,7 +78,7 @@ func BeaconInteractiveCLI(settings parser.Participants) {
 		case BeaconMakeReposReadOnlyTask:
 			setReposReadOnly(settings)
 		case BeaconAnalyzeSubmissionsTask:
-			evaluateAssignments(settings)
+			beaconEvaluateAssignments(settings)
 		case BeaconUploadTracesTask:
 			if aprovedAction("Push traces") {
 				pushTraces(settings)

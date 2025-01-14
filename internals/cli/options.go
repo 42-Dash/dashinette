@@ -2,6 +2,8 @@ package cli
 
 import (
 	"dashinette/internals/traces"
+	"dashinette/pkg/constants/beacon"
+	"dashinette/pkg/constants/marvin"
 	"dashinette/pkg/containerization"
 	"dashinette/pkg/github"
 	"dashinette/pkg/logger"
@@ -65,13 +67,40 @@ func pushSubjects(participants parser.Participants, subject string) {
 	}
 }
 
-func evaluateAssignments(participants parser.Participants) {
+func marvinEvaluateAssignments(participants parser.Participants) {
 	if !cloneRepos(participants) {
 		logger.Error.Println("Error cloning repos, cannot push traces")
 		return
 	}
 	for _, team := range participants.Teams {
-		err := containerization.GradeAssignmentInContainer(team, parser.GetRepoPath(team.Name), parser.GetTracesPath(team.Name))
+		err := containerization.GradeAssignmentInContainer(
+			team,
+			parser.GetRepoPath(team.Name),
+			parser.GetTracesPath(team.Name),
+			marvin.DOCKER_IMAGE_NAME,
+			beacon.DASH_FOLDER,
+		)
+		if err != nil {
+			logger.Error.Printf("Error grading works for team %s: %v", team.Name, err)
+		} else {
+			logger.Info.Printf("Successfully graded works for team %s", team.Name)
+		}
+	}
+}
+
+func beaconEvaluateAssignments(participants parser.Participants) {
+	if !cloneRepos(participants) {
+		logger.Error.Println("Error cloning repos, cannot push traces")
+		return
+	}
+	for _, team := range participants.Teams {
+		err := containerization.GradeAssignmentInContainer(
+			team,
+			parser.GetRepoPath(team.Name),
+			parser.GetTracesPath(team.Name),
+			beacon.DOCKER_IMAGE_NAME,
+			beacon.DASH_FOLDER,
+		)
 		if err != nil {
 			logger.Error.Printf("Error grading works for team %s: %v", team.Name, err)
 		} else {

@@ -108,7 +108,7 @@ func MarvinInteractiveCLI(settings parser.Participants) {
 		case MarvinMakeReposReadOnlyTask:
 			setReposReadOnly(settings)
 		case MarvinAnalyzeSubmissionsTask:
-			evaluateAssignments(settings)
+			marvinEvaluateAssignments(settings)
 		case MarvinUploadTracesTask:
 			if aprovedAction("Push traces") {
 				pushTraces(settings)

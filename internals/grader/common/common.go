@@ -71,7 +71,7 @@ func ExecuteWithTimeout(filename string, input string, timeout int) (string, err
 		return "", fmt.Errorf("error: failed to start: %v", err)
 	}
 
-	// Wait for the command to complete or be killed after 5 seconds
+	// Wait for the command to complete or be killed after n seconds
 	if err := cmd.Wait(); err != nil {
 		if ctx.Err() == context.DeadlineExceeded {
 			return stdout.String(), nil

@@ -1,0 +1,74 @@
+{
+    "rookieleague": [
+        {
+            "path": "dashes/beacon/maps/rookieleague/level_0.txt",
+            "name": "Level 0",
+            "beacons": "3 2 1",
+            "timeout": 1
+        },
+        {
+            "path": "dashes/beacon/maps/rookieleague/level_1.txt",
+            "name": "Level 1",
+            "beacons": "3 2 2",
+            "timeout": 1
+        },
+        {
+            "path": "dashes/beacon/maps/rookieleague/level_2.txt",
+            "name": "Level 2",
+            "beacons": "5 4 3",
+            "timeout": 1
+        },
+        {
+            "path": "dashes/beacon/maps/rookieleague/level_3.txt",
+            "name": "Level 3",
+            "beacons": "4 4 4 3 3 3 2 2",
+            "timeout": 2
+        }
+    ],
+    "openleague": [
+        {
+            "path": [
+                "dashes/beacon/maps/openleague/level_0_0.txt",
+                "dashes/beacon/maps/openleague/level_0_1.txt",
+                "dashes/beacon/maps/openleague/level_0_2.txt",
+                "dashes/beacon/maps/openleague/level_0_3.txt"
+            ],
+            "name": "Level 0",
+            "beacons": "3 3 2",
+            "timeout": 1
+        },
+        {
+            "path": [
+                "dashes/beacon/maps/openleague/level_1_0.txt",
+                "dashes/beacon/maps/openleague/level_1_1.txt",
+                "dashes/beacon/maps/openleague/level_1_2.txt",
+                "dashes/beacon/maps/openleague/level_1_3.txt"
+            ],
+            "name": "Level 1",
+            "beacons": "4 3 2",
+            "timeout": 1
+        },
+        {
+            "path": [
+                "dashes/beacon/maps/openleague/level_2_0.txt",
+                "dashes/beacon/maps/openleague/level_2_1.txt",
+                "dashes/beacon/maps/openleague/level_2_2.txt",
+                "dashes/beacon/maps/openleague/level_2_3.txt"
+            ],
+            "name": "Level 2",
+            "beacons": "5 4 3 2",
+            "timeout": 1
+        },
+        {
+            "path": [
+                "dashes/beacon/maps/openleague/level_3_0.txt",
+                "dashes/beacon/maps/openleague/level_3_1.txt",
+                "dashes/beacon/maps/openleague/level_3_2.txt",
+                "dashes/beacon/maps/openleague/level_3_3.txt"
+            ],
+            "name": "Level 3",
+            "beacons": "4 4 3 3 2 2 1 1",
+            "timeout": 2
+        }
+    ]
+}

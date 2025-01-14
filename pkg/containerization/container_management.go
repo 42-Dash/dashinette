@@ -4,7 +4,6 @@ import (
 	"archive/tar"
 	"bytes"
 	"context"
-	"dashinette/pkg/constants/marvin"
 	"dashinette/pkg/logger"
 	"dashinette/pkg/parser"
 	"fmt"
@@ -25,16 +24,17 @@ func setupDockerClient() (cli *client.Client, err error) {
 }
 
 // launches a new container which runs the tester for the given team.
-func launchContainer(ctx context.Context, client *client.Client, team parser.Team, repo, tracesfile string) (string, error) {
+func launchContainer(ctx context.Context, client *client.Client, team parser.Team, repo, tracesfile, imageName, dashFolder string) (string, error) {
 	dir, _ := os.Getwd()
 	config := parser.SerializeTesterConfig(team, repo, tracesfile)
 	containerConfig := &container.Config{
-		Image:      marvin.DOCKER_IMAGE_NAME,
+		Image:      imageName,
 		Cmd:        []string{"sh", "-c", fmt.Sprintf("./tester '%v'", config)},
 		WorkingDir: "/app",
 	}
+	fmt.Println("Container config: ", config)
 	hostConfig := &container.HostConfig{
-		Binds:      []string{fmt.Sprintf("%s/%s/traces:/app/traces", dir, marvin.DASH_FOLDER)},
+		Binds:      []string{fmt.Sprintf("%s/%s/traces:/app/traces", dir, dashFolder)},
 		AutoRemove: false,
 	}
 
@@ -102,7 +102,7 @@ func inspectContainerExitCode(ctx context.Context, client *client.Client, contai
 }
 
 // runs the docker container for the given team and returns the logs.
-func runContainerized(team parser.Team, repo string, tracesfile string) error {
+func runContainerized(team parser.Team, repo, tracesfile, imageName, dashFolder string) error {
 	ctx := context.Background()
 
 	client, err := setupDockerClient()
@@ -110,7 +110,7 @@ func runContainerized(team parser.Team, repo string, tracesfile string) error {
 		return err
 	}
 
-	containerID, err := launchContainer(ctx, client, team, repo, tracesfile)
+	containerID, err := launchContainer(ctx, client, team, repo, tracesfile, imageName, dashFolder)
 	if err != nil {
 		return err
 	}
@@ -136,7 +136,7 @@ func runContainerized(team parser.Team, repo string, tracesfile string) error {
 // grades the assignment for the given team.
 // the function returns an error if an error occurred, otherwise nil.
 // the function creates a log file with the results of the grading.
-func GradeAssignmentInContainer(team parser.Team, repo string, filename string) error {
+func GradeAssignmentInContainer(team parser.Team, repo, filename, imageName, dashFolder string) error {
 	// delete file if it exists
 	if _, err := os.Stat(filename); err == nil {
 		logger.Warn.Printf("File %s already exists, deleting it\n", filename)
@@ -146,7 +146,7 @@ func GradeAssignmentInContainer(team parser.Team, repo string, filename string) 
 		}
 	}
 
-	err := runContainerized(team, repo, filename)
+	err := runContainerized(team, repo, filename, imageName, dashFolder)
 	if err != nil {
 		logger.Error.Printf("Team %s error running docker container: %v\n", team.Name, err)
 		return fmt.Errorf("failed to run docker container: %v", err)

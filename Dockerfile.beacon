@@ -11,7 +11,7 @@ RUN go mod download
 COPY config/maps.json config/maps.json
 COPY internals internals
 COPY pkg pkg
-COPY dashes/marvin/maps dashes/marvin/maps
-COPY cmd/marvin/tester/main.go main.go
+COPY dashes/beacon/maps dashes/beacon/maps
+COPY cmd/beacon/tester/main.go main.go
 
 RUN go build -o tester .
