@@ -55,9 +55,9 @@ func selectGradingFunction(league string) func(string, string, int) (string, int
 }
 
 func MultistageGraderWithTraces(config parser.TesterConfig) error {
-	_, err := os.Stat(parser.GetTracesPath(config.Args.TeamName))
+	_, err := os.Stat(parser.GetTracesPath(config.Args.TeamName, marvin.DASH_FOLDER))
 	if err == nil {
-		os.Remove(parser.GetTracesPath(config.Args.TeamName))
+		os.Remove(parser.GetTracesPath(config.Args.TeamName, marvin.DASH_FOLDER))
 	}
 	tr := traces.NewLogger()
 	defer tr.StoreInFile(parser.GetTracesPathContainerized(config.Args.TeamName))

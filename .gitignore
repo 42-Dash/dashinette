@@ -17,10 +17,14 @@ dashes/marvin/**/objs/
 
 # Sensitivity data
 dashes/marvin/visualiser/results.json
-dashes/marvin/traces/*
-dashes/marvin/repos/*
 scripts/marvin/maps/analyse/*/results/*.json
 scripts/marvin/maps/analyse/*/results/*.md
+dashes/marvin/traces/*
+dashes/marvin/repos/*
+
+dashes/beacon/traces/*
+dashes/beacon/repos/*
+
 config/participants.json
 config/maps.json
 open_results.json

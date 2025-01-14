@@ -1,7 +1,6 @@
 package parser
 
 import (
-	"dashinette/pkg/constants/marvin"
 	"encoding/json"
 	"fmt"
 	"os"
@@ -82,9 +81,9 @@ func (p *Participants) validateTeams() error {
 // Returns:
 //   - Participants: The participants object.
 //   - error: An error object if an error occurred, otherwise nil.
-func LoadParticipantsJSON() (Participants, error) {
+func LoadParticipantsJSON(participantsFile string) (Participants, error) {
 	participants := Participants{}
-	file, err := os.Open(marvin.PARTICIPANTS_CONFIG_FILE)
+	file, err := os.Open(participantsFile)
 	if err != nil {
 		return Participants{}, err
 	}

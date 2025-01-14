@@ -16,7 +16,7 @@ import (
 // It prompts the user to enter the path to the participants file.
 // Then it loads the participants and starts the interactive CLI.
 func main() {
-	participants, err := parser.LoadParticipantsJSON()
+	participants, err := parser.LoadParticipantsJSON(beacon.PARTICIPANTS_CONFIG_FILE)
 	if err != nil {
 		log.Fatalf("Error: %v", err)
 	}
@@ -24,7 +24,7 @@ func main() {
 	logger.InitLogger()
 	defer logger.CloseFile()
 
-	cli.BeaconInteractiveCLI(participants)
+	cli.InteractiveCLI(participants, cli.BEACON)
 }
 
 // Checks if all required environment variables are set.

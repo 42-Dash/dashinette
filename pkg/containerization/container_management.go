@@ -26,7 +26,7 @@ func setupDockerClient() (cli *client.Client, err error) {
 // launches a new container which runs the tester for the given team.
 func launchContainer(ctx context.Context, client *client.Client, team parser.Team, repo, tracesfile, imageName, dashFolder string) (string, error) {
 	dir, _ := os.Getwd()
-	config := parser.SerializeTesterConfig(team, repo, tracesfile)
+	config := parser.SerializeTesterConfig(team, repo, tracesfile, dashFolder)
 	containerConfig := &container.Config{
 		Image:      imageName,
 		Cmd:        []string{"sh", "-c", fmt.Sprintf("./tester '%v'", config)},
@@ -44,7 +44,7 @@ func launchContainer(ctx context.Context, client *client.Client, team parser.Tea
 		return "", err
 	}
 
-	err = copyToContainer(ctx, client, resp.ID, repo, "/app")
+	err = copyToContainer(ctx, client, resp.ID, repo, "/app", dashFolder)
 	if err != nil {
 		logger.Error.Printf("Team %s, error copying files to container: %v\n", team.Name, err)
 		return "", err
@@ -168,7 +168,7 @@ func GradeAssignmentInContainer(team parser.Team, repo, filename, imageName, das
 //   - containerID: The ID of the container.
 //   - srcPath: The path of the files to copy.
 //   - destPath: The path to copy the files to.
-func copyToContainer(ctx context.Context, cli *client.Client, containerID, srcPath, destPath string) error {
+func copyToContainer(ctx context.Context, cli *client.Client, containerID, srcPath, destPath, dashFolder string) error {
 	buf := new(bytes.Buffer)
 	tw := tar.NewWriter(buf)
 
@@ -184,7 +184,7 @@ func copyToContainer(ctx context.Context, cli *client.Client, containerID, srcPa
 			}
 
 			header := &tar.Header{
-				Name:    parser.GetRepoPathContainerized(file),
+				Name:    parser.GetRepoPathContainerized(file, dashFolder),
 				Mode:    int64(fi.Mode().Perm()),
 				Size:    fi.Size(),
 				ModTime: fi.ModTime(),

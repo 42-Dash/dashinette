@@ -1,26 +1,25 @@
 package parser
 
 import (
-	"dashinette/pkg/constants/marvin"
 	"fmt"
 	"path/filepath"
 	"strings"
 )
 
 // Returns the path to the repository of the given team.
-func GetRepoPath(name string) string {
-	return fmt.Sprintf(marvin.DASH_FOLDER+"repos/%s", name)
+func GetRepoPath(name, dashFolder string) string {
+	return fmt.Sprintf(dashFolder+"repos/%s", name)
 }
 
 // Returns the path to the traces file of the given team.
-func GetTracesPath(name string) string {
-	return fmt.Sprintf(marvin.DASH_FOLDER+"traces/%s.json", name)
+func GetTracesPath(name, dashFolder string) string {
+	return fmt.Sprintf(dashFolder+"traces/%s.json", name)
 }
 
-func GetRepoPathContainerized(path string) string {
+func GetRepoPathContainerized(path, dashFolder string) string {
 	return strings.Replace(
 		filepath.ToSlash(path),
-		marvin.DASH_FOLDER+"repos/",
+		dashFolder+"repos/",
 		"repo/",
 		1,
 	)

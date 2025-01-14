@@ -2,8 +2,6 @@ package cli
 
 import (
 	"dashinette/internals/traces"
-	"dashinette/pkg/constants/beacon"
-	"dashinette/pkg/constants/marvin"
 	"dashinette/pkg/containerization"
 	"dashinette/pkg/github"
 	"dashinette/pkg/logger"
@@ -32,10 +30,10 @@ func addCollaborators(participants parser.Participants) {
 	}
 }
 
-func cloneRepos(participants parser.Participants) (ok bool) {
+func cloneRepos(participants parser.Participants, dashFolder string) (ok bool) {
 	ok = true
 	for _, team := range participants.Teams {
-		err := github.CloneRepo(team.Name, parser.GetRepoPath(team.Name))
+		err := github.CloneRepo(team.Name, parser.GetRepoPath(team.Name, dashFolder))
 		if err != nil {
 			logger.Error.Printf("Error cloning repo for team %s: %v", team.Name, err)
 			ok = false
@@ -46,14 +44,14 @@ func cloneRepos(participants parser.Participants) (ok bool) {
 	return
 }
 
-func pushSubjects(participants parser.Participants, subject string) {
-	if !cloneRepos(participants) {
+func pushSubjects(participants parser.Participants, subject, dashFolder string) {
+	if !cloneRepos(participants, dashFolder) {
 		logger.Error.Println("Error cloning repos, cannot push subjects")
 		return
 	}
 	for _, team := range participants.Teams {
 		err := github.UploadFileToRoot(
-			parser.GetRepoPath(team.Name),
+			parser.GetRepoPath(team.Name, dashFolder),
 			[]string{subject},
 			"add subject",
 			"main",
@@ -67,18 +65,18 @@ func pushSubjects(participants parser.Participants, subject string) {
 	}
 }
 
-func marvinEvaluateAssignments(participants parser.Participants) {
-	if !cloneRepos(participants) {
+func evaluateAssignments(participants parser.Participants, dashFolder, imageName string) {
+	if !cloneRepos(participants, dashFolder) {
 		logger.Error.Println("Error cloning repos, cannot push traces")
 		return
 	}
 	for _, team := range participants.Teams {
 		err := containerization.GradeAssignmentInContainer(
 			team,
-			parser.GetRepoPath(team.Name),
-			parser.GetTracesPath(team.Name),
-			marvin.DOCKER_IMAGE_NAME,
-			beacon.DASH_FOLDER,
+			parser.GetRepoPath(team.Name, dashFolder),
+			parser.GetTracesPath(team.Name, dashFolder),
+			imageName,
+			dashFolder,
 		)
 		if err != nil {
 			logger.Error.Printf("Error grading works for team %s: %v", team.Name, err)
@@ -88,34 +86,13 @@ func marvinEvaluateAssignments(participants parser.Participants) {
 	}
 }
 
-func beaconEvaluateAssignments(participants parser.Participants) {
-	if !cloneRepos(participants) {
-		logger.Error.Println("Error cloning repos, cannot push traces")
-		return
-	}
-	for _, team := range participants.Teams {
-		err := containerization.GradeAssignmentInContainer(
-			team,
-			parser.GetRepoPath(team.Name),
-			parser.GetTracesPath(team.Name),
-			beacon.DOCKER_IMAGE_NAME,
-			beacon.DASH_FOLDER,
-		)
-		if err != nil {
-			logger.Error.Printf("Error grading works for team %s: %v", team.Name, err)
-		} else {
-			logger.Info.Printf("Successfully graded works for team %s", team.Name)
-		}
-	}
-}
-
-func pushTraces(participants parser.Participants) {
+func pushTraces(participants parser.Participants, dashFolder string) {
 	for _, team := range participants.Teams {
 		err := github.UploadFileToRoot(
-			parser.GetRepoPath(team.Name),
+			parser.GetRepoPath(team.Name, dashFolder),
 			append(
-				traces.DeserializeMapsOnly(parser.GetTracesPath(team.Name)),
-				parser.GetTracesPath(team.Name),
+				traces.DeserializeMapsOnly(parser.GetTracesPath(team.Name, dashFolder)),
+				parser.GetTracesPath(team.Name, dashFolder),
 			),
 			"Upload traces",
 			"traces",
@@ -129,12 +106,12 @@ func pushTraces(participants parser.Participants) {
 	}
 }
 
-func createResults(participants parser.Participants) {
+func createResults(participants parser.Participants, dashFolder string) {
 	var resultsRookie = make(map[string]traces.Traces)
 	var resultsOpen = make(map[string]traces.Traces)
 
 	for _, team := range participants.Teams {
-		record, err := traces.Deserialize(parser.GetTracesPath(team.Name))
+		record, err := traces.Deserialize(parser.GetTracesPath(team.Name, dashFolder))
 		if err != nil {
 			logger.Error.Printf("Error deserializing traces for team %s: %v", team.Name, err)
 		} else {
