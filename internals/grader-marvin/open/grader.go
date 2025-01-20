@@ -1,7 +1,7 @@
 package open
 
 import (
-	"dashinette/internals/grader/common"
+	"dashinette/internals/grader-marvin/common"
 	"fmt"
 	"os"
 	"strings"
@@ -132,7 +132,7 @@ func GradeOpenLeagueAssignment(filename string, inputfile string, timeout int) (
 
 	output, err := common.ExecuteWithTimeout(filename, inputfile, timeout)
 	if err != nil {
-		return "",0, err
+		return "", 0, err
 	}
 
 	path, err := common.ExtractLastAnswer(output, common.VALID_RUNES_OPEN_LEAGUE)

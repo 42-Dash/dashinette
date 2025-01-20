@@ -1,7 +1,7 @@
 package rookie
 
 import (
-	"dashinette/internals/grader/common"
+	"dashinette/internals/grader-marvin/common"
 	"fmt"
 	"os"
 	"strings"
