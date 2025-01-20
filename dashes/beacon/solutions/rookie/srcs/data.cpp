@@ -2,6 +2,7 @@
 #include <tuple>
 #include <fstream>
 #include <sstream>
+#include <algorithm>
 
 static auto get_file_content(const char *fname) -> optional<tuple<size_t, size_t, string>> {
     ifstream file(fname, ios::binary | ios::ate);
