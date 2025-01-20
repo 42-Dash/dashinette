@@ -1,4 +1,5 @@
 #include "beacon.hpp"
+#include <tuple>
 
 static inline auto calculate_range(int pos, int radius, int limit) -> pair<int, int> {
     return {max(pos - radius, 0), min(pos + radius + 1, limit)};

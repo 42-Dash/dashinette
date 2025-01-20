@@ -1,4 +1,5 @@
 #include "beacon.hpp"
+#include <tuple>
 
 auto main(int argc, char **argv) -> int {
     if (argc != 3) {
