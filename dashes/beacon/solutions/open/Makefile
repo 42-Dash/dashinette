@@ -41,6 +41,6 @@ re		:
 
 run		:
 		$(MAKE) re
-		time ./$(NAME) "3 2 1" maps/easy.txt
+		time ./$(NAME) "3 2" maps/easy.txt maps/easy.txt maps/easy.txt maps/easy.txt
 
 .PHONY: all clean fclean re run

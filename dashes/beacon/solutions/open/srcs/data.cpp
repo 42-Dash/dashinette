@@ -2,6 +2,7 @@
 #include <tuple>
 #include <fstream>
 #include <sstream>
+#include <algorithm>
 
 static auto get_file_content(const char *fname) -> optional<tuple<size_t, size_t, string>> {
     ifstream file(fname, ios::binary | ios::ate);
@@ -61,7 +62,7 @@ static auto parse_beacons(const string &line) -> list<int> {
     string token;
 
     while (iss >> token) {
-        if (all_of(token.begin(), token.end(), ::isdigit)) {
+        if (::all_of(token.begin(), token.end(), ::isdigit)) {
             res.push_back(stoi(token));
         }
     }
