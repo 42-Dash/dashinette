@@ -48,8 +48,8 @@ auto print_solution(
     }
     cout << endl;
 
-    auto score = total_score(lines);
-    cout << get<0>(score) << "/" << get<1>(score) << endl;
+    // auto score = total_score(lines);
+    // cout << get<0>(score) << "/" << get<1>(score) << endl;
 }
 
 auto clear_mask(vector<vector<SquareStatus>> &lines) -> void {
