@@ -1,6 +1,7 @@
 #include "beacon.hpp"
 #include <tuple>
 #include <vector>
+#include <array>
 
 ostream &operator<<(ostream &os, const SquareStatus &status) {
     char c;
