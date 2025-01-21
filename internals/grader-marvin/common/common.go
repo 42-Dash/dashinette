@@ -11,8 +11,8 @@ import (
 
 const (
 	// valid runes for the path
-	VALID_RUNES_OPEN_LEAGUE   = "012345UDLR"
-	VALID_RUNES_ROOKIE_LEAGUE = "UDLR"
+	VALID_RUNES_OPEN_LEAGUE   = "012345UDLR\n"
+	VALID_RUNES_ROOKIE_LEAGUE = "UDLR\n"
 )
 
 // returns player position
@@ -29,9 +29,7 @@ func PlayersPosition(input []string) (int, int) {
 // the last valid answer ends with the last newline rune in the string.
 // It consists of valid_runes only.
 func ExtractLastAnswer(output string, valid_runes string) (string, error) {
-	var path string
-
-	for _, c := range path {
+	for _, c := range output {
 		if !strings.ContainsRune(valid_runes, c) {
 			return "", fmt.Errorf("error: invalid character in path")
 		}
@@ -42,7 +40,9 @@ func ExtractLastAnswer(output string, valid_runes string) (string, error) {
 		return "", fmt.Errorf("error: no new line found")
 	}
 
+	var path string
 	begin := strings.LastIndex(output[:end], "\n")
+
 	if begin == -1 {
 		path = output[:end]
 	} else {
@@ -50,17 +50,17 @@ func ExtractLastAnswer(output string, valid_runes string) (string, error) {
 	}
 
 	if len(path) == 0 {
-		return "", fmt.Errorf("error: empty path")
+		return "", fmt.Errorf("error: empty line")
 	}
 	return path, nil
 }
 
 // executes the given file with the given input and timeout.
-func ExecuteWithTimeout(filename string, input string, timeout int) (string, error) {
+func ExecuteWithTimeout(filename string, input []string, timeout int) (string, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), time.Duration(timeout)*time.Second)
 	defer cancel()
 
-	cmd := exec.CommandContext(ctx, filename, input)
+	cmd := exec.CommandContext(ctx, filename, input...)
 
 	// Capture stdout
 	var stdout bytes.Buffer

@@ -32,7 +32,7 @@ func launchContainer(ctx context.Context, client *client.Client, team parser.Tea
 		Cmd:        []string{"sh", "-c", fmt.Sprintf("./tester '%v'", config)},
 		WorkingDir: "/app",
 	}
-	fmt.Println("Container config: ", config)
+
 	hostConfig := &container.HostConfig{
 		Binds:      []string{fmt.Sprintf("%s/%s/traces:/app/traces", dir, dashFolder)},
 		AutoRemove: false,

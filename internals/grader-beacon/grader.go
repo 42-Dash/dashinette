@@ -2,6 +2,8 @@ package grader
 
 import (
 	"bytes"
+	"dashinette/internals/grader-beacon/rookie"
+	"dashinette/internals/grader-beacon/open"
 	"dashinette/pkg/constants/beacon"
 	"dashinette/pkg/parser"
 	"fmt"
@@ -38,6 +40,17 @@ func compileProject(config TesterConfig) error {
 	return nil
 }
 
+func selectGradingFunction(league string) func(string, []string, int) (string, int, error) {
+	switch league {
+	case "rookie":
+		return rookie.GradeRookieLeagueAssignment
+	case "open":
+		return open.GradeOpenLeagueAssignment
+	default:
+		return nil
+	}
+}
+
 func BeaconMultistageGrader(config TesterConfig) error {
 	var outpath string = parser.GetTracesPathContainerized(config.Args.TeamName)
 
@@ -62,9 +75,14 @@ func BeaconMultistageGrader(config TesterConfig) error {
 		graderStages = config.MapsJSON.OpenLeague
 	}
 
+	gradingFunction := selectGradingFunction(config.Args.League)
+
 	for _, stage := range graderStages {
-		output, res, err := "N/A", 1, fmt.Errorf("N/A")
-		fmt.Println("Grading stage: ", stage)
+		output, res, err := gradingFunction(
+			filepath.Join(config.Args.RepoPath, beacon.EXECUTABLE_NAME),
+			append([]string{stage.Beacons}, stage.Paths...),
+			stage.Timeout,
+		)
 
 		if err == nil {
 			tr.AddStage(stage.Paths, res, "OK", output, stage.Beacons)

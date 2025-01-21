@@ -3,6 +3,7 @@ package grader
 import (
 	"bytes"
 	"encoding/json"
+	"fmt"
 	"os"
 )
 
@@ -12,7 +13,7 @@ type StageGrade struct {
 	Beacons   string   `json:"beacons"`
 	Cost      int      `json:"score"`
 	Status    string   `json:"status"`
-	Path      string   `json:"path"`
+	Output    string   `json:"output"`
 }
 
 type Traces struct {
@@ -46,13 +47,13 @@ func (t *Traces) AddCompilation(msg string) {
 // grade: the grade of the stage
 // status: the status of the stage
 // path: the path to the stage
-func (t *Traces) AddStage(maps []string, grade int, status, path, beacons string) {
+func (t *Traces) AddStage(maps []string, grade int, status, output, beacons string) {
 	t.Grades = append(t.Grades, StageGrade{
 		StageMaps: maps,
-		Beacons:  beacons,
-		Cost:     grade,
-		Status:   status,
-		Path:     path,
+		Beacons:   beacons,
+		Cost:      grade,
+		Status:    status,
+		Output:    output,
 	})
 }
 
@@ -63,6 +64,7 @@ func (t *Traces) StoreInFile(file string) error {
 	var prettyJSON bytes.Buffer
 	json.Indent(&prettyJSON, original, "", "\t")
 
+	fmt.Println(prettyJSON.String())
 	return os.WriteFile(file, prettyJSON.Bytes(), 0644)
 }
 

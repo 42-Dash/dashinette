@@ -130,7 +130,7 @@ func GradeOpenLeagueAssignment(filename string, inputfile string, timeout int) (
 		return "", 0, fmt.Errorf("error: \"marvin\" file not found")
 	}
 
-	output, err := common.ExecuteWithTimeout(filename, inputfile, timeout)
+	output, err := common.ExecuteWithTimeout(filename, []string{inputfile}, timeout)
 	if err != nil {
 		return "", 0, err
 	}
