@@ -43,29 +43,48 @@ func getField(inputfile string) ([][]rune, error) {
 	}
 
 	lines := strings.Split(string(content), "\n")
-	var field [][]rune = make([][]rune, len(lines))
-	for i, line := range lines {
-		field[i] = []rune(line)
+	var field [][]rune = make([][]rune, 0, len(lines))
+	for _, line := range lines {
+		if line == "" {
+			continue
+		}
+		field = append(field, []rune(line))
 	}
 
 	return field, nil
 }
 
-func getBeacons(placements []string, beacons []string) []Beacon {
+func getBeacons(placements []string, beacons []string) ([]Beacon, error) {
+	if len(placements) != len(beacons) {
+		return nil, fmt.Errorf("error: number of beacons and placements do not match")
+	}
 	var result []Beacon = make([]Beacon, len(placements))
 
 	for i, placement := range placements {
+		if !strings.Contains(placement, ",") || strings.Count(placement, ",") != 1 {
+			return nil, fmt.Errorf("error: beacon #%d has invalid format", i+1)
+		}
+
 		var row, col int
 		fmt.Sscanf(placement, "%d,%d", &row, &col)
+
+		if row < 0 || col < 0 {
+			return nil, fmt.Errorf("error: beacon #%d has invalid format", i+1)
+		}
+
+		if placement[0] == ',' || placement[len(placement)-1] == ',' {
+			return nil, fmt.Errorf("error: beacon #%d has invalid format", i+1)
+		}
+
 		beacon, err := strconv.Atoi(string(beacons[i]))
 		if err != nil {
-			panic(err)
+			panic(err) // lol protection
 		}
 
 		result[i] = Beacon{row, col, beacon}
 	}
 
-	return result
+	return result, nil
 }
 
 func getScoreRookieLeague(output string, inputs []string) (int, error) {
@@ -74,7 +93,11 @@ func getScoreRookieLeague(output string, inputs []string) (int, error) {
 		return 0, err
 	}
 
-	beacons := getBeacons(strings.Split(output, "|"), strings.Split(inputs[0], " "))
+	beacons, err := getBeacons(strings.Split(output, "|"), strings.Split(inputs[0], " "))
+	if err != nil {
+		return 0, err
+	}
+
 	var score int = 0
 
 	for i, beacon := range beacons {

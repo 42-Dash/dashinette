@@ -48,14 +48,14 @@ func readFiles(inputfiles []string) ([][]string, error) {
 
 func mergeField(contents [][]string, order []int) [][]rune {
 	size := len(contents[0]) - 1
-	newField := make([]string, size * 2)
+	newField := make([]string, size*2)
 
 	for i := range size {
 		newField[i] = contents[order[0]][i] + contents[order[1]][i]
 		newField[i+size] = contents[order[2]][i] + contents[order[3]][i]
 	}
 
-	var result [][]rune = make([][]rune, size * 2)
+	var result [][]rune = make([][]rune, size*2)
 	for i, line := range newField {
 		result[i] = []rune(line)
 	}
@@ -69,6 +69,24 @@ func getField(order string, inputfile []string) ([][]rune, error) {
 		return nil, err
 	}
 
+	if len(order) != 4 {
+		return nil, fmt.Errorf("error: invalid order length")
+	}
+
+	for i := range 4 {
+		if order[i] < '1' || order[i] > '4' {
+			return nil, fmt.Errorf("error: invalid order %c", order[i])
+		}
+	}
+
+	for i := range 4 {
+		for j := range 4 {
+			if i != j && order[i] == order[j] {
+				return nil, fmt.Errorf("error: order contains duplicates")
+			}
+		}
+	}
+
 	field := mergeField(contents, []int{
 		int(order[0] - '1'),
 		int(order[1] - '1'),
@@ -79,34 +97,59 @@ func getField(order string, inputfile []string) ([][]rune, error) {
 	return field, nil
 }
 
-func getBeacons(field [][]rune, placements []string, beacons []string) []rookie.Beacon {
+func getBeacons(field [][]rune, placements []string, beacons []string) ([]rookie.Beacon, error) {
+	if len(placements) != len(beacons) {
+		return nil, fmt.Errorf("error: number of beacons and placements do not match")
+	}
+
 	var result []rookie.Beacon = make([]rookie.Beacon, len(placements))
 
 	for i, placement := range placements {
+		if len(placement) < 3 || !strings.Contains(placement, ",") ||
+			strings.Count(placement, ",") != 1 {
+			return nil, fmt.Errorf("error: invalid placement format for beacon #%d", i+1)
+		}
+
 		var row, col int
 		fmt.Sscanf(placement, "%d,%d", &row, &col)
+
 		beacon, err := strconv.Atoi(string(beacons[i]))
 		if err != nil {
-			panic(err)
+			panic(err) // lol protection
+		}
+
+		if row < 0 || col < 0 || row >= len(field) || col >= len(field[0]) {
+			return nil, fmt.Errorf("error: beacon #%d is out of bounds", i+1)
+		}
+
+		if placement[0] == ',' || placement[len(placement)-1] == ',' {
+			return nil, fmt.Errorf("error: beacon #%d has invalid format", i+1)
 		}
 
 		result[i] = rookie.Beacon{
 			Row:  row,
 			Col:  col,
-			Size: beacon + int(field[row][col]),
+			Size: beacon + int(field[row][col]) - '0',
 		}
 	}
 
-	return result
+	return result, nil
 }
 
 func getScoreOpenLeague(output string, inputs []string) (int, error) {
-	field, err := getField(output[:4], inputs[1:])
+	if len(output) < 8 {
+		return 0, fmt.Errorf("error: invalid output")
+	}
+
+	field, err := getField(strings.Split(output, "|")[0], inputs[1:])
 	if err != nil {
 		return 0, err
 	}
 
-	beacons := getBeacons(field, strings.Split(output, "|")[1:], strings.Split(inputs[0], " "))
+	beacons, err := getBeacons(field, strings.Split(output, "|")[1:], strings.Split(inputs[0], " "))
+	if err != nil {
+		return 0, err
+	}
 	var score int = 0
 
 	for i, beacon := range beacons {

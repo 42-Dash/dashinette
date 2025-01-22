@@ -31,7 +31,7 @@ func PlayersPosition(input []string) (int, int) {
 func ExtractLastAnswer(output string, valid_runes string) (string, error) {
 	for _, c := range output {
 		if !strings.ContainsRune(valid_runes, c) {
-			return "", fmt.Errorf("error: invalid character in path")
+			return "", fmt.Errorf("error: invalid character")
 		}
 	}
 
