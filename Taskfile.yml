@@ -47,8 +47,8 @@ tasks:
   test:
     desc: Run all the tests
     cmds:
-      - go test -count=1 ./internals/grader/rookie
-      - go test -count=1 ./internals/grader/open
+      - go test -count=1 ./internals/grader-marvin/rookie
+      - go test -count=1 ./internals/grader-marvin/open
       - task: clean
 
     help:
