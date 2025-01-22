@@ -26,5 +26,5 @@ jobs:
 
     - name: Test Grading
       run: |
-        go test ./internals/grader/rookie
-        go test ./internals/grader/open
+        go test ./internals/grader-marvin/rookie
+        go test ./internals/grader-marvin/open
