@@ -1,6 +1,35 @@
 #include "beacon.hpp"
+#include <sys/_types/_int8_t.h>
 #include <tuple>
 #include <vector>
+#include <array>
+
+map<int, array<int, 4>> COMBINATIONS = {
+    {0, {0, 1, 2, 3}},
+    {1, {0, 1, 3, 2}},
+    {2, {0, 2, 1, 3}},
+    {3, {0, 2, 3, 1}},
+    {4, {0, 3, 1, 2}},
+    {5, {0, 3, 2, 1}},
+    {6, {1, 0, 2, 3}},
+    {7, {1, 0, 3, 2}},
+    {8, {1, 2, 0, 3}},
+    {9, {1, 2, 3, 0}},
+    {10, {1, 3, 0, 2}},
+    {11, {1, 3, 2, 0}},
+    {12, {2, 0, 1, 3}},
+    {13, {2, 0, 3, 1}},
+    {14, {2, 1, 0, 3}},
+    {15, {2, 1, 3, 0}},
+    {16, {2, 3, 0, 1}},
+    {17, {2, 3, 1, 0}},
+    {18, {3, 0, 1, 2}},
+    {19, {3, 0, 2, 1}},
+    {20, {3, 1, 0, 2}},
+    {21, {3, 1, 2, 0}},
+    {22, {3, 2, 0, 1}},
+    {23, {3, 2, 1, 0}},
+};
 
 ostream &operator<<(ostream &os, const SquareStatus &status) {
     char c;
@@ -38,7 +67,7 @@ auto print_solution(
     const vector<vector<SquareStatus>> &lines,
     const array<int, 4> &order
 ) -> void {
-    cout << order[0] << order[1] << order[2] << order[3] << '|';
+    cout << order[0] + 1 << order[1] + 1 << order[2] + 1 << order[3] + 1 << '|';
     auto sz = placements.size();
     for (auto &&position : placements) {
         cout << get<0>(position) << "," << get<1>(position);
@@ -48,8 +77,8 @@ auto print_solution(
     }
     cout << endl;
 
-    auto score = total_score(lines);
-    cout << get<0>(score) << "/" << get<1>(score) << endl;
+    // auto score = total_score(lines);
+    // cout << get<0>(score) << "/" << get<1>(score) << endl;
 }
 
 auto clear_mask(vector<vector<SquareStatus>> &lines) -> void {
@@ -63,34 +92,7 @@ auto clear_mask(vector<vector<SquareStatus>> &lines) -> void {
 }
 
 auto recollect_vector(const ParserGrids &mazes, const int &iteration) -> vector<vector<SquareStatus>> {
-    map<int, array<int, 4>> combs = {
-        {0, {0, 1, 2, 3}},
-        {1, {0, 1, 3, 2}},
-        {2, {0, 2, 1, 3}},
-        {3, {0, 2, 3, 1}},
-        {4, {0, 3, 1, 2}},
-        {5, {0, 3, 2, 1}},
-        {6, {1, 0, 2, 3}},
-        {7, {1, 0, 3, 2}},
-        {8, {1, 2, 0, 3}},
-        {9, {1, 2, 3, 0}},
-        {10, {1, 3, 0, 2}},
-        {11, {1, 3, 2, 0}},
-        {12, {2, 0, 1, 3}},
-        {13, {2, 0, 3, 1}},
-        {14, {2, 1, 0, 3}},
-        {15, {2, 1, 3, 0}},
-        {16, {2, 3, 0, 1}},
-        {17, {2, 3, 1, 0}},
-        {18, {3, 0, 1, 2}},
-        {19, {3, 0, 2, 1}},
-        {20, {3, 1, 0, 2}},
-        {21, {3, 1, 2, 0}},
-        {22, {3, 2, 0, 1}},
-        {23, {3, 2, 1, 0}},
-    };
-
-    auto comb = combs[iteration];
+    auto comb = COMBINATIONS[iteration];
     auto grids = array{mazes.terrain_1, mazes.terrain_2, mazes.terrain_3, mazes.terrain_4};
     auto new_order = array{grids[comb[0]], grids[comb[1]], grids[comb[2]], grids[comb[3]]};
 
@@ -127,11 +129,12 @@ auto main(int argc, char **argv) -> int {
     tuple<int, int> score;
 
     auto [beacons, mazes] = *input;
-    auto order = array{1, 2, 3, 4};
+    auto order = COMBINATIONS[0];
     auto best_printed = 0;
 
 
     for (int iteration = 0; iteration < 24; iteration++) {
+        order = COMBINATIONS[iteration];
         lines = recollect_vector(mazes, iteration);
         for (auto &&beacon : beacons) {
             placements.emplace_back(find_best_placement(beacon, lines));

@@ -1,7 +1,7 @@
 package main
 
 import (
-	"dashinette/internals/grader"
+	"dashinette/internals/grader-marvin"
 	"dashinette/pkg/parser"
 	"log"
 	"os"
@@ -13,7 +13,7 @@ func main() {
 		if err != nil {
 			log.Fatalf("Error: %v", err)
 		}
-		grader.MultistageGraderWithTraces(config)
+		grader.MarvinMultistageGrader(config)
 	} else {
 		log.Fatalf("Error: wrong number of arguments")
 	}

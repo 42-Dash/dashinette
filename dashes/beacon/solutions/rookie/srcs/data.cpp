@@ -120,7 +120,6 @@ auto print_solution(
                 cout << "|";
             }
         }
-        cout << endl;
     } else {
         for (auto &&position : placements) {
             cout << get<0>(position) << "," << get<1>(position);
@@ -128,19 +127,19 @@ auto print_solution(
                 cout << "|";
             }
         }
-        cout << endl;
     }
+    cout << endl;
 
-    auto score = 0, total = 0;
-    for (auto &&line : lines) {
-        for (auto &&square : line) {
-            if (square == SquareStatus::NODE_COVERED) {
-                score++;
-                total++;
-            } else if (square == SquareStatus::NODE_UNCOVERED) {
-                total++;
-            }
-        }
-    }
-    cout << score << "/" << total << endl;
+    // auto score = 0, total = 0;
+    // for (auto &&line : lines) {
+    //     for (auto &&square : line) {
+    //         if (square == SquareStatus::NODE_COVERED) {
+    //             score++;
+    //             total++;
+    //         } else if (square == SquareStatus::NODE_UNCOVERED) {
+    //             total++;
+    //         }
+    //     }
+    // }
+    // cout << score << "/" << total << endl;
 }

@@ -2,16 +2,21 @@ version: '3'
 
 tasks:
   default:
-    desc: Run the marvin project
+    desc: Run the project
     cmds:
       - task beacon
       - ./beacon
       - defer: rm beacon
 
   beacon:
-    desc: Run the beacon project
+    desc: Build the beacon project
     cmds:
       - go build -o beacon cmd/beacon/beacon/main.go
+
+  beacon-tester:
+    desc: Build the beacon project tester (just for development)
+    cmds:
+      - go build -o tester cmd/beacon/tester/main.go
 
   marvin:
     desc: Build the marvin project
@@ -23,18 +28,15 @@ tasks:
     cmds:
       - go build -o tester cmd/marvin/tester/main.go
 
-  marvin-docker:
-    desc: Rebuild the Docker image for the marvin project
-    cmds:
-      - docker build -t dashinette-tester .
-
   clean:
     desc: Clean up the repository
     cmds:
-      - rm -f app.log marvin tester
+      - rm -f app.log marvin beacon tester
       - rm -f open_results.json rookie_results.json
       - rm -rf dashes/marvin/repos/*
       - rm -rf dashes/marvin/traces/*
+      - rm -rf dashes/beacon/repos/*
+      - rm -rf dashes/beacon/traces/*
       - rm -rf bin
 
   delete-repos:
@@ -45,8 +47,8 @@ tasks:
   test:
     desc: Run all the tests
     cmds:
-      - go test -count=1 ./internals/grader/rookie
-      - go test -count=1 ./internals/grader/open
+      - go test -count=1 ./internals/grader-marvin/rookie
+      - go test -count=1 ./internals/grader-marvin/open
       - task: clean
 
     help:

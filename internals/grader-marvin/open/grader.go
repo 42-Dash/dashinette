@@ -1,7 +1,7 @@
 package open
 
 import (
-	"dashinette/internals/grader/common"
+	"dashinette/internals/grader-marvin/common"
 	"fmt"
 	"os"
 	"strings"
@@ -130,9 +130,9 @@ func GradeOpenLeagueAssignment(filename string, inputfile string, timeout int) (
 		return "", 0, fmt.Errorf("error: \"marvin\" file not found")
 	}
 
-	output, err := common.ExecuteWithTimeout(filename, inputfile, timeout)
+	output, err := common.ExecuteWithTimeout(filename, []string{inputfile}, timeout)
 	if err != nil {
-		return "",0, err
+		return "", 0, err
 	}
 
 	path, err := common.ExtractLastAnswer(output, common.VALID_RUNES_OPEN_LEAGUE)

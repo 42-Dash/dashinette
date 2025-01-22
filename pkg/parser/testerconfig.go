@@ -28,10 +28,10 @@ type TesterArgs struct {
 	League   string `json:"league"`
 }
 
-func SerializeTesterConfig(team Team, repo, tracesfile string) string {
+func SerializeTesterConfig(team Team, repo, tracesfile, dashFolder string) string {
 	config := TesterArgs{
 		TeamName: team.Name,
-		RepoPath: GetRepoPathContainerized(repo),
+		RepoPath: GetRepoPathContainerized(repo, dashFolder),
 		League:   team.League,
 	}
 

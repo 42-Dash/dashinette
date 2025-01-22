@@ -16,7 +16,7 @@ import (
 // It prompts the user to enter the path to the participants file.
 // Then it loads the participants and starts the interactive CLI.
 func main() {
-	participants, err := parser.LoadParticipantsJSON()
+	participants, err := parser.LoadParticipantsJSON(marvin.PARTICIPANTS_CONFIG_FILE)
 	if err != nil {
 		log.Fatalf("Error: %v", err)
 	}
@@ -24,7 +24,7 @@ func main() {
 	logger.InitLogger()
 	defer logger.CloseFile()
 
-	cli.MarvinInteractiveCLI(participants)
+	cli.InteractiveCLI(participants, cli.MARVIN)
 }
 
 // Checks if all required environment variables are set.

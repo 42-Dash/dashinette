@@ -2,8 +2,8 @@ package grader
 
 import (
 	"bytes"
-	"dashinette/internals/grader/open"
-	"dashinette/internals/grader/rookie"
+	"dashinette/internals/grader-marvin/open"
+	"dashinette/internals/grader-marvin/rookie"
 	"dashinette/internals/traces"
 	"dashinette/pkg/constants/marvin"
 	"dashinette/pkg/parser"
@@ -54,10 +54,10 @@ func selectGradingFunction(league string) func(string, string, int) (string, int
 	}
 }
 
-func MultistageGraderWithTraces(config parser.TesterConfig) error {
-	_, err := os.Stat(parser.GetTracesPath(config.Args.TeamName))
+func MarvinMultistageGrader(config parser.TesterConfig) error {
+	_, err := os.Stat(parser.GetTracesPath(config.Args.TeamName, marvin.DASH_FOLDER))
 	if err == nil {
-		os.Remove(parser.GetTracesPath(config.Args.TeamName))
+		os.Remove(parser.GetTracesPath(config.Args.TeamName, marvin.DASH_FOLDER))
 	}
 	tr := traces.NewLogger()
 	defer tr.StoreInFile(parser.GetTracesPathContainerized(config.Args.TeamName))

@@ -2,6 +2,7 @@ package main
 
 import (
 	"bufio"
+	"dashinette/pkg/constants/marvin"
 	"dashinette/pkg/github"
 	"dashinette/pkg/parser"
 	"fmt"
@@ -31,7 +32,7 @@ func confirmation() {
 }
 
 func main() {
-	participants, err := parser.LoadParticipantsJSON()
+	participants, err := parser.LoadParticipantsJSON(marvin.PARTICIPANTS_CONFIG_FILE)
 	if err != nil {
 		log.Fatalf("Error loading participants: %v", err)
 	}
