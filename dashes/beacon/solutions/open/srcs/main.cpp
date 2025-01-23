@@ -1,5 +1,4 @@
 #include "beacon.hpp"
-#include <sys/_types/_int8_t.h>
 #include <tuple>
 #include <vector>
 #include <array>
