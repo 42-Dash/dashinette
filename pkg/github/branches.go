@@ -47,8 +47,6 @@ func SwitchEmptyBranch(repoPath string, branch string) (err error) {
 		}
 	}
 
-	if err := executeCommand(repoPath, "git", "rm", "-rf", "."); err != nil {
-		return fmt.Errorf("failed to remove tracked files in branch %s: %w", branch, err)
-	}
+	executeCommand(repoPath, "git", "rm", "-rf", ".")
 	return nil
 }

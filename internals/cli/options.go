@@ -1,6 +1,7 @@
 package cli
 
 import (
+	beaconTraces "dashinette/internals/grader-beacon"
 	"dashinette/internals/traces"
 	"dashinette/pkg/containerization"
 	"dashinette/pkg/github"
@@ -86,14 +87,26 @@ func evaluateAssignments(participants parser.Participants, dashFolder, imageName
 	}
 }
 
-func pushTraces(participants parser.Participants, dashFolder string) {
+func pushTraces(participants parser.Participants, dashFolder string, dash string) {
 	for _, team := range participants.Teams {
-		err := github.UploadFileToRoot(
-			parser.GetRepoPath(team.Name, dashFolder),
-			append(
+		var files []string
+		if dash == MARVIN {
+			files = append(
 				traces.DeserializeMapsOnly(parser.GetTracesPath(team.Name, dashFolder)),
 				parser.GetTracesPath(team.Name, dashFolder),
-			),
+			)
+		} else if dash == BEACON {
+			files = append(
+				beaconTraces.DeserializeMapsOnly(parser.GetTracesPath(team.Name, dashFolder)),
+				parser.GetTracesPath(team.Name, dashFolder),
+			)
+		} else {
+			logger.Error.Printf("Logic for %s not implemented", dash)
+		}
+
+		err := github.UploadFileToRoot(
+			parser.GetRepoPath(team.Name, dashFolder),
+			files,
 			"Upload traces",
 			"traces",
 			true,

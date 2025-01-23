@@ -131,7 +131,7 @@ func InteractiveCLI(settings parser.Participants, dash string) {
 			evaluateAssignments(settings, constants["DASH_FOLDER"], constants["IMAGE_NAME"])
 		case UploadTracesTask:
 			if aprovedAction("Push traces") {
-				pushTraces(settings, constants["DASH_FOLDER"])
+				pushTraces(settings, constants["DASH_FOLDER"], dash)
 			}
 		case GenerateResultsJSONTask:
 			createResults(settings, constants["DASH_FOLDER"])
