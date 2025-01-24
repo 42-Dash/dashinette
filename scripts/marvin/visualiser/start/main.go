@@ -48,13 +48,12 @@ func copyFileToDockerDirectory() {
 }
 
 func main() {
-
 	copyFileToDockerDirectory()
 	createDockerImage()
 	runDockerContainer()
 
 	fmt.Println("\n\033[32mVisualiser is running at http://localhost:8080\033[0m")
-	fmt.Println("Container name:","\033[32m", DOCKER_CONTAINER_NAME, "\033[0m")
+	fmt.Println("Container name:", "\033[32m", DOCKER_CONTAINER_NAME, "\033[0m")
 }
 
 func init() {

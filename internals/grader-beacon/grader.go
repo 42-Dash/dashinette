@@ -2,8 +2,8 @@ package grader
 
 import (
 	"bytes"
-	"dashinette/internals/grader-beacon/rookie"
 	"dashinette/internals/grader-beacon/open"
+	"dashinette/internals/grader-beacon/rookie"
 	"dashinette/pkg/constants/beacon"
 	"dashinette/pkg/parser"
 	"fmt"
