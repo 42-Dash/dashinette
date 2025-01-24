@@ -134,7 +134,7 @@ func InteractiveCLI(settings parser.Participants, dash string) {
 				pushTraces(settings, constants["DASH_FOLDER"], dash)
 			}
 		case GenerateResultsJSONTask:
-			createResults(settings, constants["DASH_FOLDER"])
+			createResults(settings, constants["DASH_FOLDER"], dash)
 		case ExitTask:
 			loop = false
 		}

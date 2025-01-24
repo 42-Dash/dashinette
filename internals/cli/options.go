@@ -7,6 +7,7 @@ import (
 	"dashinette/pkg/github"
 	"dashinette/pkg/logger"
 	"dashinette/pkg/parser"
+	"fmt"
 )
 
 func createRepos(participants parser.Participants, templateRepo string) {
@@ -119,7 +120,61 @@ func pushTraces(participants parser.Participants, dashFolder string, dash string
 	}
 }
 
-func createResults(participants parser.Participants, dashFolder string) {
+func setReposReadOnly(participants parser.Participants) {
+	for _, team := range participants.Teams {
+		err := github.SetCollaborators(team.Name, team.Nicknames, github.READ)
+		if err != nil {
+			logger.Error.Printf("Error restricting collaborators for team %s: %v", team.Name, err)
+		} else {
+			logger.Info.Printf("Successfully restricted collaborators for team %s", team.Name)
+		}
+	}
+}
+
+func createResults(participants parser.Participants, dashFolder string, dash string) {
+	if dash == MARVIN {
+		createResultsMarvin(participants, dashFolder)
+	} else if dash == BEACON {
+		createResultsBeacon(participants, dashFolder)
+	} else {
+		logger.Error.Printf("Logic for %s not implemented", dash)
+	}
+}
+
+func createResultsBeacon(participants parser.Participants, dashFolder string) {
+	var resultsRookie = make(map[string]beaconTraces.Traces)
+	var resultsOpen = make(map[string]beaconTraces.Traces)
+
+	for _, team := range participants.Teams {
+		record, err := beaconTraces.Deserialize(parser.GetTracesPath(team.Name, dashFolder))
+		if err != nil {
+			logger.Error.Printf("Error deserializing traces for team %s: %v", team.Name, err)
+		} else {
+			logger.Info.Printf("Successfully deserialized traces for team %s", team.Name)
+		}
+		if team.League == "rookie" {
+			resultsRookie[team.Name] = record
+		} else {
+			resultsOpen[team.Name] = record
+		}
+	}
+
+	err := beaconTraces.StoreResults(resultsRookie, "Rookie League", "rookie_results.json")
+	if err != nil {
+		logger.Error.Printf("Error storing results for rookie league: %v", err)
+	} else {
+		logger.Info.Println("Successfully stored results for rookie league")
+	}
+
+	err = beaconTraces.StoreResults(resultsOpen, "Open League", "open_results.json")
+	if err != nil {
+		logger.Error.Printf("Error storing results for open league: %v", err)
+	} else {
+		logger.Info.Println("Successfully stored results for open league")
+	}
+}
+
+func createResultsMarvin(participants parser.Participants, dashFolder string) {
 	var resultsRookie = make(map[string]traces.Traces)
 	var resultsOpen = make(map[string]traces.Traces)
 
@@ -137,6 +192,9 @@ func createResults(participants parser.Participants, dashFolder string) {
 		}
 	}
 
+	fmt.Println("resultsRookie", resultsRookie)
+	fmt.Println("resultsOpen", resultsOpen)
+
 	err := traces.StoreResults(resultsRookie, "Rookie League", "rookie_results.json")
 	if err != nil {
 		logger.Error.Printf("Error storing results for rookie league: %v", err)
@@ -149,16 +207,5 @@ func createResults(participants parser.Participants, dashFolder string) {
 		logger.Error.Printf("Error storing results for open league: %v", err)
 	} else {
 		logger.Info.Println("Successfully stored results for open league")
-	}
-}
-
-func setReposReadOnly(participants parser.Participants) {
-	for _, team := range participants.Teams {
-		err := github.SetCollaborators(team.Name, team.Nicknames, github.READ)
-		if err != nil {
-			logger.Error.Printf("Error restricting collaborators for team %s: %v", team.Name, err)
-		} else {
-			logger.Info.Printf("Successfully restricted collaborators for team %s", team.Name)
-		}
 	}
 }
