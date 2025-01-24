@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"os"
 	"regexp"
+	"slices"
 	"strconv"
 	"strings"
 )
@@ -39,11 +40,11 @@ func getFirstValue(traces map[string]Traces) (res Traces) {
 func extractLevel(line string) int {
 	match := regexp.MustCompile(`level_(\d+)`).FindStringSubmatch(line)[1]
 	if match == "" {
-		panic("No level found") // should never happen
+		panic("No level found")
 	}
 	res, err := strconv.Atoi(match)
 	if err != nil {
-		panic(err) // should never happen
+		panic(err)
 	}
 	return res
 }
@@ -55,7 +56,12 @@ func readFiles(filenames []string) [][]string {
 		if err != nil {
 			panic(err)
 		}
-		res = append(res, strings.Split(string(content), "\n"))
+
+		filtered := slices.DeleteFunc( // lol, very intuitive
+			strings.Split(string(content), "\n"),
+			func(s string) bool { return s == "" },
+		)
+		res = append(res, filtered)
 	}
 
 	return res
