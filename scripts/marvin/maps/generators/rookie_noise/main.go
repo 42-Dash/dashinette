@@ -94,7 +94,7 @@ func init() {
 		log.Fatal("Position of goal is out of bounds")
 	}
 
-	if start_row == goal_row || start_col == goal_col {
+	if start_row == goal_row && start_col == goal_col {
 		log.Fatal("Start should not be equal to goal")
 	}
 
