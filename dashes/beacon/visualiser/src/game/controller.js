@@ -1,5 +1,5 @@
-import DashMapController from './controllers/DashMap.js';
-import DashPathsQueueController from './controllers/DashPathsQueue.js';
+import DashMapController from "./controllers/DashMap.js";
+import DashPathsQueueController from "./controllers/DashPathsQueue.js";
 import DashPathController from "./controllers/DashPath.js";
 import DashLeaderboard from "./controllers/DashLeaderboard.js";
 
@@ -7,7 +7,11 @@ export default class GameController {
   constructor(gameData, ui) {
     this.ui = ui;
     this.gameData = gameData;
-    this.dashMapController = new DashMapController(gameData.map, gameData.jsonData.league, gameData.beacons);
+    this.dashMapController = new DashMapController(
+      gameData.map,
+      gameData.jsonData.league,
+      gameData.beacons
+    );
     this.dashPathsQueue = new DashPathsQueueController(ui.container);
     this.dashLeaderboard = new DashLeaderboard(gameData, ui.leaderboard);
     this.dashPathControllers = new Map();
@@ -53,11 +57,13 @@ export default class GameController {
   #dashPathControllerAt(groupIndex) {
     let dashPath;
     if (!this.dashPathControllers.has(groupIndex)) {
-      dashPath = new DashPathController(this.gameData.path(groupIndex), 
-        this.dashMapController, this.gameData.color(groupIndex));
+      dashPath = new DashPathController(
+        this.gameData.path(groupIndex),
+        this.dashMapController,
+        this.gameData.color(groupIndex)
+      );
       this.dashPathControllers.set(groupIndex, dashPath);
-    }
-    else {
+    } else {
       dashPath = this.dashPathControllers.get(groupIndex);
     }
     return dashPath;

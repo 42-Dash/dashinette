@@ -21,7 +21,9 @@ export default class GameData {
   /**
    * @brief Returns the current level.
    */
-  get level() {return this._level;}
+  get level() {
+    return this._level;
+  }
 
   levelTitleAt(level) {
     return this.jsonData.levels[level].lvl;
@@ -52,7 +54,7 @@ export default class GameData {
   }
 
   beaconsAt(level) {
-	return this.jsonData.levels[level].beacons;
+    return this.jsonData.levels[level].beacons;
   }
 
   /**
@@ -82,7 +84,7 @@ export default class GameData {
   }
 
   get beacons() {
-	return this.beaconsAt(this.level);
+    return this.beaconsAt(this.level);
   }
 
   /**
@@ -116,5 +118,5 @@ export default class GameData {
 
   isFirstLevel() {
     return this.level == 0;
-  } 
+  }
 }

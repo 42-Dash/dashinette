@@ -41,8 +41,7 @@ export default class Game {
   #changeLevel() {
     if (this.data.isLastLevel()) {
       this.ui.nextLevelButton.textContent = "Restart";
-    }
-    else {
+    } else {
       this.ui.nextLevelButton.textContent = "Next Level";
       if (this.data.isFirstLevel()) {
         this.controller.dashLeaderboard.renderDefaultLeaderboard();
@@ -63,11 +62,9 @@ export default class Game {
         const b = (153 * i) % 255;
         screen.setAttribute("left-color", `rgb(${r},${g},${b})`);
         i++;
-        if (i >= 100)
-          clearInterval();
+        if (i >= 100) clearInterval();
       }, 5000);
-    }
-    else {
+    } else {
       this.ui.hideBlockingScreen();
     }
   }
@@ -75,19 +72,19 @@ export default class Game {
   #drawMap() {
     if (!this.controller.dashMapController.hasRegisteredCanvas()) {
       this.ui.createMap(this.controller.dashMapController);
-    }
-    else {
+    } else {
       this.controller.dashMapController.updateJson(this.data.map);
-	  this.controller.dashMapController.updateBeacons(this.data.beacons);
+      this.controller.dashMapController.updateBeacons(this.data.beacons);
       this.controller.dashMapController.draw();
     }
     this.ui.refreshLevelLabel(this.data);
   }
-  
+
+  // marvin is over, its is not about the paths anymore
   #drawPaths() {
     this.controller.loadAllPaths();
     this.controller.renderAllPaths().then(() => {
-        this.controller.dashLeaderboard.renderLeaderboard();
+      this.controller.dashLeaderboard.renderLeaderboard();
     });
   }
 }

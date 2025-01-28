@@ -1,5 +1,4 @@
-export default class DashLogo extends HTMLElement
-{
+export default class DashLogo extends HTMLElement {
   static observedAttributes = ["left-color", "right-color"];
 
   constructor() {
@@ -7,7 +6,7 @@ export default class DashLogo extends HTMLElement
   }
 
   connectedCallback() {
-    const shadowRoot = this.attachShadow({mode: 'closed'});
+    const shadowRoot = this.attachShadow({ mode: "closed" });
     const cssSheet = new CSSStyleSheet();
     cssSheet.replaceSync(`
       :host > svg {
@@ -15,16 +14,16 @@ export default class DashLogo extends HTMLElement
         width: 100%;
         heihgt: 100%;
       }
-      
+
       .borders {
         display: none;
       }
-      
+
       .left {
         fill: var(--left-color, rgb(190,138,255));
         transition: fill 10s;
       }
-      
+
       .right{
         fill: var(--right-color, #fff);
         transition: fill 10s;
@@ -32,11 +31,12 @@ export default class DashLogo extends HTMLElement
       `);
     shadowRoot.adoptedStyleSheets = [cssSheet];
     fetch("./images/DASH.svg")
-      .then(response => response.text())
-      .then(text => {
-        return (new DOMParser()).parseFromString(text, "image/svg+xml").childNodes[0];
+      .then((response) => response.text())
+      .then((text) => {
+        return new DOMParser().parseFromString(text, "image/svg+xml")
+          .childNodes[0];
       })
-      .then(svg => {
+      .then((svg) => {
         shadowRoot.appendChild(svg);
       });
   }

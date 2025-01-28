@@ -1,6 +1,5 @@
 export default class DashPathsQueueController {
-  constructor(container)
-  {
+  constructor(container) {
     this.renderQueue = [];
     this.currentIndex = 0;
     this.container = container;
@@ -8,7 +7,7 @@ export default class DashPathsQueueController {
 
   /**
    * Add a path to the list of paths to be rendered.
-   * @param {DashPathController} path 
+   * @param {DashPathController} path
    */
   addToRenderQueue(path) {
     if (this.renderQueue[this.currentIndex] == undefined) {
@@ -18,10 +17,9 @@ export default class DashPathsQueueController {
       this.renderQueue[this.currentIndex] = {
         element: pathElement,
         controller: path,
-        status: "requires-rendering"
+        status: "requires-rendering",
       };
-    }
-    else {
+    } else {
       this.renderQueue[this.currentIndex].data = path;
       this.renderQueue[this.currentIndex].status = "requires-rerendering";
     }
@@ -54,14 +52,14 @@ export default class DashPathsQueueController {
     });
     return promise;
   }
-  
+
   resetRenderQueue() {
     this.currentIndex = 0;
   }
-  
+
   clear() {
     let i = 0;
-    this.renderQueue.forEach(pathElement => {
+    this.renderQueue.forEach((pathElement) => {
       pathElement.controller.clear();
       i++;
     });

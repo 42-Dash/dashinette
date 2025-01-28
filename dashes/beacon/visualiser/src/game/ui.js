@@ -1,6 +1,11 @@
 export default class GameUI {
-  constructor({container, leaderboard, levelLabelElement, nextLevelButton, blockingScreen})
-  {
+  constructor({
+    container,
+    leaderboard,
+    levelLabelElement,
+    nextLevelButton,
+    blockingScreen,
+  }) {
     this.container = container;
     this.leaderboard = leaderboard;
     this.mapElement = null;
@@ -8,7 +13,7 @@ export default class GameUI {
     this.nextLevelButton = nextLevelButton;
     this.blockingScreen = blockingScreen;
   }
-  
+
   createMap(controller) {
     this.mapElement = document.createElement("p5-canvas");
     this.mapElement.setAttribute("id", "map-canvas");
@@ -21,10 +26,11 @@ export default class GameUI {
   }
 
   toggleNextLevelButton() {
-    if (this.nextLevelButton.hasAttribute("disabled"))
+    if (this.nextLevelButton.hasAttribute("disabled")) {
       this.nextLevelButton.removeAttribute("disabled");
-    else
+    } else {
       this.nextLevelButton.setAttribute("disabled", "");
+    }
   }
 
   showBlockingScreen() {
