@@ -135,7 +135,7 @@ export default class DashLeaderboard extends HTMLElement {
   }
 
   #loadGroupInfo(group, rankingEntry) {
-    const isValid = group.status != "valid" ? 0.5 : 1;
+    const isValid = group.status !== "valid" ? 0.5 : 1;
     rankingEntry.style.backgroundColor = `rgb(${group.colour.r * isValid}, ${
       group.colour.g * isValid
     }, ${group.colour.b * isValid})`;
@@ -149,7 +149,7 @@ export default class DashLeaderboard extends HTMLElement {
 
   #resize() {
     const fontSize =
-      this.shadow.childElementCount != 0
+      this.shadow.childElementCount !== 0
         ? (this.getBoundingClientRect().height /
             this.shadow.childElementCount) *
           0.25

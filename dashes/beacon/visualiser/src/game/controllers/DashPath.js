@@ -2,7 +2,7 @@ import CanvasController from "./Canvas.js";
 
 export default class DashPathController extends CanvasController {
   constructor(jsonPath, dashMap, color) {
-    super(jsonPath);
+    super();
     console.log("wrong constructor", jsonPath);
     this.dashMap = dashMap;
     this.color = color;
@@ -11,7 +11,9 @@ export default class DashPathController extends CanvasController {
     this.circles = [];
     this.started = false;
 
-    this.json
+    this.path = jsonPath;
+    console.log("wrong path", this.path);
+    this.path
       .replace(/\|$/, "")
       .split("|")
       .forEach((pair) => {

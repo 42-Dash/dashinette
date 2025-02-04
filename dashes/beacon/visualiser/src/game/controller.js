@@ -29,6 +29,7 @@ export default class GameController {
   }
 
   loadAllPaths() {
+    console.log("loadAllPaths ------------------------");
     for (let i = 0; i < this.gameData.groupCount; i++) {
       this.dashPathsQueue.addToRenderQueue(this.#dashPathControllerAt(i));
     }
@@ -37,6 +38,7 @@ export default class GameController {
   resetAllPaths() {
     this.dashPathsQueue.clear();
     this.dashPathsQueue.resetRenderQueue();
+    console.log(this.dashPathsQueue.renderQueue, "==============");
   }
 
   async renderAllPaths() {
@@ -57,6 +59,10 @@ export default class GameController {
     let dashPath;
 
     if (!this.dashPathControllers.has(groupIndex)) {
+      // console.log(
+      //   "this.gameData.output(groupIndex)",
+      //   this.gameData.output(groupIndex),
+      // );
       dashPath = new DashPathController(
         this.gameData.output(groupIndex),
         this.dashMapController,

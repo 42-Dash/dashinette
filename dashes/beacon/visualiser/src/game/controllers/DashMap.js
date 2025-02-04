@@ -83,12 +83,29 @@ class DashMapInformation {
  * @class This class is responsible for rendering the map.
  */
 export default class DashMapController extends CanvasController {
-  constructor(jsonMap, beacon_sizes) {
-    super(jsonMap, beacon_sizes);
+  constructor(mapArray, beacon_sizes) {
+    super(beacon_sizes);
+    this.mapArray = mapArray;
     this.pulse = 15;
     this.max = 2.5;
     this.size = 1;
     this.information = new DashMapInformation();
+    this.routerCount = this.calcRouter();
+  }
+
+  calcRouter() {
+    // wrong this.json in setup
+    let starCount = 0;
+    for (let row of this.mapArray) {
+      starCount += row.split("*").length - 1;
+    }
+    return starCount;
+  }
+
+  updateJson(newJsonData) {
+    // wrong data is passed, the bug is here
+    this.mapArray = newJsonData;
+    this.routerCount = this.calcRouter();
   }
 
   setup() {
@@ -111,11 +128,11 @@ export default class DashMapController extends CanvasController {
   }
 
   get mapColumnsCount() {
-    return this.json[0].length;
+    return this.mapArray[0].length;
   }
 
   get mapRowsCount() {
-    return this.json.length;
+    return this.mapArray.length;
   }
 
   get beacons() {
@@ -170,7 +187,7 @@ export default class DashMapController extends CanvasController {
     this.p5.fill(255, 255, 255, 255 * (this.max - this.size));
     for (let i = 0; i < this.mapRowsCount; i++) {
       for (let j = 0; j < this.mapColumnsCount; j++) {
-        const value = this.json[i][j];
+        const value = this.mapArray[i][j];
         if (value === "*") {
           const { x, y } = this.information.squareCenterCoordinates(i, j);
           this.#drawBeacons(x, y, strokeWeight);

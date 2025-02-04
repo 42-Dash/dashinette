@@ -4,6 +4,8 @@ import DashLeaderboard from "./web-components/DashLeaderboard.js";
 import Game from "./game.js";
 import Canvas from "./web-components/Canvas.js";
 
+export const CANVAS_ELEMENT = "canvas-test";
+
 // load the json file
 async function loadJSON(filename) {
   return fetch(filename).then((response) => response.json());
@@ -48,7 +50,7 @@ function refreshHashLevel(game, hash) {
 }
 
 // register the custom element
-customElements.define("canvas-test", Canvas);
+customElements.define(CANVAS_ELEMENT, Canvas);
 customElements.define("canvas-container", CanvasContainer);
 customElements.define("dash-logo", DashLogo);
 customElements.define("dash-leaderboard", DashLeaderboard);

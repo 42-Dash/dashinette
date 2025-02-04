@@ -1,3 +1,5 @@
+import { CANVAS_ELEMENT } from "../../index.js";
+
 export default class DashPathsQueueController {
   constructor(container) {
     this.renderQueue = [];
@@ -12,7 +14,7 @@ export default class DashPathsQueueController {
   addToRenderQueue(path) {
     console.log();
     if (this.renderQueue[this.currentIndex] === undefined) {
-      const pathElement = document.createElement("canvas-test");
+      const pathElement = document.createElement(CANVAS_ELEMENT);
       this.container.appendChild(pathElement);
       path.registerCanvas(pathElement);
       this.renderQueue[this.currentIndex] = {
@@ -22,7 +24,7 @@ export default class DashPathsQueueController {
       };
     } else {
       this.renderQueue[this.currentIndex].data = path;
-      this.renderQueue[this.currentIndex].status = "requires-rerendering";
+      this.renderQueue[this.currentIndex].status = "requires-rendering";
     }
     this.currentIndex++;
   }
@@ -34,11 +36,6 @@ export default class DashPathsQueueController {
       promise = promise.then(() => {
         switch (pathElement.status) {
           case "requires-rendering":
-            pathElement.controller.start();
-            break;
-          case "requires-rerendering":
-            console.log("passed array");
-            pathElement.controller.updateJson(pathElement.data.json);
             pathElement.controller.start();
             break;
           case "rendered":
@@ -61,11 +58,11 @@ export default class DashPathsQueueController {
   }
 
   clear() {
-    let i = 0;
     this.renderQueue.forEach((pathElement) => {
-      pathElement.controller.clear();
-      i++;
+      pathElement.element.remove();
     });
+
+    this.renderQueue = [];
   }
 
   animationEnded() {
