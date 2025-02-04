@@ -1,5 +1,5 @@
 import BeaconsMapController from "./controllers/BeaconsMap.js";
-import DashPathsQueueController from "./controllers/RenderQueue.js";
+import RenderQueueController from "./controllers/RenderQueue.js";
 import BeaconController from "./controllers/Beacon.js";
 import LeaderboardController from "./controllers/Leaderboard.js";
 
@@ -11,7 +11,7 @@ export default class GameController {
       gameData.map,
       gameData.beacons,
     );
-    this.dashPathsQueue = new DashPathsQueueController(ui.container);
+    this.dashPathsQueue = new RenderQueueController(ui.container);
     this.dashLeaderboard = new LeaderboardController(gameData, ui.leaderboard);
     this.dashPathControllers = new Map();
   }

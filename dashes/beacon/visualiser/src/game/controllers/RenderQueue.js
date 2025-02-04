@@ -1,6 +1,6 @@
 import { CANVAS_ELEMENT } from "../../index.js";
 
-export default class DashPathsQueueController {
+export default class RenderQueueController {
   constructor(container) {
     this.renderQueue = [];
     this.currentIndex = 0;
@@ -9,7 +9,7 @@ export default class DashPathsQueueController {
 
   /**
    * Add a path to the list of paths to be rendered.
-   * @param {DashPathController} path
+   * @param {BeaconController} path
    */
   addToRenderQueue(path) {
     console.log();
