@@ -1,18 +1,18 @@
-import DashMapController from "./controllers/DashMap.js";
-import DashPathsQueueController from "./controllers/DashPathsQueue.js";
-import DashPathController from "./controllers/DashPath.js";
-import DashLeaderboard from "./controllers/DashLeaderboard.js";
+import BeaconsMapController from "./controllers/BeaconsMap.js";
+import DashPathsQueueController from "./controllers/RenderQueue.js";
+import BeaconController from "./controllers/Beacon.js";
+import LeaderboardController from "./controllers/Leaderboard.js";
 
 export default class GameController {
   constructor(gameData, ui) {
     this.ui = ui;
     this.gameData = gameData;
-    this.dashMapController = new DashMapController(
+    this.dashMapController = new BeaconsMapController(
       gameData.map,
       gameData.beacons,
     );
     this.dashPathsQueue = new DashPathsQueueController(ui.container);
-    this.dashLeaderboard = new DashLeaderboard(gameData, ui.leaderboard);
+    this.dashLeaderboard = new LeaderboardController(gameData, ui.leaderboard);
     this.dashPathControllers = new Map();
   }
 
@@ -29,7 +29,6 @@ export default class GameController {
   }
 
   loadAllPaths() {
-    console.log("loadAllPaths ------------------------");
     for (let i = 0; i < this.gameData.groupCount; i++) {
       this.dashPathsQueue.addToRenderQueue(this.#dashPathControllerAt(i));
     }
@@ -38,7 +37,6 @@ export default class GameController {
   resetAllPaths() {
     this.dashPathsQueue.clear();
     this.dashPathsQueue.resetRenderQueue();
-    console.log(this.dashPathsQueue.renderQueue, "==============");
   }
 
   async renderAllPaths() {
@@ -59,11 +57,7 @@ export default class GameController {
     let dashPath;
 
     if (!this.dashPathControllers.has(groupIndex)) {
-      // console.log(
-      //   "this.gameData.output(groupIndex)",
-      //   this.gameData.output(groupIndex),
-      // );
-      dashPath = new DashPathController(
+      dashPath = new BeaconController(
         this.gameData.output(groupIndex),
         this.dashMapController,
         this.gameData.color(groupIndex),

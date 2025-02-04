@@ -73,13 +73,4 @@ export default class DashPathsQueueController {
     }
     return true;
   }
-
-  removeRenderedPaths() {
-    this.renderQueue.reduceRight((_, pathElement, index) => {
-      if (pathElement.status === "rendered") {
-        this.renderQueue.splice(index, 1);
-        this.container.removeChild(pathElement.element);
-      }
-    });
-  }
 }

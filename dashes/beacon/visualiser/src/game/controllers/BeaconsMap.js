@@ -3,12 +3,12 @@ import CanvasController from "./Canvas.js";
 /**
  * @class This class encapsulate all the location information that a map holds.
  */
-class DashMapInformation {
+class MapInformation {
   constructor() {
     /** @property {number} squareSize The size of a square in the map in pixel. */
-    this.squareSize = 1;
+    this.squareSize = 0;
     /** @property {number} squaresDistance The distance between two squares in the map as pixel. */
-    this.squaresDistance = 1.1;
+    this.squaresDistance = 0;
     /** @property {number} offsetPercentage The percentage of the square size that is used as offset. */
     this.offsetPercentage = 0.0;
     /** @property {number} leftPadding The left padding of the map in pixel */
@@ -18,34 +18,22 @@ class DashMapInformation {
   }
 
   /**
-   * Used only internally inside refresh().
-   * @param {number} amount Amount of squares needed
-   * @returns The length of the amount of squares in pixel in proportion to the square size.
-   */
-  #lengthPercentage(amount) {
-    if (amount <= 1) return amount;
-    return 1 + (1 + this.offsetPercentage) * (amount - 1);
-  }
-
-  /**
    * @brief Refreshes the information of the map.
    */
   refresh(mapRowsCount, mapColumnsCount, mapWidth, mapHeight) {
     // When the aspect ratio is > 1, it is landscape, otherwise it is portrait.
     const mapAspectRatio = mapColumnsCount / mapRowsCount;
     const screenAspectRatio = mapWidth / mapHeight;
-    const mapWidthPercentage = this.#lengthPercentage(mapColumnsCount);
-    const mapHeightPercentage = this.#lengthPercentage(mapRowsCount);
     this.leftPadding = 0;
     this.UpPadding = 0;
     if (mapAspectRatio < screenAspectRatio) {
       // Landscape, the height of the map stays the same.
-      this.squareSize = mapHeight / mapHeightPercentage;
-      this.leftPadding = (mapWidth - mapWidthPercentage * this.squareSize) / 2;
+      this.squareSize = mapHeight / mapRowsCount;
+      this.leftPadding = (mapWidth - mapColumnsCount * this.squareSize) / 2;
     } else {
       // Portrait, the width of the map stays the same.
-      this.squareSize = mapWidth / mapWidthPercentage;
-      this.UpPadding = (mapHeight - mapHeightPercentage * this.squareSize) / 2;
+      this.squareSize = mapWidth / mapColumnsCount;
+      this.UpPadding = (mapHeight - mapRowsCount * this.squareSize) / 2;
     }
     this.squaresDistance = this.squareSize * (1 + this.offsetPercentage);
   }
@@ -82,14 +70,14 @@ class DashMapInformation {
 /**
  * @class This class is responsible for rendering the map.
  */
-export default class DashMapController extends CanvasController {
+export default class BeaconsMapController extends CanvasController {
   constructor(mapArray, beacon_sizes) {
     super(beacon_sizes);
     this.mapArray = mapArray;
     this.pulse = 15;
     this.max = 2.5;
     this.size = 1;
-    this.information = new DashMapInformation();
+    this.information = new MapInformation();
     this.routerCount = this.calcRouter();
   }
 
@@ -102,9 +90,8 @@ export default class DashMapController extends CanvasController {
     return starCount;
   }
 
-  updateJson(newJsonData) {
-    // wrong data is passed, the bug is here
-    this.mapArray = newJsonData;
+  updateJson(newMapArray) {
+    this.mapArray = newMapArray;
     this.routerCount = this.calcRouter();
   }
 

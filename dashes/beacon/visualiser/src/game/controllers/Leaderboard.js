@@ -1,21 +1,7 @@
-export default class DashLeaderboard {
+export default class LeaderboardController {
   constructor(gameData, leaderboard) {
     this.gameData = gameData;
     this.leaderboard = leaderboard;
-  }
-
-  compareGroups(groupB, groupA) {
-    const statusOrder = { valid: 0, timeout: 1, invalid: 2 };
-    if (statusOrder[groupA.status] > statusOrder[groupB.status]) {
-      return -1;
-    } else if (statusOrder[groupA.status] < statusOrder[groupB.status]) {
-      return 1;
-    } else if (groupA.score > groupB.score) {
-      return -1;
-    } else if (groupA.score < groupB.score) {
-      return 1;
-    }
-    return groupB.name.localeCompare(groupA.name);
   }
 
   showCurrentPoints() {
@@ -29,7 +15,7 @@ export default class DashLeaderboard {
   renderDefaultLeaderboard() {
     this.leaderboard.hideCurrentPoints();
     this.leaderboard.loadRanking(
-      this.gameData.groups.map((group, index) => {
+      this.gameData.groups.map((group, _) => {
         return {
           name: group.name,
           total_score: 0,
