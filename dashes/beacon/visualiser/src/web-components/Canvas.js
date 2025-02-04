@@ -1,7 +1,7 @@
 /**
- * @class This is an custom HTML element that contains a resizable p5 canvas
+ * @class This is a custom HTML element that contains a resizable p5 canvas
  */
-export default class P5Canvas extends HTMLElement {
+export default class P5CanvasComponent extends HTMLElement {
   constructor() {
     super();
     this.canvas = null;
@@ -27,13 +27,17 @@ export default class P5Canvas extends HTMLElement {
   }
 
   resizeCallback() {
-    if (this.controller == null) return;
+    if (this.controller == null) {
+      return;
+    }
     this.controller.onRedraw();
     this.controller.p5.resizeCanvas(this.clientWidth, this.clientHeight);
   }
 
   setController(controller) {
-    if (controller == this.controller) return;
+    if (controller === this.controller) {
+      return;
+    }
     if (this.controller != null) {
       this.controller.p5.remove();
     }

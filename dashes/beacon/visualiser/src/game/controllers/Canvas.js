@@ -1,7 +1,7 @@
 /**
  * @brief This class is a wrapper for p5.js so that it can be used to pass to
  * the ResizableP5Canvas custom HTML element. To use this class, simply extend
- * it and implement the setup() and draw() methods. Examlpe can be found in
+ * it and implement the setup() and draw() methods. Example can be found in
  * the visualizer/src/renderer folder.
  */
 export default class P5CanvasController {
@@ -22,7 +22,9 @@ export default class P5CanvasController {
   }
 
   calcRouter() {
+    // wrong this.json in setup
     let starCount = 0;
+    console.log("this.json", this.json);
     for (let row of this.json) {
       starCount += row.split("*").length - 1;
     }
@@ -30,6 +32,8 @@ export default class P5CanvasController {
   }
 
   updateJson(newJsonData) {
+    // wrong data is passed, the bug is here
+    console.log("newJsonData", newJsonData);
     this.json = newJsonData;
     this.routerCount = this.calcRouter();
   }
@@ -38,9 +42,9 @@ export default class P5CanvasController {
     this.beacon_sizes = newBeacons;
   }
 
-  registerCanvas(resizablep5Canvas) {
-    this.p5Canvas = resizablep5Canvas.canvas;
-    resizablep5Canvas.setController(this);
+  registerCanvas(resizableCanvas) {
+    this.p5Canvas = resizableCanvas.canvas;
+    resizableCanvas.setController(this);
   }
 
   hasRegisteredCanvas() {

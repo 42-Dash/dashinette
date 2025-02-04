@@ -1,5 +1,5 @@
 /**
- * @class This is an custom HTML element that contains a resizable p5 canvas
+ * @class This is a custom HTML element that contains a resizable p5 canvas
  */
 export default class P5CanvasContainer extends HTMLElement {
   constructor() {
@@ -21,7 +21,7 @@ export default class P5CanvasContainer extends HTMLElement {
     // This redraws the canvases within when new canvases are added.
     this.mutationObserver = new MutationObserver((mutations) => {
       mutations[0].target.children.forEach((element) =>
-        element.resizeCallback()
+        element.resizeCallback(),
       );
     });
     this.resizeObserver.observe(this);
