@@ -56,7 +56,7 @@ export default class DashLeaderboard extends HTMLElement {
     this.shadow.adoptedStyleSheets = [cssSheet];
     const fragment = document.createDocumentFragment();
     fragment.appendChild(
-      document.getElementById("ranking-header").cloneNode(true).content
+      document.getElementById("ranking-header").cloneNode(true).content,
     );
     this.shadow.appendChild(fragment);
 
@@ -82,7 +82,7 @@ export default class DashLeaderboard extends HTMLElement {
 
     for (const group of rankedGroups) {
       const existingElement = this.shadow.getElementById(
-        "group_name_" + group.name
+        "group_name_" + group.name,
       );
       if (existingElement == null) {
         const groupElement = document.createDocumentFragment();
@@ -99,7 +99,7 @@ export default class DashLeaderboard extends HTMLElement {
       } else {
         const rankingEntry = existingElement;
         const animationInfo = this.animationInfos.find(
-          (info) => info.rankingEntry == rankingEntry
+          (info) => info.rankingEntry === rankingEntry,
         );
         this.#loadGroupInfo(group, rankingEntry);
         this.shadow.appendChild(rankingEntry);
@@ -141,12 +141,10 @@ export default class DashLeaderboard extends HTMLElement {
     }, ${group.colour.b * isValid})`;
     rankingEntry.id = "group_name_" + group.name;
     rankingEntry.querySelector(".name").textContent = group.name;
-    rankingEntry.querySelector(
-      ".total_score"
-    ).textContent = `${group.total_score}`;
-    rankingEntry.querySelector(
-      ".current_points"
-    ).textContent = `+${group.current_points}`;
+    rankingEntry.querySelector(".total_score").textContent =
+      `${group.total_score}`;
+    rankingEntry.querySelector(".current_points").textContent =
+      `+${group.current_points}`;
   }
 
   #resize() {

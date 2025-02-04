@@ -1,7 +1,7 @@
 /**
  * @class This is a custom HTML element that contains a resizable p5 canvas
  */
-export default class P5CanvasComponent extends HTMLElement {
+export default class Canvas extends HTMLElement {
   constructor() {
     super();
     this.canvas = null;

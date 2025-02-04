@@ -1,4 +1,4 @@
-import P5CanvasController from "./p5Canvas.js";
+import CanvasController from "./Canvas.js";
 
 /**
  * @class This class encapsulate all the location information that a map holds.
@@ -82,10 +82,9 @@ class DashMapInformation {
 /**
  * @class This class is responsible for rendering the map.
  */
-export default class DashMapController extends P5CanvasController {
-  constructor(jsonMap, league, beacon_sizes) {
+export default class DashMapController extends CanvasController {
+  constructor(jsonMap, beacon_sizes) {
     super(jsonMap, beacon_sizes);
-    this.league = league;
     this.pulse = 15;
     this.max = 2.5;
     this.size = 1;
@@ -108,36 +107,15 @@ export default class DashMapController extends P5CanvasController {
     this.p5.noStroke();
 
     this.p5.fill(0);
-    if (this.league == "Rookie League") {
-      this.#drawRookieMap(this.offsetPercentage);
-    } else {
-      this.#drawMap(this.offsetPercentage);
-    }
+    this.#drawRookieMap(this.offsetPercentage);
   }
 
   get mapColumnsCount() {
-    if (this.league == "Rookie League") {
-      return this.json[0].length;
-    } else {
-      return this.json[0].length / 2;
-    }
+    return this.json[0].length;
   }
 
   get mapRowsCount() {
     return this.json.length;
-  }
-
-  get startPoint() {
-    let mapType = this.league == "Rookie League" ? 1 : 2;
-
-    for (let i = 0; i < this.mapRowsCount; i++) {
-      for (let j = 0; j < this.mapColumnsCount; j++) {
-        if (this.json[i][j * mapType] == "M") {
-          return this.information.squareCenterCoordinates(i, j);
-        }
-      }
-    }
-    return { x: 0, y: 0 };
   }
 
   get beacons() {
@@ -149,22 +127,6 @@ export default class DashMapController extends P5CanvasController {
    */
   set offsetPercentage(value) {
     this.information.offsetPercentage = value;
-  }
-
-  #calcTileColour(x, y) {
-    let luminance = parseInt(this.json[y][x * 2]);
-
-    let color = [255, 240, 255];
-
-    const luminanceValue = luminance / 8;
-    if (!isNaN(luminanceValue)) {
-      color = [
-        color[0] * luminanceValue,
-        color[1] * luminanceValue,
-        color[2] * luminanceValue,
-      ];
-    }
-    return color;
   }
 
   #calcStrokeWeight() {
@@ -192,7 +154,7 @@ export default class DashMapController extends P5CanvasController {
       this.mapRowsCount,
       this.mapColumnsCount,
       this.width,
-      this.height
+      this.height,
     );
 
     let pos = this.information.squareCoordinates(0, 0);
@@ -200,7 +162,7 @@ export default class DashMapController extends P5CanvasController {
       pos.x,
       pos.y,
       this.information.squareSize * this.mapColumnsCount,
-      this.information.squareSize * this.mapRowsCount
+      this.information.squareSize * this.mapRowsCount,
     );
 
     let strokeWeight = this.#calcStrokeWeight();
@@ -209,43 +171,7 @@ export default class DashMapController extends P5CanvasController {
     for (let i = 0; i < this.mapRowsCount; i++) {
       for (let j = 0; j < this.mapColumnsCount; j++) {
         const value = this.json[i][j];
-        if (value == "*") {
-          const { x, y } = this.information.squareCenterCoordinates(i, j);
-          this.#drawBeacons(x, y, strokeWeight);
-        }
-      }
-    }
-  }
-
-  #drawMap() {
-    this.information.refresh(
-      this.mapRowsCount,
-      this.mapColumnsCount,
-      this.width,
-      this.height
-    );
-
-    for (let i = 0; i < this.mapRowsCount; i++) {
-      for (let j = 0; j < this.mapColumnsCount; j++) {
-        this.tileColour = this.#calcTileColour(j, i);
-        this.p5.fill(this.tileColour);
-
-        const { x, y } = this.information.squareCoordinates(i, j);
-        this.p5.rect(
-          x,
-          y,
-          this.information.squareSize,
-          this.information.squareSize
-        );
-      }
-    }
-
-    let strokeWeight = this.#calcStrokeWeight();
-    this.p5.fill(255, 255, 255, 255 * (this.max - this.size));
-    for (let i = 0; i < this.mapRowsCount; i++) {
-      for (let j = 0; j < this.mapColumnsCount; j++) {
-        const value = this.json[i][j * 2 + 1];
-        if (value == "*") {
+        if (value === "*") {
           const { x, y } = this.information.squareCenterCoordinates(i, j);
           this.#drawBeacons(x, y, strokeWeight);
         }

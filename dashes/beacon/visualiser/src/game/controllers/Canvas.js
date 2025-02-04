@@ -4,7 +4,7 @@
  * it and implement the setup() and draw() methods. Example can be found in
  * the visualizer/src/renderer folder.
  */
-export default class P5CanvasController {
+export default class CanvasController {
   constructor(jsonData, beacon_sizes) {
     this.p5Canvas = null;
     this.p5 = null;

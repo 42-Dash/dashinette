@@ -9,8 +9,7 @@ export default class GameController {
     this.gameData = gameData;
     this.dashMapController = new DashMapController(
       gameData.map,
-      gameData.jsonData.league,
-      gameData.beacons
+      gameData.beacons,
     );
     this.dashPathsQueue = new DashPathsQueueController(ui.container);
     this.dashLeaderboard = new DashLeaderboard(gameData, ui.leaderboard);
@@ -56,11 +55,12 @@ export default class GameController {
 
   #dashPathControllerAt(groupIndex) {
     let dashPath;
+
     if (!this.dashPathControllers.has(groupIndex)) {
       dashPath = new DashPathController(
-        this.gameData.path(groupIndex),
+        this.gameData.output(groupIndex),
         this.dashMapController,
-        this.gameData.color(groupIndex)
+        this.gameData.color(groupIndex),
       );
       this.dashPathControllers.set(groupIndex, dashPath);
     } else {

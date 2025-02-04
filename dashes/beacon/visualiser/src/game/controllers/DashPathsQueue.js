@@ -10,8 +10,9 @@ export default class DashPathsQueueController {
    * @param {DashPathController} path
    */
   addToRenderQueue(path) {
-    if (this.renderQueue[this.currentIndex] == undefined) {
-      const pathElement = document.createElement("p5-canvas");
+    console.log();
+    if (this.renderQueue[this.currentIndex] === undefined) {
+      const pathElement = document.createElement("canvas-test");
       this.container.appendChild(pathElement);
       path.registerCanvas(pathElement);
       this.renderQueue[this.currentIndex] = {
@@ -28,6 +29,7 @@ export default class DashPathsQueueController {
 
   draw(interval = 500, additional_interval = 100) {
     let promise = Promise.resolve();
+
     this.renderQueue.forEach((pathElement, index) => {
       promise = promise.then(() => {
         switch (pathElement.status) {
@@ -35,6 +37,7 @@ export default class DashPathsQueueController {
             pathElement.controller.start();
             break;
           case "requires-rerendering":
+            console.log("passed array");
             pathElement.controller.updateJson(pathElement.data.json);
             pathElement.controller.start();
             break;
@@ -67,14 +70,16 @@ export default class DashPathsQueueController {
 
   animationEnded() {
     for (const element of this.renderQueue) {
-      if (element.controller.started == true) return false;
+      if (element.controller.started === true) {
+        return false;
+      }
     }
     return true;
   }
 
   removeRenderedPaths() {
     this.renderQueue.reduceRight((_, pathElement, index) => {
-      if (pathElement.status == "rendered") {
+      if (pathElement.status === "rendered") {
         this.renderQueue.splice(index, 1);
         this.container.removeChild(pathElement.element);
       }

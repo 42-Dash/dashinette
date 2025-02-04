@@ -11,16 +11,10 @@ export default class GameData {
     });
   }
 
-  /**
-   * @param {number} level The level to set.
-   */
   set level(level) {
     this._level = level % this.levelCount;
   }
 
-  /**
-   * @brief Returns the current level.
-   */
   get level() {
     return this._level;
   }
@@ -29,12 +23,9 @@ export default class GameData {
     return this.jsonData.levels[level].lvl;
   }
 
+  // There is only one map in tag maps
   mapAt(level) {
-    return this.jsonData.levels[level].map;
-  }
-
-  levelTitleAt(level) {
-    return this.jsonData.levels[level].lvl;
+    return this.jsonData.levels[level].maps[0];
   }
 
   groupCountAt(level) {
@@ -49,24 +40,14 @@ export default class GameData {
     return this.jsonData.levels[level].groups[groupIndex];
   }
 
-  pathAt(level, groupIndex) {
-    return this.groupAt(level, groupIndex).path;
-  }
-
   beaconsAt(level) {
     return this.jsonData.levels[level].beacons;
   }
 
-  /**
-   * @brief Returns the current level title.
-   */
   get levelTitle() {
     return this.levelTitleAt(this.level);
   }
 
-  /**
-   * @brief Returns the map of the current level.
-   */
   get map() {
     return this.mapAt(this.level);
   }
@@ -87,36 +68,30 @@ export default class GameData {
     return this.beaconsAt(this.level);
   }
 
-  /**
-   * @brief Returns the group of the current level.
-   */
   group(groupIndex) {
     return this.jsonData.levels[this.level].groups[groupIndex];
   }
 
-  /**
-   * @brief Returns the path of the current level.
-   */
-  path(groupIndex) {
-    return this.group(groupIndex).path;
+  output(groupIndex) {
+    return this.group(groupIndex).output;
   }
 
   color(groupIndex) {
-    const name = this.group(groupIndex).name;
-    return this.colorByGroupName(name);
+    return this.colorByGroupName(this.group(groupIndex).name);
   }
 
   colorByGroupName(groupName) {
-    if (!this.colors.has(groupName))
+    if (!this.colors.has(groupName)) {
       this.colors.set(groupName, this.colorGenerator.next());
+    }
     return this.colors.get(groupName);
   }
 
   isLastLevel() {
-    return this.level == this.levelCount - 1;
+    return this.level === this.levelCount - 1;
   }
 
   isFirstLevel() {
-    return this.level == 0;
+    return this.level === 0;
   }
 }

@@ -37,12 +37,12 @@ export default class DashLeaderboard {
           status: "valid",
           colour: this.gameData.colorByGroupName(group.name),
         };
-      })
+      }),
     );
   }
 
   renderLeaderboard() {
-    const ranking = new Array();
+    const ranking = [];
 
     this.gameData.groups.forEach((group, index) => {
       let total_score = 0;

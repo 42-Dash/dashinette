@@ -1,8 +1,9 @@
-import P5CanvasController from "./p5Canvas.js";
+import CanvasController from "./Canvas.js";
 
-export default class DashPathController extends P5CanvasController {
+export default class DashPathController extends CanvasController {
   constructor(jsonPath, dashMap, color) {
     super(jsonPath);
+    console.log("wrong constructor", jsonPath);
     this.dashMap = dashMap;
     this.color = color;
 
@@ -10,15 +11,16 @@ export default class DashPathController extends P5CanvasController {
     this.circles = [];
     this.started = false;
 
-    let trimmed = this.json.replace(/\|$/, "");
-    const coordinatePairs = trimmed.split("|");
-    coordinatePairs.forEach((pair) => {
-      const [x, y] = pair.split(",").map(Number);
-      this.circles.push({
-        x: x,
-        y: y,
+    this.json
+      .replace(/\|$/, "")
+      .split("|")
+      .forEach((pair) => {
+        const [x, y] = pair.split(",").map(Number);
+        this.circles.push({
+          x: x,
+          y: y,
+        });
       });
-    });
 
     this.circle_sizes = new Array(this.circles.length).fill(1);
   }
@@ -38,7 +40,7 @@ export default class DashPathController extends P5CanvasController {
   }
 
   isSmaller(array1, array2) {
-    if (array1.length != array2.length) {
+    if (array1.length !== array2.length) {
       return false;
     }
 
@@ -84,9 +86,10 @@ export default class DashPathController extends P5CanvasController {
 
   get beacons() {
     return this.dashMap.beacons.map(
-      (element) => element * this.dashMap.information.squareSize
+      (element) => element * this.dashMap.information.squareSize,
     );
   }
+
   get squaresDistance() {
     return this.dashMap.information.squaresDistance;
   }

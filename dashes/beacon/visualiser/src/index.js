@@ -1,8 +1,8 @@
-import P5Canvas from "./web-components/P5Canvas.js";
-import P5CanvasContainer from "./web-components/P5CanvasContainer.js";
+import CanvasContainer from "./web-components/CanvasContainer.js";
 import DashLogo from "./web-components/DashLogo.js";
 import DashLeaderboard from "./web-components/DashLeaderboard.js";
 import Game from "./game.js";
+import Canvas from "./web-components/Canvas.js";
 
 // load the json file
 async function loadJSON(filename) {
@@ -11,14 +11,14 @@ async function loadJSON(filename) {
 
 function main(jsonData) {
   const game = new Game(jsonData, {
-    container: document.getElementById("canvases"),
+    container: document.getElementById("canvas-container"),
     leaderboard: document.getElementById("ranking"),
     levelLabelElement: document.getElementById("level-text"),
     nextLevelButton: document.getElementById("next-level-btn"),
     blockingScreen: document.getElementById("blocking-screen"),
   });
 
-  if (refreshHashLevel(game, window.location.hash) == 0) {
+  if (refreshHashLevel(game, window.location.hash) === 0) {
     game.coverMap();
   }
 
@@ -27,33 +27,35 @@ function main(jsonData) {
     .addEventListener("click", () => game.nextLevel());
   document
     .getElementById("start-btn")
-    .addEventListener("click", () => game.start());
+    .addEventListener("click", () => game.startAnimation());
 
   window.addEventListener("hashchange", () => {
-    if (refreshHashLevel(game, window.location.hash) == 0) {
+    if (refreshHashLevel(game, window.location.hash) === 0) {
       game.coverMap();
     }
   });
 }
 
-// sets the level of the game based on the hash of the URL and gets the level, wtf
+// sets the level of the game based on the hash of the URL and gets the level
 function refreshHashLevel(game, hash) {
   const level = parseInt(hash.substring(1));
+
   if (!isNaN(level)) {
     game.setLevel(level);
-    return game.data.level;
+    return game.gameData.level;
   }
-  return game.data.level;
+  return game.gameData.level;
 }
 
 // register the custom element
-customElements.define("p5-canvas", P5Canvas);
-customElements.define("p5-canvas-container", P5CanvasContainer);
+customElements.define("canvas-test", Canvas);
+customElements.define("canvas-container", CanvasContainer);
 customElements.define("dash-logo", DashLogo);
 customElements.define("dash-leaderboard", DashLeaderboard);
+
 // load the json file and start the main function when the DOM is loaded
 window.addEventListener("DOMContentLoaded", () => {
-  loadJSON("results_open.json")
+  loadJSON("results.json")
     .then(main)
     .catch((error) => console.error(error));
 });

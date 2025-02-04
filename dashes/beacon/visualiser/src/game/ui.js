@@ -15,7 +15,7 @@ export default class GameUI {
   }
 
   createMap(controller) {
-    this.mapElement = document.createElement("p5-canvas");
+    this.mapElement = document.createElement("canvas-test");
     this.mapElement.setAttribute("id", "map-canvas");
     this.container.appendChild(this.mapElement);
     controller.registerCanvas(this.mapElement);

@@ -12,7 +12,7 @@ export default class DashLogo extends HTMLElement {
       :host > svg {
         object-fit: contain;
         width: 100%;
-        heihgt: 100%;
+        height: 100%;
       }
 
       .borders {
