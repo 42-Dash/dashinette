@@ -1,10 +1,10 @@
 import CanvasContainer from "./web-components/CanvasContainer.js";
-import DashLogo from "./web-components/DashLogo.js";
-import DashLeaderboard from "./web-components/DashLeaderboard.js";
+import Logo from "./web-components/Logo.js";
+import Leaderboard from "./web-components/Leaderboard.js";
 import Game from "./game.js";
 import Canvas from "./web-components/Canvas.js";
 
-export const CANVAS_ELEMENT = "canvas-test";
+export const CANVAS_RENDER_ELEMENT = "render-canvas";
 
 // load the json file
 async function loadJSON(filename) {
@@ -44,16 +44,15 @@ function refreshHashLevel(game, hash) {
 
   if (!isNaN(level)) {
     game.setLevel(level);
-    return game.gameData.level;
   }
   return game.gameData.level;
 }
 
 // register the custom element
-customElements.define(CANVAS_ELEMENT, Canvas);
+customElements.define(CANVAS_RENDER_ELEMENT, Canvas);
 customElements.define("canvas-container", CanvasContainer);
-customElements.define("dash-logo", DashLogo);
-customElements.define("dash-leaderboard", DashLeaderboard);
+customElements.define("dash-logo", Logo);
+customElements.define("dash-leaderboard", Leaderboard);
 
 // load the json file and start the main function when the DOM is loaded
 window.addEventListener("DOMContentLoaded", () => {

@@ -1,4 +1,4 @@
-export default class DashLogo extends HTMLElement {
+export default class Logo extends HTMLElement {
   static observedAttributes = ["left-color", "right-color"];
 
   constructor() {

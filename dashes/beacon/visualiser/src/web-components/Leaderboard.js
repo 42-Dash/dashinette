@@ -1,4 +1,4 @@
-export default class DashLeaderboard extends HTMLElement {
+export default class Leaderboard extends HTMLElement {
   constructor() {
     super();
     this.animationInfos = [];

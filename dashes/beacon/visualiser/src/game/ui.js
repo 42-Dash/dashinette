@@ -1,4 +1,4 @@
-import { CANVAS_ELEMENT } from "../index.js";
+import { CANVAS_RENDER_ELEMENT } from "../index.js";
 
 export default class GameUI {
   constructor({
@@ -17,7 +17,7 @@ export default class GameUI {
   }
 
   createMap(controller) {
-    this.mapElement = document.createElement(CANVAS_ELEMENT);
+    this.mapElement = document.createElement(CANVAS_RENDER_ELEMENT);
     this.mapElement.setAttribute("id", "map-canvas");
     this.container.appendChild(this.mapElement);
     controller.registerCanvas(this.mapElement);

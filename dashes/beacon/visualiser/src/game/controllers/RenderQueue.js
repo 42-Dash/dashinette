@@ -1,4 +1,4 @@
-import { CANVAS_ELEMENT } from "../../index.js";
+import { CANVAS_RENDER_ELEMENT } from "../../index.js";
 
 export default class RenderQueueController {
   constructor(container) {
@@ -14,7 +14,7 @@ export default class RenderQueueController {
   addToRenderQueue(path) {
     console.log();
     if (this.renderQueue[this.currentIndex] === undefined) {
-      const pathElement = document.createElement(CANVAS_ELEMENT);
+      const pathElement = document.createElement(CANVAS_RENDER_ELEMENT);
       this.container.appendChild(pathElement);
       path.registerCanvas(pathElement);
       this.renderQueue[this.currentIndex] = {
