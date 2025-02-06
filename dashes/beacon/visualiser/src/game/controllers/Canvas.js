@@ -9,7 +9,6 @@ export default class CanvasController {
     this.p5Canvas = null;
     this.p5 = null;
     this.beacon_sizes = beacon_sizes;
-    this.unit = 1;
   }
 
   get width() {

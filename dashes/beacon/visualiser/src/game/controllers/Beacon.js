@@ -65,16 +65,19 @@ export default class BeaconController extends CanvasController {
       );
       this.p5.fill(this.color.r, this.color.g, this.color.b, 50);
 
-      const radius =
-        this.circle_sizes[index] +
-        // this.dashMap.beacons[index] +
-        this.squaresDistance / 2;
-
+      const radius = this.circle_sizes[index] + this.squaresDistance / 2;
+      const [left, top, right, bottom] = this.#calculateBoundaries(pos, radius);
       this.p5.strokeWeight(strokeWeight / 4);
-      this.p5.rect(pos.x - radius, pos.y - radius, radius * 2, radius * 2, 5);
+      this.p5.rect(
+        left,
+        top,
+        right - left,
+        bottom - top,
+        this.dashMap.information.frameSize,
+      );
 
-      this.p5.strokeWeight(strokeWeight);
-      this.p5.circle(pos.x, pos.y, 5);
+      this.p5.strokeWeight(this.#calculateBeaconDiameter());
+      this.p5.circle(pos.x, pos.y, 1);
 
       if (this.circle_sizes[index] < this.beacons[index]) {
         this.circle_sizes[index] += this.beacons[index] / this.growthSpeed;
@@ -85,6 +88,25 @@ export default class BeaconController extends CanvasController {
       this.p5.noLoop();
       this.started = false;
     }
+  }
+
+  #calculateBeaconDiameter() {
+    return Math.min(this.dashMap.information.squareSize / 2, 10);
+  }
+
+  #calculateBoundaries(pos, radius) {
+    const {
+      left: screenLeftBorder,
+      right: screenRightBorder,
+      top: screenTopBorder,
+      bottom: screenBottomBorder,
+    } = this.dashMap.boardLimits();
+
+    const left = Math.max(pos.x - radius, screenLeftBorder);
+    const top = Math.max(pos.y - radius, screenTopBorder);
+    const right = Math.min(pos.x + radius, screenRightBorder);
+    const bottom = Math.min(pos.y + radius, screenBottomBorder);
+    return [left, top, right, bottom];
   }
 
   onRedraw() {

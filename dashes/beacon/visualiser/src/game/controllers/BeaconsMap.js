@@ -14,7 +14,8 @@ class MapInformation {
     /** @property {number} leftPadding The left padding of the map in pixel */
     this.leftPadding = 0;
     /** @property {number} UpPadding The up padding of the map in pixel */
-    this.UpPadding = 0;
+    this.upPadding = 0;
+    this.frameSize = 2;
   }
 
   /**
@@ -25,7 +26,7 @@ class MapInformation {
     const mapAspectRatio = mapColumnsCount / mapRowsCount;
     const screenAspectRatio = mapWidth / mapHeight;
     this.leftPadding = 0;
-    this.UpPadding = 0;
+    this.upPadding = 0;
     if (mapAspectRatio < screenAspectRatio) {
       // Landscape, the height of the map stays the same.
       this.squareSize = mapHeight / mapRowsCount;
@@ -33,7 +34,7 @@ class MapInformation {
     } else {
       // Portrait, the width of the map stays the same.
       this.squareSize = mapWidth / mapColumnsCount;
-      this.UpPadding = (mapHeight - mapRowsCount * this.squareSize) / 2;
+      this.upPadding = (mapHeight - mapRowsCount * this.squareSize) / 2;
     }
     this.squaresDistance = this.squareSize * (1 + this.offsetPercentage);
   }
@@ -48,7 +49,7 @@ class MapInformation {
     const offsetPercentagePlusOne = 1 + this.offsetPercentage;
     return {
       x: j * offsetPercentagePlusOne * this.squareSize + this.leftPadding,
-      y: i * offsetPercentagePlusOne * this.squareSize + this.UpPadding,
+      y: i * offsetPercentagePlusOne * this.squareSize + this.upPadding,
     };
   }
 
@@ -146,6 +147,10 @@ export default class BeaconsMapController extends CanvasController {
       this.height,
     );
 
+    this.p5.strokeWeight(this.information.frameSize);
+    this.p5.stroke("white");
+    this.p5.fill(1);
+
     let pos = this.information.squareCoordinates(0, 0);
     this.p5.rect(
       pos.x,
@@ -167,5 +172,18 @@ export default class BeaconsMapController extends CanvasController {
         }
       }
     }
+  }
+
+  boardLimits() {
+    return {
+      left: this.information.leftPadding,
+      right:
+        this.information.leftPadding +
+        this.information.squareSize * this.mapColumnsCount,
+      top: this.information.upPadding,
+      bottom:
+        this.information.upPadding +
+        this.information.squareSize * this.mapRowsCount,
+    };
   }
 }
