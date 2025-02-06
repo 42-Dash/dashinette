@@ -1,27 +1,25 @@
 import CanvasController from "./Canvas.js";
 
 export default class BeaconController extends CanvasController {
-  constructor(jsonPath, dashMap, color) {
+  constructor(path, dashMap, color) {
     super();
     this.dashMap = dashMap;
     this.color = color;
-    this.growthSpeed = 20;
+    this.growthSpeed = 50;
     this.circles = [];
     this.started = false;
+    this.#initPoints(path);
+    this.circle_sizes = new Array(this.circles.length).fill(1);
+  }
 
-    this.path = jsonPath;
-    this.path
+  #initPoints(path) {
+    path
       .replace(/\|$/, "")
       .split("|")
       .forEach((pair) => {
         const [x, y] = pair.split(",").map(Number);
-        this.circles.push({
-          x: x,
-          y: y,
-        });
+        this.circles.push({ x: x, y: y });
       });
-
-    this.circle_sizes = new Array(this.circles.length).fill(1);
   }
 
   setup() {
@@ -60,13 +58,24 @@ export default class BeaconController extends CanvasController {
     this.p5.stroke(this.color.r, this.color.g, this.color.b);
 
     let strokeWeight = this.calcStrokeWeight();
-    this.circles.forEach((out, index) => {
-      let pos = this.dashMap.information.squareCenterCoordinates(out.x, out.y);
+    this.circles.forEach((circle, index) => {
+      let pos = this.dashMap.information.squareCenterCoordinates(
+        circle.x,
+        circle.y,
+      );
       this.p5.fill(this.color.r, this.color.g, this.color.b, 50);
+
+      const radius =
+        this.circle_sizes[index] +
+        // this.dashMap.beacons[index] +
+        this.squaresDistance / 2;
+
       this.p5.strokeWeight(strokeWeight / 4);
-      this.p5.circle(pos.x, pos.y, this.circle_sizes[index]);
+      this.p5.rect(pos.x - radius, pos.y - radius, radius * 2, radius * 2, 5);
+
       this.p5.strokeWeight(strokeWeight);
       this.p5.circle(pos.x, pos.y, 5);
+
       if (this.circle_sizes[index] < this.beacons[index]) {
         this.circle_sizes[index] += this.beacons[index] / this.growthSpeed;
       }

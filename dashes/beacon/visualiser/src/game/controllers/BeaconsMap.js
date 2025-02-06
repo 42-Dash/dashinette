@@ -78,21 +78,10 @@ export default class BeaconsMapController extends CanvasController {
     this.max = 2.5;
     this.size = 1;
     this.information = new MapInformation();
-    this.routerCount = this.calcRouter();
-  }
-
-  calcRouter() {
-    // wrong this.json in setup
-    let starCount = 0;
-    for (let row of this.mapArray) {
-      starCount += row.split("*").length - 1;
-    }
-    return starCount;
   }
 
   updateJson(newMapArray) {
     this.mapArray = newMapArray;
-    this.routerCount = this.calcRouter();
   }
 
   setup() {
@@ -111,7 +100,7 @@ export default class BeaconsMapController extends CanvasController {
     this.p5.noStroke();
 
     this.p5.fill(0);
-    this.#drawRookieMap(this.offsetPercentage);
+    this.#drawMap();
   }
 
   get mapColumnsCount() {
@@ -134,26 +123,22 @@ export default class BeaconsMapController extends CanvasController {
   }
 
   #calcStrokeWeight() {
-    return this.information.squareSize / 2 > 10
-      ? 10
-      : this.information.squareSize / 2;
+    return Math.min(this.information.squareSize / 2, 10);
   }
 
   #pulse() {
     return this.#calcStrokeWeight() * this.size;
   }
 
-  #drawBeacons(x, y, strokeWeight) {
+  #drawBeacons(x, y) {
     this.p5.stroke("white");
-    this.p5.strokeWeight(strokeWeight);
     this.p5.point(x, y);
-    if (this.routerCount < 50) {
-      this.p5.noStroke();
-      this.p5.circle(x, y, this.#pulse());
-    }
+
+    this.p5.noStroke();
+    this.p5.circle(x, y, this.#pulse());
   }
 
-  #drawRookieMap() {
+  #drawMap() {
     this.information.refresh(
       this.mapRowsCount,
       this.mapColumnsCount,
@@ -172,6 +157,7 @@ export default class BeaconsMapController extends CanvasController {
     let strokeWeight = this.#calcStrokeWeight();
     this.p5.strokeWeight(strokeWeight);
     this.p5.fill(255, 255, 255, 255 * (this.max - this.size));
+
     for (let i = 0; i < this.mapRowsCount; i++) {
       for (let j = 0; j < this.mapColumnsCount; j++) {
         const value = this.mapArray[i][j];
