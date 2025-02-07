@@ -9,7 +9,7 @@
 # include <map>
 
 // defines the number of tries to find a random solution
-# define TRIES 2
+# define TRIES 50
 
 using namespace std;
 
