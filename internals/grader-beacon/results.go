@@ -19,7 +19,7 @@ type Group struct {
 
 type Level struct {
 	Level   string     `json:"lvl"`
-	Beacons string     `json:"beacons"`
+	Beacons []int      `json:"beacons"`
 	Maps    [][]string `json:"maps"`
 	Groups  []Group    `json:"groups"`
 }
@@ -67,6 +67,19 @@ func readFiles(filenames []string) [][]string {
 	return res
 }
 
+func splitNumbers(s string) []int {
+	var res []int
+
+	for _, num := range strings.Split(s, " ") {
+		n, err := strconv.Atoi(num)
+		if err != nil { // should never happen
+			panic(err)
+		}
+		res = append(res, n)
+	}
+	return res
+}
+
 func initResults(league string, traces map[string]Traces) Results {
 	results := Results{
 		League: league,
@@ -76,13 +89,22 @@ func initResults(league string, traces map[string]Traces) Results {
 	for _, level := range getFirstValue(traces).Grades {
 		results.Levels = append(results.Levels, Level{
 			Level:   fmt.Sprintf("Level %d", extractLevel(level.StageMaps[0])),
-			Beacons: level.Beacons,
+			Beacons: splitNumbers(level.Beacons),
 			Maps:    readFiles(level.StageMaps),
 			Groups:  make([]Group, 0, len(traces)),
 		})
 	}
 
 	return results
+}
+
+func mapStatus(status string) string {
+	switch status {
+	case "OK":
+		return "valid"
+	default:
+		return "invalid"
+	}
 }
 
 func StoreResults(traces map[string]Traces, league, filename string) error {
@@ -92,7 +114,7 @@ func StoreResults(traces map[string]Traces, league, filename string) error {
 		for i, level := range teamResult.Grades {
 			results.Levels[i].Groups = append(results.Levels[i].Groups, Group{
 				Name:   teamName,
-				Status: level.Status,
+				Status: mapStatus(level.Status),
 				Score:  level.Cost,
 				Output: level.Output,
 			})

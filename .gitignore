@@ -9,6 +9,7 @@
 # Executables and object files
 bin
 dashinette
+node_modules/
 dashes/marvin/**/marvin
 dashes/marvin/**/objs/
 *.o
@@ -27,6 +28,7 @@ dashes/beacon/repos/*
 
 config/participants.json
 config/maps.json
-open_results.json
 rookie_results.json
+open_results.json
+results.json
 app.log
