@@ -5,7 +5,7 @@
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 		<link rel="icon" href="./images/purple.png" type="image/png">
 		<title>marvin_visualiser</title>
-		<script src="libraries/p5.js"></script>
+		<script src="node_modules/p5/lib/p5.js"></script>
         <script src="src/game.js" type="module"></script>
         <script src="src/game/controller.js" type="module"></script>
         <script src="src/game/controllers/p5Canvas.js" type="module"></script>
@@ -17,7 +17,6 @@
         <script src="src/web-components/P5Canvas.js" type="module"></script>
         <script src="src/web-components/P5CanvasContainer.js" type="module"></script>
         <script src="src/index.js" type="module"></script>
-		<!-- <script src="libraries/p5.sound.js"></script> -->
 		<style>
             :root {
                 --content-padding: 90%;
@@ -35,7 +34,7 @@
                 height: 100vh;
 				background-color: rgb(9, 3, 31);
 			}
-            
+
             nav {
                 width: 100%;
                 height: 10vh;
@@ -45,7 +44,7 @@
             nav * {
                 font-size: 2em;
             }
-            
+
             p5-canvas {
                 position: absolute;
                 top: 0;
@@ -57,7 +56,7 @@
             dash-leaderboard {
                 --font-family: var(--font-family);
             }
-            
+
             button {
                 background-color: rgb(49, 0, 110);
                 color: #fff;
@@ -66,16 +65,16 @@
                 border-radius: 0.5em;
                 cursor: pointer;
             }
-            
+
             button:hover {
                 background-color: #4d0099;
             }
-            
+
             button:disabled {
                 background-color: #999;
                 cursor: not-allowed;
             }
-            
+
             main {
                 display: flex;
                 flex-direction: row;
@@ -89,7 +88,7 @@
             .logo {
                 height: 100%;
             }
-            
+
             .main {
                 display: flex;
                 flex-direction: column;
@@ -97,7 +96,7 @@
                 height: 100vh;
                 width: 100vw;
             }
-            
+
             .navigation-bar {
                 display: flex;
                 flex-direction: row;
@@ -190,4 +189,4 @@
             <p class="total_score">total</p>
         </div>
     </template>
-</html> 
+</html>
