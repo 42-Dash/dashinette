@@ -28,6 +28,7 @@ dashes/beacon/repos/*
 
 config/participants.json
 config/maps.json
-open_results.json
 rookie_results.json
+open_results.json
+results.json
 app.log
