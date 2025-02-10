@@ -8,19 +8,19 @@ export default class Game {
     this.gameUi = new GameUI(ui);
     this.gameController = new GameController(this.gameData, this.gameUi);
     this.#drawMap();
-    this.gameController.dashLeaderboard.renderDefaultLeaderboard();
+    this.gameController.leaderboard.renderDefaultLeaderboard();
   }
 
   startAnimation() {
     this.gameUi.hideBlockingScreen();
     this.gameController.resetAllPaths();
-    this.gameController.dashLeaderboard.hideCurrentPoints();
+    this.gameController.leaderboard.hideCurrentPoints();
     this.#drawPaths();
   }
 
   refresh() {
     this.gameController.resetAllPaths();
-    this.gameController.dashLeaderboard.hideCurrentPoints();
+    this.gameController.leaderboard.hideCurrentPoints();
     this.#drawMap();
   }
 
@@ -40,7 +40,7 @@ export default class Game {
     } else {
       this.gameUi.nextLevelButton.textContent = "Next Level";
       if (this.gameData.isFirstLevel()) {
-        this.gameController.dashLeaderboard.renderDefaultLeaderboard();
+        this.gameController.leaderboard.renderDefaultLeaderboard();
       }
     }
     window.location.hash = `#${this.gameData.level}`;
@@ -68,14 +68,12 @@ export default class Game {
   }
 
   #drawMap() {
-    if (!this.gameController.dashMapController.hasRegisteredCanvas()) {
-      this.gameUi.createMap(this.gameController.dashMapController);
+    if (!this.gameController.mapController.hasRegisteredCanvas()) {
+      this.gameUi.createMap(this.gameController.mapController);
     } else {
-      this.gameController.dashMapController.updateJson(this.gameData.map);
-      this.gameController.dashMapController.updateBeacons(
-        this.gameData.beacons,
-      );
-      this.gameController.dashMapController.draw();
+      this.gameController.mapController.updateJson(this.gameData.map);
+      this.gameController.mapController.updateBeacons(this.gameData.beacons);
+      this.gameController.mapController.draw();
     }
     this.gameUi.refreshLevelLabel(this.gameData);
   }
@@ -84,7 +82,7 @@ export default class Game {
   #drawPaths() {
     this.gameController.loadAllPaths();
     this.gameController.renderAllPaths().then(() => {
-      this.gameController.dashLeaderboard.renderLeaderboard();
+      this.gameController.leaderboard.renderLeaderboard();
     });
   }
 }

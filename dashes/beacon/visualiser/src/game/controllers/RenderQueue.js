@@ -12,7 +12,6 @@ export default class RenderQueueController {
    * @param {BeaconController} path
    */
   addToRenderQueue(path) {
-    console.log();
     if (this.renderQueue[this.currentIndex] === undefined) {
       const pathElement = document.createElement(CANVAS_RENDER_ELEMENT);
       this.container.appendChild(pathElement);
@@ -29,28 +28,23 @@ export default class RenderQueueController {
     this.currentIndex++;
   }
 
-  draw(interval = 500, additional_interval = 100) {
-    let promise = Promise.resolve();
-
-    this.renderQueue.forEach((pathElement, index) => {
-      promise = promise.then(() => {
-        switch (pathElement.status) {
-          case "requires-rendering":
-            pathElement.controller.start();
-            break;
-          case "rendered":
-            pathElement.controller.clear();
-            break;
-          default:
-            break;
-        }
-        pathElement.status = "rendered";
-        return new Promise(function (resolve) {
-          setTimeout(resolve, interval + index * additional_interval);
-        });
+  async draw() {
+    for (let [index, pathElement] of this.renderQueue.entries()) {
+      new Promise((resolve) => {
+        setTimeout(() => {
+          switch (pathElement.status) {
+            case "requires-rendering":
+              pathElement.controller.start();
+              break;
+            case "rendered":
+              pathElement.controller.clear();
+              break;
+          }
+          pathElement.status = "rendered";
+          resolve();
+        }, 1500 * index);
       });
-    });
-    return promise;
+    }
   }
 
   resetRenderQueue() {

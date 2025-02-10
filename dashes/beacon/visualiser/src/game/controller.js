@@ -7,44 +7,44 @@ export default class GameController {
   constructor(gameData, ui) {
     this.ui = ui;
     this.gameData = gameData;
-    this.dashMapController = new BeaconsMapController(
+    this.mapController = new BeaconsMapController(
       gameData.map,
       gameData.beacons,
     );
-    this.dashPathsQueue = new RenderQueueController(ui.container);
-    this.dashLeaderboard = new LeaderboardController(gameData, ui.leaderboard);
-    this.dashPathControllers = new Map();
+    this.renderQueue = new RenderQueueController(ui.container);
+    this.leaderboard = new LeaderboardController(gameData, ui.leaderboard);
+    this.controllers = new Map();
   }
 
   nextLevel() {
     this.gameData.level = this.gameData.level + 1;
-    this.dashPathControllers.clear();
-    this.dashLeaderboard.hideCurrentPoints();
+    this.controllers.clear();
+    this.leaderboard.hideCurrentPoints();
   }
 
   setLevel(level) {
     this.gameData.level = level;
-    this.dashPathControllers.clear();
-    this.dashLeaderboard.hideCurrentPoints();
+    this.controllers.clear();
+    this.leaderboard.hideCurrentPoints();
   }
 
   loadAllPaths() {
     for (let i = 0; i < this.gameData.groupCount; i++) {
-      this.dashPathsQueue.addToRenderQueue(this.#dashPathControllerAt(i));
+      this.renderQueue.addToRenderQueue(this.#getOrCreateControllerAt(i));
     }
   }
 
   resetAllPaths() {
-    this.dashPathsQueue.clear();
-    this.dashPathsQueue.resetRenderQueue();
+    this.renderQueue.clear();
+    this.renderQueue.resetRenderQueue();
   }
 
   async renderAllPaths() {
     this.ui.toggleNextLevelButton();
-    await this.dashPathsQueue.draw(100);
+    await this.renderQueue.draw();
     return await new Promise((resolve) => {
       const id = setInterval(() => {
-        if (this.dashPathsQueue.animationEnded()) {
+        if (this.renderQueue.animationEnded()) {
           clearInterval(id);
           this.ui.toggleNextLevelButton();
           resolve();
@@ -53,18 +53,18 @@ export default class GameController {
     });
   }
 
-  #dashPathControllerAt(groupIndex) {
+  #getOrCreateControllerAt(groupIndex) {
     let dashPath;
 
-    if (!this.dashPathControllers.has(groupIndex)) {
+    if (!this.controllers.has(groupIndex)) {
       dashPath = new BeaconController(
         this.gameData.output(groupIndex),
-        this.dashMapController,
+        this.mapController,
         this.gameData.color(groupIndex),
       );
-      this.dashPathControllers.set(groupIndex, dashPath);
+      this.controllers.set(groupIndex, dashPath);
     } else {
-      dashPath = this.dashPathControllers.get(groupIndex);
+      dashPath = this.controllers.get(groupIndex);
     }
     return dashPath;
   }

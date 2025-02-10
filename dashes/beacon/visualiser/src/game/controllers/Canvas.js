@@ -5,21 +5,22 @@
  * the visualizer/src/renderer folder.
  */
 export default class CanvasController {
-  constructor(beacon_sizes) {
+  constructor(beaconSizes) {
     this.p5Canvas = null;
     this.p5 = null;
-    this.beacon_sizes = beacon_sizes;
+    this.beaconSizes = beaconSizes;
   }
 
   get width() {
     return this.p5Canvas.clientWidth;
   }
+
   get height() {
     return this.p5Canvas.clientHeight;
   }
 
   updateBeacons(newBeacons) {
-    this.beacon_sizes = newBeacons;
+    this.beaconSizes = newBeacons;
   }
 
   registerCanvas(resizableCanvas) {

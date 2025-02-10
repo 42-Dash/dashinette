@@ -72,8 +72,8 @@ class MapInformation {
  * @class This class is responsible for rendering the map.
  */
 export default class BeaconsMapController extends CanvasController {
-  constructor(mapArray, beacon_sizes) {
-    super(beacon_sizes);
+  constructor(mapArray, beaconSizes) {
+    super(beaconSizes);
     this.mapArray = mapArray;
     this.pulse = 15;
     this.max = 2.5;
@@ -113,7 +113,7 @@ export default class BeaconsMapController extends CanvasController {
   }
 
   get beacons() {
-    return this.beacon_sizes;
+    return this.beaconSizes;
   }
 
   /**
