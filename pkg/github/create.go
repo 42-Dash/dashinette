@@ -40,7 +40,7 @@ func createRepoErrorMessage(statusCode int) string {
 	case http.StatusUnprocessableEntity:
 		return "repository already exists"
 	default:
-		return "unexpected status code"
+		return fmt.Sprintf("unexpected status code %d", statusCode)
 	}
 }
 
