@@ -13,13 +13,13 @@ export default class Game {
 
   startAnimation() {
     this.gameUi.hideBlockingScreen();
-    this.gameController.resetAllPaths();
+    this.gameController.resetAllBeaconControllers();
     this.gameController.leaderboard.hideCurrentPoints();
-    this.#drawPaths();
+    this.#drawBeacons();
   }
 
   refresh() {
-    this.gameController.resetAllPaths();
+    this.gameController.resetAllBeaconControllers();
     this.gameController.leaderboard.hideCurrentPoints();
     this.#drawMap();
   }
@@ -78,11 +78,10 @@ export default class Game {
     this.gameUi.refreshLevelLabel(this.gameData);
   }
 
-  // marvin is over, its is not about the paths anymore
-  #drawPaths() {
-    this.gameController.loadAllPaths();
-    this.gameController.renderAllPaths().then(() => {
-      this.gameController.leaderboard.renderLeaderboard();
-    });
+  #drawBeacons() {
+    this.gameController.loadAllBeaconControllers();
+    this.gameController
+      .renderAllPaths()
+      .then(() => this.gameController.leaderboard.renderLeaderboard());
   }
 }

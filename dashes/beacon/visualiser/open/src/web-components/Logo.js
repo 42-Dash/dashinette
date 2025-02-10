@@ -30,7 +30,7 @@ export default class Logo extends HTMLElement {
       }
       `);
     shadowRoot.adoptedStyleSheets = [cssSheet];
-    fetch("./images/DASH.svg")
+    fetch("../shared/images/DASH.svg")
       .then((response) => response.text())
       .then((text) => {
         return new DOMParser().parseFromString(text, "image/svg+xml")

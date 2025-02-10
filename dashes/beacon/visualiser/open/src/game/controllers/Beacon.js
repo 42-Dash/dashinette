@@ -1,9 +1,9 @@
 import CanvasController from "./Canvas.js";
 
 export default class BeaconController extends CanvasController {
-  constructor(path, dashMap, color) {
+  constructor(path, mapController, color) {
     super();
-    this.dashMap = dashMap;
+    this.mapController = mapController;
     this.color = color;
     this.growthSpeed = 50;
     this.circles = [];
@@ -29,7 +29,7 @@ export default class BeaconController extends CanvasController {
   }
 
   calcStrokeWeight() {
-    let strokeWeight = this.dashMap.information.squareSize / 10;
+    let strokeWeight = this.mapController.information.squareSize / 10;
     if (strokeWeight < 5) {
       strokeWeight = 5;
     }
@@ -59,7 +59,7 @@ export default class BeaconController extends CanvasController {
 
     let strokeWeight = this.calcStrokeWeight();
     this.circles.forEach((circle, index) => {
-      let pos = this.dashMap.information.squareCenterCoordinates(
+      let pos = this.mapController.information.squareCenterCoordinates(
         circle.x,
         circle.y,
       );
@@ -73,7 +73,7 @@ export default class BeaconController extends CanvasController {
         top,
         right - left,
         bottom - top,
-        this.dashMap.information.frameSize,
+        this.mapController.information.frameSize,
       );
 
       this.p5.strokeWeight(this.#calculateBeaconDiameter());
@@ -91,7 +91,7 @@ export default class BeaconController extends CanvasController {
   }
 
   #calculateBeaconDiameter() {
-    return Math.min(this.dashMap.information.squareSize / 2, 10);
+    return Math.min(this.mapController.information.squareSize / 2, 10);
   }
 
   #calculateBoundaries(pos, radius) {
@@ -100,7 +100,7 @@ export default class BeaconController extends CanvasController {
       right: screenRightBorder,
       top: screenTopBorder,
       bottom: screenBottomBorder,
-    } = this.dashMap.boardLimits();
+    } = this.mapController.boardLimits();
 
     const left = Math.max(pos.x - radius, screenLeftBorder);
     const top = Math.max(pos.y - radius, screenTopBorder);
@@ -115,13 +115,13 @@ export default class BeaconController extends CanvasController {
   }
 
   get beacons() {
-    return this.dashMap.beacons.map(
-      (element) => element * this.dashMap.information.squareSize,
+    return this.mapController.beacons.map(
+      (element) => element * this.mapController.information.squareSize,
     );
   }
 
   get squaresDistance() {
-    return this.dashMap.information.squaresDistance;
+    return this.mapController.information.squaresDistance;
   }
 
   start() {

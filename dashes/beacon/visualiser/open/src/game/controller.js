@@ -28,13 +28,13 @@ export default class GameController {
     this.leaderboard.hideCurrentPoints();
   }
 
-  loadAllPaths() {
+  loadAllBeaconControllers() {
     for (let i = 0; i < this.gameData.groupCount; i++) {
       this.renderQueue.addToRenderQueue(this.#getOrCreateControllerAt(i));
     }
   }
 
-  resetAllPaths() {
+  resetAllBeaconControllers() {
     this.renderQueue.clear();
     this.renderQueue.resetRenderQueue();
   }
@@ -54,18 +54,18 @@ export default class GameController {
   }
 
   #getOrCreateControllerAt(groupIndex) {
-    let dashPath;
+    let controller;
 
     if (!this.controllers.has(groupIndex)) {
-      dashPath = new BeaconController(
+      controller = new BeaconController(
         this.gameData.output(groupIndex),
         this.mapController,
         this.gameData.color(groupIndex),
       );
-      this.controllers.set(groupIndex, dashPath);
+      this.controllers.set(groupIndex, controller);
     } else {
-      dashPath = this.controllers.get(groupIndex);
+      controller = this.controllers.get(groupIndex);
     }
-    return dashPath;
+    return controller;
   }
 }
