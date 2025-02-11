@@ -12,7 +12,7 @@ export default class Game {
   }
 
   getLevel() {
-    return this._gameData.level;
+    return this._gameData.getLevel();
   }
 
   startAnimation() {
@@ -47,13 +47,14 @@ export default class Game {
         this._gameController.leaderboard.renderDefaultLeaderboard();
       }
     }
-    window.location.hash = `#${this._gameData.level}`;
+    window.location.hash = `#${this._gameData.getLevel()}`;
     this.refresh();
   }
 
   coverMap() {
     const screen = this._gameUi.blockingScreen;
-    if (this._gameData.level === 0) {
+
+    if (this._gameData.isFirstLevel()) {
       this._gameUi.showBlockingScreen();
       let i = 1;
       setInterval(() => {
@@ -75,8 +76,10 @@ export default class Game {
     if (!this._gameController.mapController.hasRegisteredCanvas()) {
       this._gameUi.createMap(this._gameController.mapController);
     } else {
-      this._gameController.mapController.updateJson(this._gameData.map);
-      this._gameController.mapController.updateBeacons(this._gameData.beacons);
+      this._gameController.mapController.updateJson(this._gameData.getMap());
+      this._gameController.mapController.updateBeacons(
+        this._gameData.getBeacons(),
+      );
       this._gameController.mapController.draw();
     }
     this._gameUi.refreshLevelLabel(this._gameData);
