@@ -24,7 +24,7 @@ export default class GameUI {
   }
 
   refreshLevelLabel(gameData) {
-    this.levelLabelElement.textContent = `${gameData.levelTitle}`;
+    this.levelLabelElement.textContent = `${gameData.getLevelTitle()}`;
   }
 
   toggleNextLevelButton() {

@@ -8,8 +8,8 @@ export default class GameController {
     this.ui = ui;
     this.gameData = gameData;
     this.mapController = new BeaconsMapController(
-      gameData.map,
-      gameData.beacons,
+      gameData.getMap(),
+      gameData.getBeacons(),
     );
     this.renderQueue = new RenderQueueController(ui.container);
     this.leaderboard = new LeaderboardController(gameData, ui.leaderboard);
@@ -17,19 +17,19 @@ export default class GameController {
   }
 
   nextLevel() {
-    this.gameData.level = this.gameData.level + 1;
+    this.gameData.setLevel(this.gameData.getLevel() + 1);
     this.controllers.clear();
     this.leaderboard.hideCurrentPoints();
   }
 
   setLevel(level) {
-    this.gameData.level = level;
+    this.gameData.setLevel(level);
     this.controllers.clear();
     this.leaderboard.hideCurrentPoints();
   }
 
   loadAllBeaconControllers() {
-    for (let i = 0; i < this.gameData.groupCount; i++) {
+    for (let i = 0; i < this.gameData.getGroupsCount(); i++) {
       this.renderQueue.addToRenderQueue(this.#getOrCreateControllerAt(i));
     }
   }
@@ -58,9 +58,9 @@ export default class GameController {
 
     if (!this.controllers.has(groupIndex)) {
       controller = new BeaconController(
-        this.gameData.output(groupIndex),
+        this.gameData.getGroupOutput(groupIndex),
         this.mapController,
-        this.gameData.color(groupIndex),
+        this.gameData.getGroupColor(groupIndex),
       );
       this.controllers.set(groupIndex, controller);
     } else {
