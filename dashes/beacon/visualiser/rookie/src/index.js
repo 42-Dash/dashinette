@@ -45,7 +45,7 @@ function refreshHashLevel(game, hash) {
   if (!isNaN(level)) {
     game.setLevel(level);
   }
-  return game.gameData.level;
+  return game.getLevel();
 }
 
 // register the custom element
