@@ -5,10 +5,10 @@ import GameController from "./game/controller.js";
 export default class Game {
   constructor(jsonData, ui) {
     this._gameData = new GameData(jsonData);
-    this._gameUi = new GameUI(ui);
-    this._gameController = new GameController(this._gameData, this._gameUi);
+    this._ui = new GameUI(ui);
+    this._controller = new GameController(this._gameData, this._ui);
     this.#drawMap();
-    this._gameController.leaderboard.renderDefaultLeaderboard();
+    this._controller.renderDefaultLeaderboard();
   }
 
   getLevel() {
@@ -16,35 +16,35 @@ export default class Game {
   }
 
   startAnimation() {
-    this._gameUi.hideBlockingScreen();
-    this._gameController.resetAllBeaconControllers();
-    this._gameController.leaderboard.hideCurrentPoints();
+    this._ui.hideBlockingScreen();
+    this._controller.resetAllBeaconControllers();
+    this._controller._leaderboard.hideCurrentPoints();
     this.#drawBeacons();
   }
 
   refresh() {
-    this._gameController.resetAllBeaconControllers();
-    this._gameController.leaderboard.hideCurrentPoints();
+    this._controller.resetAllBeaconControllers();
+    this._controller._leaderboard.hideCurrentPoints();
     this.#drawMap();
   }
 
   setLevel(level) {
-    this._gameController.setLevel(level);
+    this._controller.setLevel(level);
     this.#changeLevel();
   }
 
   nextLevel() {
-    this._gameController.nextLevel();
+    this._controller.nextLevel();
     this.#changeLevel();
   }
 
   #changeLevel() {
     if (this._gameData.isLastLevel()) {
-      this._gameUi.nextLevelButton.textContent = "Restart";
+      this._ui.nextLevelButton.textContent = "Restart";
     } else {
-      this._gameUi.nextLevelButton.textContent = "Next Level";
+      this._ui.nextLevelButton.textContent = "Next Level";
       if (this._gameData.isFirstLevel()) {
-        this._gameController.leaderboard.renderDefaultLeaderboard();
+        this._controller._leaderboard.renderDefaultLeaderboard();
       }
     }
     window.location.hash = `#${this._gameData.getLevel()}`;
@@ -52,10 +52,10 @@ export default class Game {
   }
 
   coverMap() {
-    const screen = this._gameUi.blockingScreen;
+    const screen = this._ui.blockingScreen;
 
     if (this._gameData.isFirstLevel()) {
-      this._gameUi.showBlockingScreen();
+      this._ui.showBlockingScreen();
       let i = 1;
       setInterval(() => {
         const r = (122 * i) % 255;
@@ -68,27 +68,19 @@ export default class Game {
         }
       }, 5000);
     } else {
-      this._gameUi.hideBlockingScreen();
+      this._ui.hideBlockingScreen();
     }
   }
 
   #drawMap() {
-    if (!this._gameController.mapController.hasRegisteredCanvas()) {
-      this._gameUi.createMap(this._gameController.mapController);
-    } else {
-      this._gameController.mapController.updateJson(this._gameData.getMap());
-      this._gameController.mapController.updateBeacons(
-        this._gameData.getBeacons(),
-      );
-      this._gameController.mapController.draw();
-    }
-    this._gameUi.refreshLevelLabel(this._gameData);
+    this._controller.setupMap();
+    this._ui.refreshLevelLabel(this._gameData);
   }
 
   #drawBeacons() {
-    this._gameController.loadAllBeaconControllers();
-    this._gameController
-      .renderAllPaths()
-      .then(() => this._gameController.leaderboard.renderLeaderboard());
+    this._controller.loadAllBeaconControllers();
+    this._controller
+      .renderAllBeacons()
+      .then(() => this._controller.renderLeaderboard());
   }
 }

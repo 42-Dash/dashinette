@@ -29,7 +29,7 @@ export default class BeaconController extends CanvasController {
   }
 
   calcStrokeWeight() {
-    let strokeWeight = this.mapController.information.squareSize / 10;
+    let strokeWeight = this.mapController.information._squareSize / 10;
     if (strokeWeight < 5) {
       strokeWeight = 5;
     }
@@ -73,7 +73,7 @@ export default class BeaconController extends CanvasController {
         top,
         right - left,
         bottom - top,
-        this.mapController.information.frameSize,
+        this.mapController.information._frameSize,
       );
 
       this.p5.strokeWeight(this.#calculateBeaconDiameter());
@@ -91,7 +91,7 @@ export default class BeaconController extends CanvasController {
   }
 
   #calculateBeaconDiameter() {
-    return Math.min(this.mapController.information.squareSize / 2, 10);
+    return Math.min(this.mapController.information._squareSize / 2, 10);
   }
 
   #calculateBoundaries(pos, radius) {
@@ -116,12 +116,12 @@ export default class BeaconController extends CanvasController {
 
   get beacons() {
     return this.mapController.beacons.map(
-      (element) => element * this.mapController.information.squareSize,
+      (element) => element * this.mapController.information._squareSize,
     );
   }
 
   get squaresDistance() {
-    return this.mapController.information.squaresDistance;
+    return this.mapController.information._squaresDistance;
   }
 
   start() {

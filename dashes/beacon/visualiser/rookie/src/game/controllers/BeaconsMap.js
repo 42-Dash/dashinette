@@ -1,69 +1,63 @@
 import CanvasController from "./Canvas.js";
 
-/**
- * @class This class encapsulate all the location information that a map holds.
- */
 class MapInformation {
   constructor() {
-    /** @property {number} squareSize The size of a square in the map in pixel. */
-    this.squareSize = 0;
-    /** @property {number} squaresDistance The distance between two squares in the map as pixel. */
-    this.squaresDistance = 0;
-    /** @property {number} offsetPercentage The percentage of the square size that is used as offset. */
-    this.offsetPercentage = 0.0;
-    /** @property {number} leftPadding The left padding of the map in pixel */
-    this.leftPadding = 0;
-    /** @property {number} UpPadding The up padding of the map in pixel */
-    this.upPadding = 0;
-    this.frameSize = 2;
+    // The size of a square in the map in pixel.
+    this._squareSize = 0;
+    // The distance between two squares in the map as pixel.
+    this._squaresDistance = 0;
+    // The percentage of the square size that is used as offset.
+    this._offsetPercentage = 0.0;
+    // The left padding of the map in pixel
+    this._leftPadding = 0;
+    // The up padding of the map in pixel
+    this._upPadding = 0;
+    this._frameSize = 2;
   }
 
-  /**
-   * @brief Refreshes the information of the map.
-   */
   refresh(mapRowsCount, mapColumnsCount, mapWidth, mapHeight) {
     // When the aspect ratio is > 1, it is landscape, otherwise it is portrait.
     const mapAspectRatio = mapColumnsCount / mapRowsCount;
     const screenAspectRatio = mapWidth / mapHeight;
-    this.leftPadding = 0;
-    this.upPadding = 0;
+    this._leftPadding = 0;
+    this._upPadding = 0;
     if (mapAspectRatio < screenAspectRatio) {
       // Landscape, the height of the map stays the same.
-      this.squareSize = mapHeight / mapRowsCount;
-      this.leftPadding = (mapWidth - mapColumnsCount * this.squareSize) / 2;
+      this._squareSize = mapHeight / mapRowsCount;
+      this._leftPadding = (mapWidth - mapColumnsCount * this._squareSize) / 2;
     } else {
       // Portrait, the width of the map stays the same.
-      this.squareSize = mapWidth / mapColumnsCount;
-      this.upPadding = (mapHeight - mapRowsCount * this.squareSize) / 2;
+      this._squareSize = mapWidth / mapColumnsCount;
+      this._upPadding = (mapHeight - mapRowsCount * this._squareSize) / 2;
     }
-    this.squaresDistance = this.squareSize * (1 + this.offsetPercentage);
+    this._squaresDistance = this._squareSize * (1 + this._offsetPercentage);
   }
 
   /**
    * Calculates the coordinates of a square given its row and column index.
-   * @param {number} i the row index of the square.
-   * @param {number} j the column index of the square.
+   * @param {number} row the row index of the square.
+   * @param {number} col the column index of the square.
    * @returns An object containing the coordinates of the square.
    */
-  squareCoordinates(i, j) {
-    const offsetPercentagePlusOne = 1 + this.offsetPercentage;
+  squareCoordinates(row, col) {
+    const offsetPercentagePlusOne = 1 + this._offsetPercentage;
     return {
-      x: j * offsetPercentagePlusOne * this.squareSize + this.leftPadding,
-      y: i * offsetPercentagePlusOne * this.squareSize + this.upPadding,
+      x: col * offsetPercentagePlusOne * this._squareSize + this._leftPadding,
+      y: row * offsetPercentagePlusOne * this._squareSize + this._upPadding,
     };
   }
 
   /**
    * Calculates the coordinates of the center of a square given its row and column index.
-   * @param {number} i the row index of the square.
-   * @param {number} j the column index of the square.
+   * @param {number} row the row index of the square.
+   * @param {number} col the column index of the square.
    * @returns An object containing the coordinates of the center of the square.
    */
-  squareCenterCoordinates(i, j) {
-    const squareCoordinates = this.squareCoordinates(i, j);
+  squareCenterCoordinates(row, col) {
+    const squareCoordinates = this.squareCoordinates(row, col);
     return {
-      x: squareCoordinates.x + this.squareSize / 2,
-      y: squareCoordinates.y + this.squareSize / 2,
+      x: squareCoordinates.x + this._squareSize / 2,
+      y: squareCoordinates.y + this._squareSize / 2,
     };
   }
 }
@@ -120,11 +114,11 @@ export default class BeaconsMapController extends CanvasController {
    * @param {number} value The percentage of the square size that is used as offset.
    */
   set offsetPercentage(value) {
-    this.information.offsetPercentage = value;
+    this.information._offsetPercentage = value;
   }
 
   #calcStrokeWeight() {
-    return Math.min(this.information.squareSize / 2, 10);
+    return Math.min(this.information._squareSize / 2, 10);
   }
 
   #pulse() {
@@ -147,7 +141,7 @@ export default class BeaconsMapController extends CanvasController {
       this.height,
     );
 
-    this.p5.strokeWeight(this.information.frameSize);
+    this.p5.strokeWeight(this.information._frameSize);
     this.p5.stroke("white");
     this.p5.fill(1);
 
@@ -155,8 +149,8 @@ export default class BeaconsMapController extends CanvasController {
     this.p5.rect(
       pos.x,
       pos.y,
-      this.information.squareSize * this.mapColumnsCount,
-      this.information.squareSize * this.mapRowsCount,
+      this.information._squareSize * this.mapColumnsCount,
+      this.information._squareSize * this.mapRowsCount,
     );
 
     let strokeWeight = this.#calcStrokeWeight();
@@ -176,14 +170,14 @@ export default class BeaconsMapController extends CanvasController {
 
   boardLimits() {
     return {
-      left: this.information.leftPadding,
+      left: this.information._leftPadding,
       right:
-        this.information.leftPadding +
-        this.information.squareSize * this.mapColumnsCount,
-      top: this.information.upPadding,
+        this.information._leftPadding +
+        this.information._squareSize * this.mapColumnsCount,
+      top: this.information._upPadding,
       bottom:
-        this.information.upPadding +
-        this.information.squareSize * this.mapRowsCount,
+        this.information._upPadding +
+        this.information._squareSize * this.mapRowsCount,
     };
   }
 }

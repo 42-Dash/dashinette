@@ -1,7 +1,7 @@
 export default class ColorGenerator {
   constructor() {
-    this.index = 0;
-    this.colores = [
+    this._index = 0;
+    this._colores = [
       { r: 255, g: 40, b: 40 },
       { r: 255, g: 255, b: 40 },
       { r: 255, g: 40, b: 255 },
@@ -16,10 +16,10 @@ export default class ColorGenerator {
   }
 
   next() {
-    if (this.index >= this.colores.length) {
-      this.colores.push(this.#randomColor());
+    if (this._index >= this._colores.length) {
+      this._colores.push(this.#randomColor());
     }
-    return this.colores[this.index++];
+    return this._colores[this._index++];
   }
 
   #randomColor() {
