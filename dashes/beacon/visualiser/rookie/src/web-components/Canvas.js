@@ -4,15 +4,15 @@
 export default class Canvas extends HTMLElement {
   constructor() {
     super();
-    this.canvas = null;
-    this.controller = null;
+    this._canvas = null;
+    this._controller = null;
   }
 
   connectedCallback() {
     const shadowRoot = this.attachShadow({ mode: "closed" });
     // This custom HTML element contains a canvas, which will be later initialized
     // as a p5 canvas by the renderWith() method/
-    this.canvas = document.createElement("canvas");
+    this._canvas = document.createElement("canvas");
     const cssSheet = new CSSStyleSheet();
     cssSheet.replaceSync(`
       :host {
@@ -23,26 +23,26 @@ export default class Canvas extends HTMLElement {
       }
     `);
     shadowRoot.adoptedStyleSheets = [cssSheet];
-    shadowRoot.appendChild(this.canvas);
+    shadowRoot.appendChild(this._canvas);
   }
 
   resizeCallback() {
-    if (this.controller == null) {
+    if (this._controller == null) {
       return;
     }
-    this.controller.onRedraw();
-    this.controller.p5.resizeCanvas(this.clientWidth, this.clientHeight);
+    this._controller.onRedraw();
+    this._controller.p5.resizeCanvas(this.clientWidth, this.clientHeight);
   }
 
   setController(controller) {
-    if (controller === this.controller) {
+    if (controller === this._controller) {
       return;
     }
-    if (this.controller != null) {
-      this.controller.p5.remove();
+    if (this._controller != null) {
+      this._controller.p5.remove();
     }
-    this.controller = controller;
-    controller.p5Canvas = this.canvas;
+    this._controller = controller;
+    controller.p5Canvas = this._canvas;
     const renderFunction = (p5) => {
       controller.p5 = p5;
       p5.draw = controller.draw.bind(controller);

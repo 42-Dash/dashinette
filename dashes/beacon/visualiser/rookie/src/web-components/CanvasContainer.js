@@ -4,8 +4,8 @@
 export default class CanvasContainer extends HTMLElement {
   constructor() {
     super();
-    this.resizeObserver = null;
-    this.mutationObserver = null;
+    this._resizeObserver = null;
+    this._mutationObserver = null;
   }
 
   connectedCallback() {
@@ -15,17 +15,17 @@ export default class CanvasContainer extends HTMLElement {
     const canvasesSlot = document.createElement("slot");
     shadowRoot.appendChild(canvasesSlot);
     // This resizes the canvases within when this custom HTML element is resized.
-    this.resizeObserver = new ResizeObserver((entries) => {
+    this._resizeObserver = new ResizeObserver((entries) => {
       entries[0].target.children.forEach((element) => element.resizeCallback());
     });
     // This redraws the canvases within when new canvases are added.
-    this.mutationObserver = new MutationObserver((mutations) => {
+    this._mutationObserver = new MutationObserver((mutations) => {
       mutations[0].target.children.forEach((element) =>
         element.resizeCallback(),
       );
     });
-    this.resizeObserver.observe(this);
-    this.mutationObserver.observe(this, {
+    this._resizeObserver.observe(this);
+    this._mutationObserver.observe(this, {
       attributes: false,
       childList: true,
       subtree: false,
@@ -33,7 +33,7 @@ export default class CanvasContainer extends HTMLElement {
   }
 
   disconnectedCallback() {
-    this.resizeObserver.disconnect();
-    this.mutationObserver.disconnect();
+    this._resizeObserver.disconnect();
+    this._mutationObserver.disconnect();
   }
 }

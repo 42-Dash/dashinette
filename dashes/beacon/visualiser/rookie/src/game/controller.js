@@ -11,8 +11,11 @@ export default class GameController {
       gameData.getMap(),
       gameData.getBeacons(),
     );
-    this._renderQueue = new RenderQueueController(ui.container);
-    this._leaderboard = new LeaderboardController(gameData, ui.leaderboard);
+    this._renderQueue = new RenderQueueController(ui.getContainer());
+    this._leaderboard = new LeaderboardController(
+      gameData,
+      ui.getLeaderboard(),
+    );
     this._controllers = new Map();
   }
 
@@ -34,9 +37,10 @@ export default class GameController {
     }
   }
 
-  resetAllBeaconControllers() {
+  resetGameState() {
     this._renderQueue.clear();
     this._renderQueue.resetRenderQueue();
+    this._leaderboard.hideCurrentPoints();
   }
 
   setupMap() {
@@ -64,7 +68,7 @@ export default class GameController {
   }
 
   renderDefaultLeaderboard() {
-    this._leaderboard.renderLeaderboard();
+    this._leaderboard.renderDefaultLeaderboard();
   }
 
   renderLeaderboard() {

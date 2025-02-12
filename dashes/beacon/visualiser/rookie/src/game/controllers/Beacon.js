@@ -3,13 +3,13 @@ import CanvasController from "./Canvas.js";
 export default class BeaconController extends CanvasController {
   constructor(path, mapController, color) {
     super();
-    this.mapController = mapController;
-    this.color = color;
-    this.growthSpeed = 50;
-    this.circles = [];
-    this.started = false;
+    this._mapController = mapController;
+    this._color = color;
+    this._growthSpeed = 50;
+    this._circles = [];
+    this._isStarted = false;
     this.#initPoints(path);
-    this.circle_sizes = new Array(this.circles.length).fill(1);
+    this._circleSizes = new Array(this._circles.length).fill(1);
   }
 
   #initPoints(path) {
@@ -18,7 +18,7 @@ export default class BeaconController extends CanvasController {
       .split("|")
       .forEach((pair) => {
         const [x, y] = pair.split(",").map(Number);
-        this.circles.push({ x: x, y: y });
+        this._circles.push({ x: x, y: y });
       });
   }
 
@@ -29,11 +29,7 @@ export default class BeaconController extends CanvasController {
   }
 
   calcStrokeWeight() {
-    let strokeWeight = this.mapController.information._squareSize / 10;
-    if (strokeWeight < 5) {
-      strokeWeight = 5;
-    }
-    return strokeWeight;
+    return Math.max(this._mapController.mapUtils.getSquareSize() / 10, 5);
   }
 
   isSmaller(array1, array2) {
@@ -50,22 +46,22 @@ export default class BeaconController extends CanvasController {
   }
 
   draw() {
-    if (!this.started) {
+    if (!this._isStarted) {
       return;
     }
 
     this.p5.clear();
-    this.p5.stroke(this.color.r, this.color.g, this.color.b);
+    this.p5.stroke(this._color.r, this._color.g, this._color.b);
 
     let strokeWeight = this.calcStrokeWeight();
-    this.circles.forEach((circle, index) => {
-      let pos = this.mapController.information.squareCenterCoordinates(
+    this._circles.forEach((circle, index) => {
+      let pos = this._mapController.mapUtils.squareCenterCoordinates(
         circle.x,
         circle.y,
       );
-      this.p5.fill(this.color.r, this.color.g, this.color.b, 50);
+      this.p5.fill(this._color.r, this._color.g, this._color.b, 50);
 
-      const radius = this.circle_sizes[index] + this.squaresDistance / 2;
+      const radius = this._circleSizes[index] + this.#getSquaresDistance() / 2;
       const [left, top, right, bottom] = this.#calculateBoundaries(pos, radius);
       this.p5.strokeWeight(strokeWeight / 4);
       this.p5.rect(
@@ -73,25 +69,25 @@ export default class BeaconController extends CanvasController {
         top,
         right - left,
         bottom - top,
-        this.mapController.information._frameSize,
+        this._mapController.mapUtils.getFrameSize(),
       );
 
       this.p5.strokeWeight(this.#calculateBeaconDiameter());
       this.p5.circle(pos.x, pos.y, 1);
 
-      if (this.circle_sizes[index] < this.beacons[index]) {
-        this.circle_sizes[index] += this.beacons[index] / this.growthSpeed;
+      if (this._circleSizes[index] < this.beacons[index]) {
+        this._circleSizes[index] += this.beacons[index] / this._growthSpeed;
       }
     });
 
-    if (!this.isSmaller(this.circle_sizes, this.beacons)) {
+    if (!this.isSmaller(this._circleSizes, this.beacons)) {
       this.p5.noLoop();
-      this.started = false;
+      this._isStarted = false;
     }
   }
 
   #calculateBeaconDiameter() {
-    return Math.min(this.mapController.information._squareSize / 2, 10);
+    return Math.min(this._mapController.mapUtils.getSquareSize() / 2, 10);
   }
 
   #calculateBoundaries(pos, radius) {
@@ -100,7 +96,7 @@ export default class BeaconController extends CanvasController {
       right: screenRightBorder,
       top: screenTopBorder,
       bottom: screenBottomBorder,
-    } = this.mapController.boardLimits();
+    } = this._mapController.boardLimits();
 
     const left = Math.max(pos.x - radius, screenLeftBorder);
     const top = Math.max(pos.y - radius, screenTopBorder);
@@ -115,28 +111,32 @@ export default class BeaconController extends CanvasController {
   }
 
   get beacons() {
-    return this.mapController.beacons.map(
-      (element) => element * this.mapController.information._squareSize,
-    );
+    return this._mapController
+      .getBeacons()
+      .map((element) => element * this._mapController.mapUtils.getSquareSize());
   }
 
-  get squaresDistance() {
-    return this.mapController.information._squaresDistance;
+  #getSquaresDistance() {
+    return this._mapController.mapUtils.getSquaresDistance();
+  }
+
+  isStarted() {
+    return this._isStarted;
   }
 
   start() {
-    this.started = true;
+    this._isStarted = true;
     this.p5.loop();
   }
 
   clear() {
-    this.started = false;
+    this._isStarted = false;
     this.#reset();
     this.p5.noLoop();
   }
 
   #reset() {
     this.p5.clear();
-    this.circle_sizes = new Array(this.circles.length).fill(1);
+    this._circleSizes = new Array(this._circles.length).fill(1);
   }
 }

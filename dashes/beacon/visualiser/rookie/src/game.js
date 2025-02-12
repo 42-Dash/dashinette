@@ -17,14 +17,12 @@ export default class Game {
 
   startAnimation() {
     this._ui.hideBlockingScreen();
-    this._controller.resetAllBeaconControllers();
-    this._controller._leaderboard.hideCurrentPoints();
+    this._controller.resetGameState();
     this.#drawBeacons();
   }
 
   refresh() {
-    this._controller.resetAllBeaconControllers();
-    this._controller._leaderboard.hideCurrentPoints();
+    this._controller.resetGameState();
     this.#drawMap();
   }
 
@@ -40,9 +38,9 @@ export default class Game {
 
   #changeLevel() {
     if (this._gameData.isLastLevel()) {
-      this._ui.nextLevelButton.textContent = "Restart";
+      this._ui.setContentNextLevelButton("Restart");
     } else {
-      this._ui.nextLevelButton.textContent = "Next Level";
+      this._ui.setContentNextLevelButton("Next Level");
       if (this._gameData.isFirstLevel()) {
         this._controller._leaderboard.renderDefaultLeaderboard();
       }
@@ -52,8 +50,6 @@ export default class Game {
   }
 
   coverMap() {
-    const screen = this._ui.blockingScreen;
-
     if (this._gameData.isFirstLevel()) {
       this._ui.showBlockingScreen();
       let i = 1;
@@ -61,7 +57,7 @@ export default class Game {
         const r = (122 * i) % 255;
         const g = (138 / i) % 255;
         const b = (153 * i) % 255;
-        screen.setAttribute("left-color", `rgb(${r},${g},${b})`);
+        this._ui.setLogoLeftColor(`rgb(${r},${g},${b})`);
         i++;
         if (i >= 100) {
           clearInterval(1);

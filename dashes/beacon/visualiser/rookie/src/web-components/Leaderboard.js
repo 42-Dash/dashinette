@@ -1,14 +1,14 @@
 export default class Leaderboard extends HTMLElement {
   constructor() {
     super();
-    this.animationInfos = [];
-    this.shadow = null;
-    this.resizeObserver = null;
-    this.mutationObserver = null;
+    this._animationInfos = [];
+    this._shadow = null;
+    this._resizeObserver = null;
+    this._mutationObserver = null;
   }
 
   connectedCallback() {
-    this.shadow = this.attachShadow({ mode: "closed" });
+    this._shadow = this.attachShadow({ mode: "closed" });
     const cssSheet = new CSSStyleSheet();
     cssSheet.replaceSync(`
       :host {
@@ -53,19 +53,19 @@ export default class Leaderboard extends HTMLElement {
 
       .ranking-header > * { color: white; }
     `);
-    this.shadow.adoptedStyleSheets = [cssSheet];
+    this._shadow.adoptedStyleSheets = [cssSheet];
     const fragment = document.createDocumentFragment();
     fragment.appendChild(
       document.getElementById("ranking-header").cloneNode(true).content,
     );
-    this.shadow.appendChild(fragment);
+    this._shadow.appendChild(fragment);
 
     // This resizes the canvases within when this custom HTML element is resized.
-    this.resizeObserver = new ResizeObserver((_) => this.#resize());
+    this._resizeObserver = new ResizeObserver((_) => this.#resize());
     // This redraws the canvases within when new canvases are added.
-    this.mutationObserver = new MutationObserver((_) => this.#resize());
-    this.resizeObserver.observe(this);
-    this.mutationObserver.observe(this, {
+    this._mutationObserver = new MutationObserver((_) => this.#resize());
+    this._resizeObserver.observe(this);
+    this._mutationObserver.observe(this, {
       attributes: false,
       childList: true,
       subtree: true,
@@ -73,15 +73,15 @@ export default class Leaderboard extends HTMLElement {
   }
 
   disconnectedCallback() {
-    this.resizeObserver.disconnect();
-    this.mutationObserver.disconnect();
+    this._resizeObserver.disconnect();
+    this._mutationObserver.disconnect();
   }
 
   loadRanking(rankedGroups) {
     const rankingTemplate = document.getElementById("ranking-group");
 
     for (const group of rankedGroups) {
-      const existingElement = this.shadow.getElementById(
+      const existingElement = this._shadow.getElementById(
         "group_name_" + group.name,
       );
       if (existingElement == null) {
@@ -89,38 +89,40 @@ export default class Leaderboard extends HTMLElement {
         groupElement.appendChild(rankingTemplate.cloneNode(true).content);
         const rankingEntry = groupElement.querySelector(".ranking-entry");
         this.#loadGroupInfo(group, rankingEntry);
-        this.shadow.appendChild(rankingEntry);
+        this._shadow.appendChild(rankingEntry);
         requestAnimationFrame(() => {
-          this.animationInfos.push({
+          this._animationInfos.push({
             rankingEntry,
             top: rankingEntry.getBoundingClientRect().top,
           });
         });
       } else {
         const rankingEntry = existingElement;
-        const animationInfo = this.animationInfos.find(
+        const animationInfo = this._animationInfos.find(
           (info) => info.rankingEntry === rankingEntry,
         );
-        this.#loadGroupInfo(group, rankingEntry);
-        this.shadow.appendChild(rankingEntry);
-        requestAnimationFrame(() => {
-          //   //Get the new position
-          const newTop = rankingEntry.getBoundingClientRect().top;
-          //   //Get the previously saved position
-          const oldTop = animationInfo.top;
-          //   //Compute delta between old position and new
-          const deltaY = oldTop - newTop;
-          //   //Translate the element to its old location
-          rankingEntry.style.transform = `translateY(${deltaY}px)`;
-          //   //Disable transition animation for this translation
-          rankingEntry.style.transition = `transform 0s`;
-          //   //Save the new position
-          animationInfo.top = newTop;
+        if (animationInfo) {
+          this.#loadGroupInfo(group, rankingEntry);
+          this._shadow.appendChild(rankingEntry);
           requestAnimationFrame(() => {
-            rankingEntry.style.transform = "";
-            rankingEntry.style.transition = "0.5s";
+            //   //Get the new position
+            const newTop = rankingEntry.getBoundingClientRect().top;
+            //   //Get the previously saved position
+            const oldTop = animationInfo.top;
+            //   //Compute delta between old position and new
+            const deltaY = oldTop - newTop;
+            //   //Translate the element to its old location
+            rankingEntry.style.transform = `translateY(${deltaY}px)`;
+            //   //Disable transition animation for this translation
+            rankingEntry.style.transition = `transform 0s`;
+            //   //Save the new position
+            animationInfo.top = newTop;
+            requestAnimationFrame(() => {
+              rankingEntry.style.transform = "";
+              rankingEntry.style.transition = "0.5s";
+            });
           });
-        });
+        }
       }
     }
     this.#resize();
@@ -136,6 +138,7 @@ export default class Leaderboard extends HTMLElement {
 
   #loadGroupInfo(group, rankingEntry) {
     const isValid = group.status !== "valid" ? 0.5 : 1;
+
     rankingEntry.style.backgroundColor = `rgb(${group.colour.r * isValid}, ${
       group.colour.g * isValid
     }, ${group.colour.b * isValid})`;
@@ -149,9 +152,9 @@ export default class Leaderboard extends HTMLElement {
 
   #resize() {
     const fontSize =
-      this.shadow.childElementCount !== 0
+      this._shadow.childElementCount !== 0
         ? (this.getBoundingClientRect().height /
-            this.shadow.childElementCount) *
+            this._shadow.childElementCount) *
           0.25
         : 0;
     this.style.setProperty("--font-size", `${fontSize}px`);

@@ -2,9 +2,9 @@ import { CANVAS_RENDER_ELEMENT } from "../../index.js";
 
 export default class RenderQueueController {
   constructor(container) {
-    this.renderQueue = [];
-    this.currentIndex = 0;
-    this.container = container;
+    this._renderQueue = [];
+    this._currentIndex = 0;
+    this._container = container;
   }
 
   /**
@@ -12,24 +12,24 @@ export default class RenderQueueController {
    * @param {BeaconController} path
    */
   addToRenderQueue(path) {
-    if (this.renderQueue[this.currentIndex] === undefined) {
+    if (this._renderQueue[this._currentIndex] === undefined) {
       const pathElement = document.createElement(CANVAS_RENDER_ELEMENT);
-      this.container.appendChild(pathElement);
+      this._container.appendChild(pathElement);
       path.registerCanvas(pathElement);
-      this.renderQueue[this.currentIndex] = {
+      this._renderQueue[this._currentIndex] = {
         element: pathElement,
         controller: path,
         status: "requires-rendering",
       };
     } else {
-      this.renderQueue[this.currentIndex].data = path;
-      this.renderQueue[this.currentIndex].status = "requires-rendering";
+      this._renderQueue[this._currentIndex].data = path;
+      this._renderQueue[this._currentIndex].status = "requires-rendering";
     }
-    this.currentIndex++;
+    this._currentIndex++;
   }
 
   async draw() {
-    for (let [index, pathElement] of this.renderQueue.entries()) {
+    for (let [index, pathElement] of this._renderQueue.entries()) {
       new Promise((resolve) => {
         setTimeout(() => {
           switch (pathElement.status) {
@@ -48,20 +48,20 @@ export default class RenderQueueController {
   }
 
   resetRenderQueue() {
-    this.currentIndex = 0;
+    this._currentIndex = 0;
   }
 
   clear() {
-    this.renderQueue.forEach((pathElement) => {
+    this._renderQueue.forEach((pathElement) => {
       pathElement.element.remove();
     });
 
-    this.renderQueue = [];
+    this._renderQueue = [];
   }
 
   animationEnded() {
-    for (const element of this.renderQueue) {
-      if (element.controller.started === true) {
+    for (const element of this._renderQueue) {
+      if (element.controller.isStarted() === true) {
         return false;
       }
     }

@@ -8,38 +8,54 @@ export default class GameUI {
     nextLevelButton,
     blockingScreen,
   }) {
-    this.container = container;
-    this.leaderboard = leaderboard;
-    this.mapElement = null;
-    this.levelLabelElement = levelLabelElement;
-    this.nextLevelButton = nextLevelButton;
-    this.blockingScreen = blockingScreen;
+    this._container = container;
+    this._leaderboard = leaderboard;
+    this._mapElement = null;
+    this._levelLabelElement = levelLabelElement;
+    this._nextLevelButton = nextLevelButton;
+    this._blockingScreen = blockingScreen;
+  }
+
+  getContainer() {
+    return this._container;
+  }
+
+  getLeaderboard() {
+    return this._leaderboard;
+  }
+
+  setLogoLeftColor(color) {
+    this._blockingScreen.setAttribute("left-color", color);
+  }
+
+  setContentNextLevelButton(content) {
+    this._nextLevelButton.textContent = content;
   }
 
   createMap(controller) {
-    this.mapElement = document.createElement(CANVAS_RENDER_ELEMENT);
-    this.mapElement.setAttribute("id", "map-canvas");
-    this.container.appendChild(this.mapElement);
-    controller.registerCanvas(this.mapElement);
+    this._mapElement = document.createElement(CANVAS_RENDER_ELEMENT);
+    this._mapElement.setAttribute("id", "map-canvas");
+    this._container.appendChild(this._mapElement);
+    controller.registerCanvas(this._mapElement);
   }
 
   refreshLevelLabel(gameData) {
-    this.levelLabelElement.textContent = `${gameData.getLevelTitle()}`;
+    this._levelLabelElement.textContent = `${gameData.getLevelTitle()}`;
   }
 
   toggleNextLevelButton() {
-    if (this.nextLevelButton.hasAttribute("disabled")) {
-      this.nextLevelButton.removeAttribute("disabled");
+    if (this._nextLevelButton.hasAttribute("disabled")) {
+      this._nextLevelButton.removeAttribute("disabled");
     } else {
-      this.nextLevelButton.setAttribute("disabled", "");
+      this._nextLevelButton.setAttribute("disabled", "");
     }
   }
 
   showBlockingScreen() {
-    this.blockingScreen.style.opacity = 1;
+    this._blockingScreen.style.opacity = 1;
   }
 
   hideBlockingScreen() {
-    this.blockingScreen.style.opacity = 0;
+    this._blockingScreen.style.opacity = 0;
   }
 }
