@@ -1,3 +1,7 @@
+/**
+ * @class LeaderboardController
+ * @brief Manages leaderboard updates based on game data.
+ */
 export default class LeaderboardController {
   constructor(gameData, leaderboard) {
     this._gameData = gameData;
@@ -15,7 +19,7 @@ export default class LeaderboardController {
   renderDefaultLeaderboard() {
     this._leaderboard.hideCurrentPoints();
     this._leaderboard.loadRanking(
-      this._gameData.getGroups().map((group, _) => {
+      this._gameData.getGroups().map((group) => {
         return {
           name: group.name,
           total_score: 0,
@@ -28,25 +32,24 @@ export default class LeaderboardController {
   }
 
   renderLeaderboard() {
-    const ranking = [];
-
-    this._gameData.getGroups().forEach((group, index) => {
-      let total_score = 0;
-      for (let level = 0; level <= this._gameData.getLevel(); level++) {
-        total_score += this._gameData.getGroupByIndex(index, level).score;
-      }
-      ranking.push({
-        name: group.name,
-        total_score: total_score,
-        current_points: group.score,
-        status: group.status,
-        colour: this._gameData.getColorByGroupName(group.name),
-      });
-    });
+    const ranking = this._gameData.getGroups().map((group, index) => ({
+      name: group.name,
+      total_score: this.#calcTotalGroupScore(index),
+      current_points: group.score,
+      status: group.status,
+      colour: this._gameData.getColorByGroupName(group.name),
+    }));
 
     ranking.sort((a, b) => b.total_score - a.total_score);
 
     this._leaderboard.loadRanking(ranking);
     this._leaderboard.showCurrentPoints();
+  }
+
+  #calcTotalGroupScore(index) {
+    return Array.from(
+      { length: this._gameData.getLevel() + 1 },
+      (_, level) => this._gameData.getGroupByIndex(index, level).score,
+    ).reduce((a, b) => a + b, 0);
   }
 }

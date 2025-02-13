@@ -2,17 +2,28 @@ import CanvasController from "./Canvas.js";
 import MapUtils from "./MapUtils.js";
 
 /**
- * @class This class is responsible for rendering the map.
+ * @class BeaconsMapController
+ * @brief Manages and renders the game map and beacon animation.
  */
 export default class BeaconsMapController extends CanvasController {
+  static PULSE_SPEED = 15; // Frames per second
+  static MAX_PULSE_SCALE = 2.5; // Max size multiplier for pulsing effect
+  static STROKE_WEIGHT = 2; // Weight of map border
+
   constructor(mapArray, beaconSizes) {
     super();
     this._beaconSizes = beaconSizes;
     this._mapArray = mapArray;
-    this._pulse = 15;
-    this._max = 2.5;
-    this._size = 1;
+    this._pulseScale = 1; // Controls the beacon pulsing effect
     this._mapUtils = new MapUtils();
+  }
+
+  updateBeacons(newBeacons) {
+    this._beaconSizes = newBeacons;
+  }
+
+  getBeacons() {
+    return this._beaconSizes;
   }
 
   get mapUtils() {
@@ -25,37 +36,37 @@ export default class BeaconsMapController extends CanvasController {
 
   setup() {
     this._p5Instance.createCanvas(this.width, this.height, this._canvasElement);
-    this._p5Instance.frameRate(this._pulse);
+    this._p5Instance.frameRate(BeaconsMapController.PULSE_SPEED);
   }
 
   draw() {
-    this._size += 0.1;
-    if (this._size >= this._max) {
-      this._size = 1;
-    }
-
+    this.#updatePulseEffects();
     this._p5Instance.clear();
     this._p5Instance.stroke([10, 10, 40]);
     this._p5Instance.noStroke();
-
     this._p5Instance.fill(0);
     this.#drawMap();
   }
 
-  get mapColumnsCount() {
+  getBoardLimits() {
+    return {
+      left: this._mapUtils.getLeftPadding(),
+      right:
+        this._mapUtils.getLeftPadding() +
+        this._mapUtils.getSquareSize() * this.#getColumnsCount(),
+      top: this._mapUtils.getUpPadding(),
+      bottom:
+        this._mapUtils.getUpPadding() +
+        this._mapUtils.getSquareSize() * this.#getRowsCount(),
+    };
+  }
+
+  #getColumnsCount() {
     return this._mapArray[0].length;
   }
 
-  get mapRowsCount() {
+  #getRowsCount() {
     return this._mapArray.length;
-  }
-
-  updateBeacons(newBeacons) {
-    this._beaconSizes = newBeacons;
-  }
-
-  getBeacons() {
-    return this._beaconSizes;
   }
 
   #calcStrokeWeight() {
@@ -63,7 +74,7 @@ export default class BeaconsMapController extends CanvasController {
   }
 
   #pulse() {
-    return this.#calcStrokeWeight() * this._size;
+    return this.#calcStrokeWeight() * this._pulseScale;
   }
 
   #drawBeacons(x, y) {
@@ -76,13 +87,13 @@ export default class BeaconsMapController extends CanvasController {
 
   #drawMap() {
     this._mapUtils.refresh(
-      this.mapRowsCount,
-      this.mapColumnsCount,
+      this.#getRowsCount(),
+      this.#getColumnsCount(),
       this.width,
       this.height,
     );
 
-    this._p5Instance.strokeWeight(this._mapUtils.getFrameSize());
+    this._p5Instance.strokeWeight(BeaconsMapController.STROKE_WEIGHT);
     this._p5Instance.stroke("white");
     this._p5Instance.fill(1);
 
@@ -90,18 +101,22 @@ export default class BeaconsMapController extends CanvasController {
     this._p5Instance.rect(
       pos.x,
       pos.y,
-      this._mapUtils.getSquareSize() * this.mapColumnsCount,
-      this._mapUtils.getSquareSize() * this.mapRowsCount,
+      this._mapUtils.getSquareSize() * this.#getColumnsCount(),
+      this._mapUtils.getSquareSize() * this.#getRowsCount(),
     );
 
     let strokeWeight = this.#calcStrokeWeight();
     this._p5Instance.strokeWeight(strokeWeight);
-    this._p5Instance.fill(255, 255, 255, 255 * (this._max - this._size));
+    this._p5Instance.fill(
+      255,
+      255,
+      255,
+      255 * (BeaconsMapController.MAX_PULSE_SCALE - this._pulseScale),
+    );
 
-    for (let i = 0; i < this.mapRowsCount; i++) {
-      for (let j = 0; j < this.mapColumnsCount; j++) {
-        const value = this._mapArray[i][j];
-        if (value === "*") {
+    for (let i = 0; i < this.#getRowsCount(); i++) {
+      for (let j = 0; j < this.#getColumnsCount(); j++) {
+        if (this._mapArray[i][j] === "*") {
           const { x, y } = this._mapUtils.squareCenterCoordinates(i, j);
           this.#drawBeacons(x, y, strokeWeight);
         }
@@ -109,16 +124,10 @@ export default class BeaconsMapController extends CanvasController {
     }
   }
 
-  boardLimits() {
-    return {
-      left: this._mapUtils.getLeftPadding(),
-      right:
-        this._mapUtils.getLeftPadding() +
-        this._mapUtils.getSquareSize() * this.mapColumnsCount,
-      top: this._mapUtils.getUpPadding(),
-      bottom:
-        this._mapUtils.getUpPadding() +
-        this._mapUtils.getSquareSize() * this.mapRowsCount,
-    };
+  #updatePulseEffects() {
+    this._pulseScale += 0.1;
+    if (this._pulseScale >= BeaconsMapController.MAX_PULSE_SCALE) {
+      this._pulseScale = 1;
+    }
   }
 }

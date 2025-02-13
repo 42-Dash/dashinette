@@ -1,5 +1,18 @@
 import { CANVAS_RENDER_ELEMENT } from "../../index.js";
 
+const STATUS = {
+  REQUIRES_RENDERING: "requires-rendering",
+  RENDERED: "rendered",
+};
+
+/**
+ * @class RenderQueueController
+ * @brief Manages the rendering queue of beacon animations.
+ *
+ * This class handles the queue of animation paths to be rendered sequentially.
+ * It ensures that each beacon animation starts at the correct time and
+ * provides methods to manage and reset the rendering queue.
+ */
 export default class RenderQueueController {
   constructor(container) {
     this._renderQueue = [];
@@ -7,40 +20,36 @@ export default class RenderQueueController {
     this._container = container;
   }
 
-  /**
-   * Add a path to the list of paths to be rendered.
-   * @param {BeaconController} path
-   */
   addToRenderQueue(path) {
-    if (this._renderQueue[this._currentIndex] === undefined) {
-      const pathElement = document.createElement(CANVAS_RENDER_ELEMENT);
-      this._container.appendChild(pathElement);
-      path.registerCanvas(pathElement);
-      this._renderQueue[this._currentIndex] = {
-        element: pathElement,
-        controller: path,
-        status: "requires-rendering",
-      };
+    const existingEntry = this._renderQueue[this._currentIndex];
+
+    if (existingEntry) {
+      existingEntry.data = path;
+      existingEntry.status = STATUS.REQUIRES_RENDERING;
     } else {
-      this._renderQueue[this._currentIndex].data = path;
-      this._renderQueue[this._currentIndex].status = "requires-rendering";
+      const beaconElement = document.createElement(CANVAS_RENDER_ELEMENT);
+      this._container.appendChild(beaconElement);
+      path.registerCanvas(beaconElement);
+      this._renderQueue[this._currentIndex] = {
+        element: beaconElement,
+        controller: path,
+        status: STATUS.REQUIRES_RENDERING,
+      };
     }
+
     this._currentIndex++;
   }
 
   async draw() {
-    for (let [index, pathElement] of this._renderQueue.entries()) {
+    for (let [index, beaconElement] of this._renderQueue.entries()) {
       new Promise((resolve) => {
         setTimeout(() => {
-          switch (pathElement.status) {
-            case "requires-rendering":
-              pathElement.controller.start();
-              break;
-            case "rendered":
-              pathElement.controller.clear();
-              break;
+          if (beaconElement.status === STATUS.REQUIRES_RENDERING) {
+            beaconElement.controller.start();
+          } else if (beaconElement.status === STATUS.RENDERED) {
+            beaconElement.controller.clear();
           }
-          pathElement.status = "rendered";
+          beaconElement.status = STATUS.RENDERED;
           resolve();
         }, 1500 * index);
       });
@@ -52,19 +61,11 @@ export default class RenderQueueController {
   }
 
   clear() {
-    this._renderQueue.forEach((pathElement) => {
-      pathElement.element.remove();
-    });
-
+    this._renderQueue.forEach((beacon) => beacon.element.remove());
     this._renderQueue = [];
   }
 
   animationEnded() {
-    for (const element of this._renderQueue) {
-      if (element.controller.isStarted() === true) {
-        return false;
-      }
-    }
-    return true;
+    return this._renderQueue.every((beacon) => !beacon.controller.isStarted());
   }
 }
