@@ -31,7 +31,7 @@ export default class Canvas extends HTMLElement {
       return;
     }
     this._controller.onRedraw();
-    this._controller.p5.resizeCanvas(this.clientWidth, this.clientHeight);
+    this._controller.resizeCanvas(this.clientWidth, this.clientHeight);
   }
 
   setController(controller) {
@@ -39,14 +39,14 @@ export default class Canvas extends HTMLElement {
       return;
     }
     if (this._controller != null) {
-      this._controller.p5.remove();
+      this._controller.removeP5Instance();
     }
     this._controller = controller;
-    controller.p5Canvas = this._canvas;
-    const renderFunction = (p5) => {
-      controller.p5 = p5;
-      p5.draw = controller.draw.bind(controller);
-      p5.setup = controller.setup.bind(controller);
+    controller.setCanvasElement(this._canvas);
+    const renderFunction = (p5Instance) => {
+      controller.setP5Instance(p5Instance);
+      p5Instance.draw = controller.draw.bind(controller);
+      p5Instance.setup = controller.setup.bind(controller);
     };
     new p5(renderFunction.bind(controller));
   }

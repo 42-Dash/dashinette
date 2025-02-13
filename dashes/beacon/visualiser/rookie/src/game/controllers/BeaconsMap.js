@@ -6,7 +6,8 @@ import MapUtils from "./MapUtils.js";
  */
 export default class BeaconsMapController extends CanvasController {
   constructor(mapArray, beaconSizes) {
-    super(beaconSizes);
+    super();
+    this._beaconSizes = beaconSizes;
     this._mapArray = mapArray;
     this._pulse = 15;
     this._max = 2.5;
@@ -23,8 +24,8 @@ export default class BeaconsMapController extends CanvasController {
   }
 
   setup() {
-    this.p5.createCanvas(this.width, this.height, this.p5Canvas);
-    this.p5.frameRate(this._pulse);
+    this._p5Instance.createCanvas(this.width, this.height, this._canvasElement);
+    this._p5Instance.frameRate(this._pulse);
   }
 
   draw() {
@@ -33,11 +34,11 @@ export default class BeaconsMapController extends CanvasController {
       this._size = 1;
     }
 
-    this.p5.clear();
-    this.p5.stroke([10, 10, 40]);
-    this.p5.noStroke();
+    this._p5Instance.clear();
+    this._p5Instance.stroke([10, 10, 40]);
+    this._p5Instance.noStroke();
 
-    this.p5.fill(0);
+    this._p5Instance.fill(0);
     this.#drawMap();
   }
 
@@ -49,8 +50,12 @@ export default class BeaconsMapController extends CanvasController {
     return this._mapArray.length;
   }
 
+  updateBeacons(newBeacons) {
+    this._beaconSizes = newBeacons;
+  }
+
   getBeacons() {
-    return this.beaconSizes;
+    return this._beaconSizes;
   }
 
   #calcStrokeWeight() {
@@ -62,11 +67,11 @@ export default class BeaconsMapController extends CanvasController {
   }
 
   #drawBeacons(x, y) {
-    this.p5.stroke("white");
-    this.p5.point(x, y);
+    this._p5Instance.stroke("white");
+    this._p5Instance.point(x, y);
 
-    this.p5.noStroke();
-    this.p5.circle(x, y, this.#pulse());
+    this._p5Instance.noStroke();
+    this._p5Instance.circle(x, y, this.#pulse());
   }
 
   #drawMap() {
@@ -77,12 +82,12 @@ export default class BeaconsMapController extends CanvasController {
       this.height,
     );
 
-    this.p5.strokeWeight(this._mapUtils.getFrameSize());
-    this.p5.stroke("white");
-    this.p5.fill(1);
+    this._p5Instance.strokeWeight(this._mapUtils.getFrameSize());
+    this._p5Instance.stroke("white");
+    this._p5Instance.fill(1);
 
     let pos = this._mapUtils.squareCoordinates(0, 0);
-    this.p5.rect(
+    this._p5Instance.rect(
       pos.x,
       pos.y,
       this._mapUtils.getSquareSize() * this.mapColumnsCount,
@@ -90,8 +95,8 @@ export default class BeaconsMapController extends CanvasController {
     );
 
     let strokeWeight = this.#calcStrokeWeight();
-    this.p5.strokeWeight(strokeWeight);
-    this.p5.fill(255, 255, 255, 255 * (this._max - this._size));
+    this._p5Instance.strokeWeight(strokeWeight);
+    this._p5Instance.fill(255, 255, 255, 255 * (this._max - this._size));
 
     for (let i = 0; i < this.mapRowsCount; i++) {
       for (let j = 0; j < this.mapColumnsCount; j++) {

@@ -23,9 +23,9 @@ export default class BeaconController extends CanvasController {
   }
 
   setup() {
-    this.p5.createCanvas(this.width, this.height, this.p5Canvas);
-    this.p5.frameRate(30);
-    this.p5.noLoop();
+    this._p5Instance.createCanvas(this.width, this.height, this._canvasElement);
+    this._p5Instance.frameRate(30);
+    this._p5Instance.noLoop();
   }
 
   calcStrokeWeight() {
@@ -50,8 +50,8 @@ export default class BeaconController extends CanvasController {
       return;
     }
 
-    this.p5.clear();
-    this.p5.stroke(this._color.r, this._color.g, this._color.b);
+    this._p5Instance.clear();
+    this._p5Instance.stroke(this._color.r, this._color.g, this._color.b);
 
     let strokeWeight = this.calcStrokeWeight();
     this._circles.forEach((circle, index) => {
@@ -59,12 +59,12 @@ export default class BeaconController extends CanvasController {
         circle.x,
         circle.y,
       );
-      this.p5.fill(this._color.r, this._color.g, this._color.b, 50);
+      this._p5Instance.fill(this._color.r, this._color.g, this._color.b, 50);
 
       const radius = this._circleSizes[index] + this.#getSquaresDistance() / 2;
       const [left, top, right, bottom] = this.#calculateBoundaries(pos, radius);
-      this.p5.strokeWeight(strokeWeight / 4);
-      this.p5.rect(
+      this._p5Instance.strokeWeight(strokeWeight / 4);
+      this._p5Instance.rect(
         left,
         top,
         right - left,
@@ -72,8 +72,8 @@ export default class BeaconController extends CanvasController {
         this._mapController.mapUtils.getFrameSize(),
       );
 
-      this.p5.strokeWeight(this.#calculateBeaconDiameter());
-      this.p5.circle(pos.x, pos.y, 1);
+      this._p5Instance.strokeWeight(this.#calculateBeaconDiameter());
+      this._p5Instance.circle(pos.x, pos.y, 1);
 
       if (this._circleSizes[index] < this.beacons[index]) {
         this._circleSizes[index] += this.beacons[index] / this._growthSpeed;
@@ -81,7 +81,7 @@ export default class BeaconController extends CanvasController {
     });
 
     if (!this.isSmaller(this._circleSizes, this.beacons)) {
-      this.p5.noLoop();
+      this._p5Instance.noLoop();
       this._isStarted = false;
     }
   }
@@ -107,7 +107,7 @@ export default class BeaconController extends CanvasController {
 
   onRedraw() {
     this.#reset();
-    this.p5.loop();
+    this._p5Instance.loop();
   }
 
   get beacons() {
@@ -126,17 +126,17 @@ export default class BeaconController extends CanvasController {
 
   start() {
     this._isStarted = true;
-    this.p5.loop();
+    this._p5Instance.loop();
   }
 
   clear() {
     this._isStarted = false;
     this.#reset();
-    this.p5.noLoop();
+    this._p5Instance.noLoop();
   }
 
   #reset() {
-    this.p5.clear();
+    this._p5Instance.clear();
     this._circleSizes = new Array(this._circles.length).fill(1);
   }
 }
