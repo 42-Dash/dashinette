@@ -8,6 +8,8 @@ import ColorGenerator from "./misc/ColorGenerator.js";
  * data, and assigning colors to different groups.
  */
 export default class GameData {
+  static VALID_STATUS = "valid";
+
   constructor(jsonData) {
     this._jsonData = jsonData;
     this._level = 0;
@@ -46,6 +48,11 @@ export default class GameData {
 
   getBeacons(level = this._level) {
     return this._jsonData.levels[level].beacons;
+  }
+
+  isValidGroupStatus(groupIndex, level = this._level) {
+    const textStatus = this._jsonData.levels[level].groups[groupIndex].status;
+    return textStatus === GameData.VALID_STATUS;
   }
 
   getGroupOutput(groupIndex) {

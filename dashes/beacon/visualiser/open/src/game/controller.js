@@ -37,8 +37,11 @@ export default class GameController {
   }
 
   loadAllBeaconControllers() {
-    for (let i = 0; i < this._gameData.getGroupsCount(); i++) {
-      this._renderQueue.addToRenderQueue(this.#getOrCreateControllerAt(i));
+    for (let group = 0; group < this._gameData.getGroupsCount(); group++) {
+      if (!this._gameData.isValidGroupStatus(group)) {
+        continue;
+      }
+      this._renderQueue.addToRenderQueue(this.#getOrCreateControllerAt(group));
     }
   }
 
