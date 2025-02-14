@@ -1,5 +1,12 @@
 /**
- * @class This is a custom HTML element that contains a resizable p5 canvas
+ * @class CanvasContainer
+ * @extends HTMLElement
+ * @description A custom HTML element that manages and resizes p5.js canvases inside it.
+ *
+ * This component:
+ * - Automatically resizes all child `<canvas>` elements when resized.
+ * - Redraws canvases when new ones are added.
+ * - Uses `ResizeObserver` and `MutationObserver` to track changes.
  */
 export default class CanvasContainer extends HTMLElement {
   constructor() {
@@ -10,30 +17,44 @@ export default class CanvasContainer extends HTMLElement {
 
   connectedCallback() {
     const shadowRoot = this.attachShadow({ mode: "open" });
-    // This custom HTML element contains a canvas, which will be later initialized
-    // as a p5 canvas by the renderWith() method/
-    const canvasesSlot = document.createElement("slot");
-    shadowRoot.appendChild(canvasesSlot);
-    // This resizes the canvases within when this custom HTML element is resized.
+    shadowRoot.appendChild(document.createElement("slot"));
+
     this._resizeObserver = new ResizeObserver((entries) => {
-      entries[0].target.children.forEach((element) => element.resizeCallback());
+      for (const entry of entries) {
+        for (const element of entry.target.children) {
+          if (typeof element.resizeCallback === "function") {
+            element.resizeCallback(entries);
+          }
+        }
+      }
     });
-    // This redraws the canvases within when new canvases are added.
+
     this._mutationObserver = new MutationObserver((mutations) => {
-      mutations[0].target.children.forEach((element) =>
-        element.resizeCallback(),
-      );
+      for (const mutation of mutations) {
+        for (const element of mutation.addedNodes) {
+          if (typeof element.resizeCallback === "function") {
+            element.resizeCallback();
+          }
+        }
+      }
     });
+
     this._resizeObserver.observe(this);
     this._mutationObserver.observe(this, {
-      attributes: false,
       childList: true,
+      attributes: false,
       subtree: false,
     });
   }
 
   disconnectedCallback() {
-    this._resizeObserver.disconnect();
-    this._mutationObserver.disconnect();
+    if (this._resizeObserver) {
+      this._resizeObserver.disconnect();
+      this._resizeObserver = null;
+    }
+    if (this._mutationObserver) {
+      this._mutationObserver.disconnect();
+      this._mutationObserver = null;
+    }
   }
 }

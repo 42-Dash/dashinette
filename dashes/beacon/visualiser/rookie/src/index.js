@@ -8,7 +8,8 @@ export const CANVAS_RENDER_ELEMENT = "render-canvas";
 
 // load the json file
 async function loadJSON(filename) {
-  return fetch(filename).then((response) => response.json());
+  const response = await fetch(filename);
+  return response.json();
 }
 
 function main(jsonData) {
@@ -56,7 +57,5 @@ customElements.define("dash-leaderboard", Leaderboard);
 
 // load the json file and start the main function when the DOM is loaded
 window.addEventListener("DOMContentLoaded", () => {
-  loadJSON("results.json")
-    .then(main)
-    .catch((error) => console.error(error));
+  loadJSON("results.json").then(main).catch(console.error);
 });

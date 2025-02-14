@@ -1,14 +1,19 @@
 import ColorGenerator from "./misc/ColorGenerator.js";
 
+/**
+ * @class GameData
+ * @brief Manages game-level data, including maps, beacons, groups, and colors.
+ *
+ * This class is responsible for tracking the current level, retrieving game-related
+ * data, and assigning colors to different groups.
+ */
 export default class GameData {
   constructor(jsonData) {
     this._jsonData = jsonData;
     this._level = 0;
     this._colorGenerator = new ColorGenerator();
     this._colors = new Map();
-    this.getGroups().forEach((group, _) => {
-      this._colors.set(group.name, this._colorGenerator.next());
-    });
+    this.#initializeGroupColors();
   }
 
   setLevel(level) {
@@ -58,15 +63,23 @@ export default class GameData {
     return this._colors.get(groupName);
   }
 
-  #getLevelCount() {
-    return this._jsonData.levels.length;
-  }
-
   isLastLevel() {
     return this._level === this.#getLevelCount() - 1;
   }
 
   isFirstLevel() {
     return this._level === 0;
+  }
+
+  #getLevelCount() {
+    return this._jsonData.levels.length;
+  }
+
+  #initializeGroupColors() {
+    this.getGroups().forEach((group) => {
+      if (!this._colors.has(group)) {
+        this._colors.set(group.name, this._colorGenerator.next());
+      }
+    });
   }
 }

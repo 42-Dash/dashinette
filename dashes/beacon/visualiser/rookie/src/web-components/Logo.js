@@ -7,6 +7,7 @@ export default class Logo extends HTMLElement {
 
   connectedCallback() {
     const shadowRoot = this.attachShadow({ mode: "closed" });
+
     const cssSheet = new CSSStyleSheet();
     cssSheet.replaceSync(`
       :host > svg {
@@ -30,25 +31,20 @@ export default class Logo extends HTMLElement {
       }
       `);
     shadowRoot.adoptedStyleSheets = [cssSheet];
+
     fetch("../shared/images/DASH.svg")
       .then((response) => response.text())
-      .then((text) => {
-        return new DOMParser().parseFromString(text, "image/svg+xml")
-          .childNodes[0];
-      })
-      .then((svg) => {
-        shadowRoot.appendChild(svg);
-      });
+      .then(
+        (text) =>
+          new DOMParser().parseFromString(text, "image/svg+xml").firstChild,
+      )
+      .then((svg) => shadowRoot.appendChild(svg))
+      .catch((error) => console.error(error));
   }
 
   attributeChangedCallback(name, oldValue, newValue) {
-    switch (name) {
-      case "left-color":
-      case "right-color":
-        this.style.setProperty(`--${name}`, newValue);
-        break;
-      default:
-        break;
+    if (name === "left-color" || name === "right-color") {
+      this.style.setProperty(`--${name}`, newValue);
     }
   }
 }

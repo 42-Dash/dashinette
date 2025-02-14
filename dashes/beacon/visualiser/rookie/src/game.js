@@ -2,11 +2,20 @@ import GameUI from "./game/ui.js";
 import GameData from "./game/data.js";
 import GameController from "./game/controller.js";
 
+/**
+ * Manages the game flow, UI, and data.
+ *
+ * Responsibilities:
+ * - Initializes game data, UI, and controller.
+ * - Handles level changes and game state updates.
+ * - Manages animations and UI interactions.
+ */
 export default class Game {
   constructor(jsonData, ui) {
     this._gameData = new GameData(jsonData);
     this._ui = new GameUI(ui);
     this._controller = new GameController(this._gameData, this._ui);
+
     this.#drawMap();
     this._controller.renderDefaultLeaderboard();
   }
@@ -21,51 +30,52 @@ export default class Game {
     this.#drawBeacons();
   }
 
-  refresh() {
-    this._controller.resetGameState();
-    this.#drawMap();
-  }
-
   setLevel(level) {
     this._controller.setLevel(level);
-    this.#changeLevel();
+    this.#updateLevel();
   }
 
   nextLevel() {
     this._controller.nextLevel();
-    this.#changeLevel();
-  }
-
-  #changeLevel() {
-    if (this._gameData.isLastLevel()) {
-      this._ui.setContentNextLevelButton("Restart");
-    } else {
-      this._ui.setContentNextLevelButton("Next Level");
-      if (this._gameData.isFirstLevel()) {
-        this._controller._leaderboard.renderDefaultLeaderboard();
-      }
-    }
-    window.location.hash = `#${this._gameData.getLevel()}`;
-    this.refresh();
+    this.#updateLevel();
   }
 
   coverMap() {
-    if (this._gameData.isFirstLevel()) {
-      this._ui.showBlockingScreen();
-      let i = 1;
-      setInterval(() => {
-        const r = (122 * i) % 255;
-        const g = (138 / i) % 255;
-        const b = (153 * i) % 255;
-        this._ui.setLogoLeftColor(`rgb(${r},${g},${b})`);
-        i++;
-        if (i >= 100) {
-          clearInterval(1);
-        }
-      }, 5000);
-    } else {
+    if (!this._gameData.isFirstLevel()) {
       this._ui.hideBlockingScreen();
+      return;
     }
+
+    this._ui.showBlockingScreen();
+    let i = 1;
+    const intervalId = setInterval(() => {
+      this._ui.setLogoLeftColor({
+        r: (122 * i) % 255,
+        g: (138 / i) % 255,
+        b: (153 * i) % 255,
+      });
+
+      if (i++ >= 100) {
+        clearInterval(intervalId);
+      }
+    }, 5000);
+  }
+
+  #updateLevel() {
+    const buttonText = this._gameData.isLastLevel() ? "Restart" : "Next level";
+    this._ui.setContentNextLevelButton(buttonText);
+
+    if (this._gameData.isFirstLevel()) {
+      this._controller.renderDefaultLeaderboard();
+    }
+
+    window.location.hash = `#${this._gameData.getLevel()}`;
+    this.#refresh();
+  }
+
+  #refresh() {
+    this._controller.resetGameState();
+    this.#drawMap();
   }
 
   #drawMap() {
@@ -75,8 +85,8 @@ export default class Game {
 
   #drawBeacons() {
     this._controller.loadAllBeaconControllers();
-    this._controller
-      .renderAllBeacons()
-      .then(() => this._controller.renderLeaderboard());
+    this._controller.renderAllBeacons().then(() => {
+      this._controller.renderLeaderboard();
+    });
   }
 }

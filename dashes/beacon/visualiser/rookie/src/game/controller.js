@@ -3,6 +3,13 @@ import RenderQueueController from "./controllers/RenderQueue.js";
 import BeaconController from "./controllers/Beacon.js";
 import LeaderboardController from "./controllers/Leaderboard.js";
 
+/**
+ * @class GameController
+ * @brief Manages the overall game state, rendering, and beacon animations.
+ *
+ * The GameController acts as the central hub of the game, handling level progression,
+ * leaderboard updates, beacon rendering, and interactions between various components.
+ */
 export default class GameController {
   constructor(gameData, ui) {
     this._ui = ui;
@@ -20,9 +27,7 @@ export default class GameController {
   }
 
   nextLevel() {
-    this._gameData.setLevel(this._gameData.getLevel() + 1);
-    this._controllers.clear();
-    this._leaderboard.hideCurrentPoints();
+    this.setLevel(this._gameData.getLevel() + 1);
   }
 
   setLevel(level) {
@@ -56,6 +61,7 @@ export default class GameController {
   async renderAllBeacons() {
     this._ui.toggleNextLevelButton();
     await this._renderQueue.draw();
+
     return await new Promise((resolve) => {
       const id = setInterval(() => {
         if (this._renderQueue.animationEnded()) {
@@ -76,18 +82,16 @@ export default class GameController {
   }
 
   #getOrCreateControllerAt(groupIndex) {
-    let controller;
-
     if (!this._controllers.has(groupIndex)) {
-      controller = new BeaconController(
-        this._gameData.getGroupOutput(groupIndex),
-        this._mapController,
-        this._gameData.getGroupColor(groupIndex),
+      this._controllers.set(
+        groupIndex,
+        new BeaconController(
+          this._gameData.getGroupOutput(groupIndex),
+          this._mapController,
+          this._gameData.getGroupColor(groupIndex),
+        ),
       );
-      this._controllers.set(groupIndex, controller);
-    } else {
-      controller = this._controllers.get(groupIndex);
     }
-    return controller;
+    return this._controllers.get(groupIndex);
   }
 }

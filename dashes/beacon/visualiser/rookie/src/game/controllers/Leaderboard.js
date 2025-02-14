@@ -5,20 +5,20 @@
 export default class LeaderboardController {
   constructor(gameData, leaderboard) {
     this._gameData = gameData;
-    this._leaderboard = leaderboard;
+    this._leaderboardComponent = leaderboard;
   }
 
   showCurrentPoints() {
-    this._leaderboard.showCurrentPoints();
+    this._leaderboardComponent.showCurrentPoints();
   }
 
   hideCurrentPoints() {
-    this._leaderboard.hideCurrentPoints();
+    this._leaderboardComponent.hideCurrentPoints();
   }
 
   renderDefaultLeaderboard() {
-    this._leaderboard.hideCurrentPoints();
-    this._leaderboard.loadRanking(
+    this._leaderboardComponent.hideCurrentPoints();
+    this._leaderboardComponent.loadRanking(
       this._gameData.getGroups().map((group) => {
         return {
           name: group.name,
@@ -42,8 +42,8 @@ export default class LeaderboardController {
 
     ranking.sort((a, b) => b.total_score - a.total_score);
 
-    this._leaderboard.loadRanking(ranking);
-    this._leaderboard.showCurrentPoints();
+    this._leaderboardComponent.loadRanking(ranking);
+    this._leaderboardComponent.showCurrentPoints();
   }
 
   #calcTotalGroupScore(index) {
