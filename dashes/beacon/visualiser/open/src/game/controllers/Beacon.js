@@ -10,15 +10,20 @@ export default class BeaconController extends CanvasController {
   static MIN_BEACON_DIAMETER = 10;
   static MIN_STROKE_WEIGHT = 5;
 
-  constructor(path, mapController, color) {
+  constructor(output, mapController, color) {
     super();
     this._mapController = mapController;
     this._color = color;
     this._circleCoordinates = [];
     this._isStarted = false;
+    this._mapOrder = [];
 
-    this.#initPoints(path);
+    this.#parseOutput(output);
     this._circleSizes = new Array(this._circleCoordinates.length).fill(1);
+  }
+
+  getMapOrder() {
+    return this._mapOrder;
   }
 
   isStarted() {
@@ -91,9 +96,19 @@ export default class BeaconController extends CanvasController {
   }
 
   #getBeaconTargetSizes() {
-    return this._mapController
+    const gameMap = this._mapController.mergeShuffledMaps(this._mapOrder);
+
+    const terrains = this._circleCoordinates.map((point) =>
+      Number(gameMap[point.x][point.y]),
+    );
+
+    const targetSizes = this._mapController
       .getBeacons()
-      .map((element) => element * this._mapController.mapUtils.getSquareSize());
+      .map((element, index) => terrains[index] + element);
+
+    return targetSizes.map(
+      (element) => element * this._mapController.mapUtils.getSquareSize(),
+    );
   }
 
   #hasGrowingBeacons() {
@@ -145,8 +160,12 @@ export default class BeaconController extends CanvasController {
     this._circleSizes = new Array(this._circleCoordinates.length).fill(1);
   }
 
-  #initPoints(path) {
-    this._circleCoordinates = path
+  #parseOutput(output) {
+    const mapOrder = output.substring(0, 4);
+    const beaconCoordinates = output.substring(5, output.length);
+
+    this._mapOrder = mapOrder.split("").map((chr) => Number(chr) - 1);
+    this._circleCoordinates = beaconCoordinates
       .replace(/\|$/, "")
       .split("|")
       .map((pair) => {

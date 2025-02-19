@@ -16,6 +16,11 @@ export default class BeaconsMapController extends CanvasController {
     this._mapArray = mapArray;
     this._pulseScale = 1; // Controls the beacon pulsing effect
     this._mapUtils = new MapUtils();
+    this._mapsOrder = [0, 1, 2, 3];
+  }
+
+  setMapsOrder(mapsOrder) {
+    this._mapsOrder = mapsOrder;
   }
 
   updateBeacons(newBeacons) {
@@ -30,7 +35,7 @@ export default class BeaconsMapController extends CanvasController {
     return this._mapUtils;
   }
 
-  updateJson(newMapArray) {
+  updateMaps(newMapArray) {
     this._mapArray = newMapArray;
   }
 
@@ -62,11 +67,11 @@ export default class BeaconsMapController extends CanvasController {
   }
 
   #getColumnsCount() {
-    return this._mapArray[0].length;
+    return this._mapArray[0][0].length * 2;
   }
 
   #getRowsCount() {
-    return this._mapArray.length;
+    return this._mapArray[0].length * 2;
   }
 
   #calcStrokeWeight() {
@@ -85,7 +90,7 @@ export default class BeaconsMapController extends CanvasController {
     this._p5Instance.circle(x, y, this.#pulse());
   }
 
-  #drawMap() {
+  #drawMap(order = this._mapsOrder) {
     this._mapUtils.refresh(
       this.#getRowsCount(),
       this.#getColumnsCount(),
@@ -93,17 +98,10 @@ export default class BeaconsMapController extends CanvasController {
       this.height,
     );
 
-    this._p5Instance.strokeWeight(BeaconsMapController.STROKE_WEIGHT);
-    this._p5Instance.stroke("white");
-    this._p5Instance.fill(1);
+    const shuffledMaps = this.mergeShuffledMaps(order);
 
-    let pos = this._mapUtils.squareCoordinates(0, 0);
-    this._p5Instance.rect(
-      pos.x,
-      pos.y,
-      this._mapUtils.getSquareSize() * this.#getColumnsCount(),
-      this._mapUtils.getSquareSize() * this.#getRowsCount(),
-    );
+    this.#drawMapBorders();
+    this.#drawTerrains(shuffledMaps);
 
     let strokeWeight = this.#calcStrokeWeight();
     this._p5Instance.strokeWeight(strokeWeight);
@@ -116,12 +114,63 @@ export default class BeaconsMapController extends CanvasController {
 
     for (let i = 0; i < this.#getRowsCount(); i++) {
       for (let j = 0; j < this.#getColumnsCount(); j++) {
-        if (this._mapArray[i][j] === "*") {
+        if (shuffledMaps[i][j] === "*") {
           const { x, y } = this._mapUtils.squareCenterCoordinates(i, j);
           this.#drawBeacons(x, y, strokeWeight);
         }
       }
     }
+  }
+
+  #drawMapBorders() {
+    this._p5Instance.strokeWeight(BeaconsMapController.STROKE_WEIGHT);
+    this._p5Instance.stroke("white");
+    this._p5Instance.fill(1);
+
+    let pos = this._mapUtils.squareCoordinates(0, 0);
+    this._p5Instance.rect(
+      pos.x,
+      pos.y,
+      this._mapUtils.getSquareSize() * this.#getColumnsCount(),
+      this._mapUtils.getSquareSize() * this.#getRowsCount(),
+    );
+  }
+
+  #drawTerrains(shuffledMaps) {
+    this._p5Instance.strokeWeight(0);
+
+    for (let i = 0; i < this.#getRowsCount(); i++) {
+      for (let j = 0; j < this.#getColumnsCount(); j++) {
+        const color = this._mapUtils.getTerrainColor(shuffledMaps[i][j]);
+        this.#drawTerrain(i, j, color);
+      }
+    }
+  }
+
+  #drawTerrain(row, col, color) {
+    const { x, y } = this._mapUtils.squareCoordinates(row, col);
+    const squareSize = this._mapUtils.getSquareSize();
+
+    this._p5Instance.fill(color.r, color.g, color.b);
+    this._p5Instance.rect(x, y, squareSize);
+  }
+
+  mergeShuffledMaps(order) {
+    let resultMap = [];
+
+    for (let row = 0; row < this.#getRowsCount() / 2; row++) {
+      resultMap.push(
+        this._mapArray[order[0]][row] + this._mapArray[order[1]][row],
+      );
+    }
+
+    for (let row = 0; row < this.#getRowsCount() / 2; row++) {
+      resultMap.push(
+        this._mapArray[order[2]][row] + this._mapArray[order[3]][row],
+      );
+    }
+
+    return resultMap;
   }
 
   #updatePulseEffects() {

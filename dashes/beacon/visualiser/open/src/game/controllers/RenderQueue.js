@@ -14,25 +14,26 @@ const STATUS = {
  * provides methods to manage and reset the rendering queue.
  */
 export default class RenderQueueController {
-  constructor(container) {
+  constructor(container, mapController) {
     this._renderQueue = [];
     this._currentIndex = 0;
     this._container = container;
+    this._mapController = mapController;
   }
 
-  addToRenderQueue(path) {
+  addToRenderQueue(beaconController) {
     const existingEntry = this._renderQueue[this._currentIndex];
 
     if (existingEntry) {
-      existingEntry.data = path;
+      existingEntry.data = beaconController;
       existingEntry.status = STATUS.REQUIRES_RENDERING;
     } else {
       const beaconElement = document.createElement(CANVAS_RENDER_ELEMENT);
       this._container.appendChild(beaconElement);
-      path.registerCanvas(beaconElement);
+      beaconController.registerCanvas(beaconElement);
       this._renderQueue[this._currentIndex] = {
         element: beaconElement,
-        controller: path,
+        controller: beaconController,
         status: STATUS.REQUIRES_RENDERING,
       };
     }
@@ -41,18 +42,14 @@ export default class RenderQueueController {
   }
 
   async draw() {
-    for (let [index, beaconElement] of this._renderQueue.entries()) {
-      new Promise((resolve) => {
-        setTimeout(() => {
-          if (beaconElement.status === STATUS.REQUIRES_RENDERING) {
-            beaconElement.controller.start();
-          } else if (beaconElement.status === STATUS.RENDERED) {
-            beaconElement.controller.clear();
-          }
-          beaconElement.status = STATUS.RENDERED;
-          resolve();
-        }, 1500 * index);
+    for (let beaconElement of this._renderQueue) {
+      this._mapController.setMapsOrder(beaconElement.controller.getMapOrder());
+      beaconElement.controller.start();
+      beaconElement.status = STATUS.RENDERED;
+      await new Promise((resolve) => {
+        setTimeout(resolve, 3000);
       });
+      beaconElement.element.remove();
     }
   }
 

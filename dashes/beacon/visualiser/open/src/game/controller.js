@@ -15,10 +15,13 @@ export default class GameController {
     this._ui = ui;
     this._gameData = gameData;
     this._mapController = new BeaconsMapController(
-      gameData.getMap(),
+      gameData.getMaps(),
       gameData.getBeacons(),
     );
-    this._renderQueue = new RenderQueueController(ui.getContainer());
+    this._renderQueue = new RenderQueueController(
+      ui.getContainer(),
+      this._mapController,
+    );
     this._leaderboard = new LeaderboardController(
       gameData,
       ui.getLeaderboard(),
@@ -55,7 +58,7 @@ export default class GameController {
     if (!this._mapController.hasRegisteredCanvas()) {
       this._ui.createMap(this._mapController);
     } else {
-      this._mapController.updateJson(this._gameData.getMap());
+      this._mapController.updateMaps(this._gameData.getMaps());
       this._mapController.updateBeacons(this._gameData.getBeacons());
       this._mapController.draw();
     }

@@ -34,8 +34,8 @@ export default class GameData {
     return this._jsonData.levels[level].lvl;
   }
 
-  getMap(level = this._level) {
-    return this._jsonData.levels[level].maps[0];
+  getMaps(level = this._level) {
+    return this._jsonData.levels[level].maps;
   }
 
   getGroupsCount(level = this._level) {
