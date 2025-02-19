@@ -8,7 +8,7 @@ import MapUtils from "./MapUtils.js";
 export default class BeaconsMapController extends CanvasController {
   static PULSE_SPEED = 15; // Frames per second
   static MAX_PULSE_SCALE = 2.5; // Max size multiplier for pulsing effect
-  static STROKE_WEIGHT = 2; // Weight of map border
+  static STROKE_WEIGHT = 1; // Weight of map border
 
   constructor(mapArray, beaconSizes) {
     super();
@@ -78,18 +78,6 @@ export default class BeaconsMapController extends CanvasController {
     return Math.min(this._mapUtils.getSquareSize() / 2, 10);
   }
 
-  #pulse() {
-    return this.#calcStrokeWeight() * this._pulseScale;
-  }
-
-  #drawBeacons(x, y) {
-    this._p5Instance.stroke("white");
-    this._p5Instance.point(x, y);
-
-    this._p5Instance.noStroke();
-    this._p5Instance.circle(x, y, this.#pulse());
-  }
-
   #drawMap(order = this._mapsOrder) {
     this._mapUtils.refresh(
       this.#getRowsCount(),
@@ -100,9 +88,38 @@ export default class BeaconsMapController extends CanvasController {
 
     const shuffledMaps = this.mergeShuffledMaps(order);
 
-    this.#drawMapBorders();
     this.#drawTerrains(shuffledMaps);
+    this.#drawBeacons(shuffledMaps);
+    this.#drawGrid();
+  }
 
+  #drawGrid() {
+    this._p5Instance.strokeWeight(BeaconsMapController.STROKE_WEIGHT);
+    this._p5Instance.stroke("white");
+
+    const { x: left, y: upper } = this._mapUtils.squareCoordinates(0, 0);
+    const { x: right, y: lower } = this._mapUtils.squareCoordinates(
+      this.#getRowsCount(),
+      this.#getColumnsCount(),
+    );
+
+    const lines = [
+      // horizontal lines
+      [left, upper, right, upper],
+      [left, (lower + upper) / 2, right, (lower + upper) / 2],
+      [left, lower, right, lower],
+      // vertical lines
+      [left, upper, left, lower],
+      [(left + right) / 2, upper, (left + right) / 2, lower],
+      [right, upper, right, lower],
+    ];
+
+    for (const [x, y, xx, yy] of lines) {
+      this._p5Instance.line(x, y, xx, yy);
+    }
+  }
+
+  #drawBeacons(surface) {
     let strokeWeight = this.#calcStrokeWeight();
     this._p5Instance.strokeWeight(strokeWeight);
     this._p5Instance.fill(
@@ -114,26 +131,24 @@ export default class BeaconsMapController extends CanvasController {
 
     for (let i = 0; i < this.#getRowsCount(); i++) {
       for (let j = 0; j < this.#getColumnsCount(); j++) {
-        if (shuffledMaps[i][j] === "*") {
+        if (surface[i][j] === "*") {
           const { x, y } = this._mapUtils.squareCenterCoordinates(i, j);
-          this.#drawBeacons(x, y, strokeWeight);
+          this.#drawBeacon(x, y, strokeWeight);
         }
       }
     }
   }
 
-  #drawMapBorders() {
-    this._p5Instance.strokeWeight(BeaconsMapController.STROKE_WEIGHT);
+  #drawBeacon(x, y) {
     this._p5Instance.stroke("white");
-    this._p5Instance.fill(1);
+    this._p5Instance.point(x, y);
 
-    let pos = this._mapUtils.squareCoordinates(0, 0);
-    this._p5Instance.rect(
-      pos.x,
-      pos.y,
-      this._mapUtils.getSquareSize() * this.#getColumnsCount(),
-      this._mapUtils.getSquareSize() * this.#getRowsCount(),
-    );
+    this._p5Instance.noStroke();
+    this._p5Instance.circle(x, y, this.#pulse());
+  }
+
+  #pulse() {
+    return this.#calcStrokeWeight() * this._pulseScale;
   }
 
   #drawTerrains(shuffledMaps) {
