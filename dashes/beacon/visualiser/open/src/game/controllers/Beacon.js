@@ -96,7 +96,10 @@ export default class BeaconController extends CanvasController {
   }
 
   #getBeaconTargetSizes() {
-    const gameMap = this._mapController.mergeShuffledMaps(this._mapOrder);
+    const gameMap = this._mapController.mapUtils.mergeShuffledMaps(
+      this._mapController.getMaps(),
+      this._mapOrder,
+    );
 
     const terrains = this._circleCoordinates.map((point) =>
       Number(gameMap[point.x][point.y]),

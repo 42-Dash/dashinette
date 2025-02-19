@@ -81,4 +81,26 @@ export default class MapUtils {
       y: squareCoordinates.y + this._squareSize / 2,
     };
   }
+
+  /**
+   * Merges fours maps into one where the final result looks next:
+   * [first, second]
+   * [third, fourth]
+   * @param {array<array<array<string>>>} mapsArray to merge
+   * @param {array<number>} order of the maps
+   * @returns {array<array<string>>}
+   */
+  mergeShuffledMaps(mapsArray, order) {
+    let resultMap = [];
+
+    for (let row = 0; row < mapsArray[0].length; row++) {
+      resultMap.push(mapsArray[order[0]][row] + mapsArray[order[1]][row]);
+    }
+
+    for (let row = 0; row < mapsArray[0].length; row++) {
+      resultMap.push(mapsArray[order[2]][row] + mapsArray[order[3]][row]);
+    }
+
+    return resultMap;
+  }
 }

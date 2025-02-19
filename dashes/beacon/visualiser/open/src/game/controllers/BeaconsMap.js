@@ -35,6 +35,10 @@ export default class BeaconsMapController extends CanvasController {
     return this._mapUtils;
   }
 
+  getMaps() {
+    return this._mapArray;
+  }
+
   updateMaps(newMapArray) {
     this._mapArray = newMapArray;
   }
@@ -58,7 +62,7 @@ export default class BeaconsMapController extends CanvasController {
       left: this._mapUtils.getLeftPadding(),
       right:
         this._mapUtils.getLeftPadding() +
-        this._mapUtils.getSquareSize() * this.#getColumnsCount(),
+        this._mapUtils.getSquareSize() * this.#getColsCount(),
       top: this._mapUtils.getUpPadding(),
       bottom:
         this._mapUtils.getUpPadding() +
@@ -66,7 +70,7 @@ export default class BeaconsMapController extends CanvasController {
     };
   }
 
-  #getColumnsCount() {
+  #getColsCount() {
     return this._mapArray[0][0].length * 2;
   }
 
@@ -78,40 +82,58 @@ export default class BeaconsMapController extends CanvasController {
     return Math.min(this._mapUtils.getSquareSize() / 2, 10);
   }
 
+  #getOffsets() {
+    const rows = this.#getRowsCount() / 2;
+    const cols = this.#getColsCount() / 2;
+
+    return [
+      this._mapUtils.squareCoordinates(0, 0),
+      this._mapUtils.squareCoordinates(0, cols),
+      this._mapUtils.squareCoordinates(rows, 0),
+      this._mapUtils.squareCoordinates(rows, cols),
+    ];
+  }
+
   #drawMap(order = this._mapsOrder) {
     this._mapUtils.refresh(
       this.#getRowsCount(),
-      this.#getColumnsCount(),
+      this.#getColsCount(),
       this.width,
       this.height,
     );
 
-    const shuffledMaps = this.mergeShuffledMaps(order);
+    const offsets = this.#getOffsets();
 
-    this.#drawTerrains(shuffledMaps);
-    this.#drawBeacons(shuffledMaps);
-    this.#drawGrid();
+    for (let iter = 0; iter < 4; ++iter) {
+      this.#drawTerrains(this._mapArray[order[iter]], offsets[iter]);
+      this.#drawBeacons(this._mapArray[order[iter]], offsets[iter]);
+      this.#drawGrid(offsets[iter]);
+    }
+
+    for (const offset of offsets) {
+      this._p5Instance.ellipse(offset.x, offset.y, 10);
+    }
   }
 
-  #drawGrid() {
+  #drawGrid(offset) {
     this._p5Instance.strokeWeight(BeaconsMapController.STROKE_WEIGHT);
     this._p5Instance.stroke("white");
 
-    const { x: left, y: upper } = this._mapUtils.squareCoordinates(0, 0);
-    const { x: right, y: lower } = this._mapUtils.squareCoordinates(
-      this.#getRowsCount(),
-      this.#getColumnsCount(),
-    );
+    const width = (this._mapUtils.getSquareSize() * this.#getColsCount()) / 2;
+    const height = (this._mapUtils.getSquareSize() * this.#getRowsCount()) / 2;
+
+    const left = offset.x;
+    const top = offset.y;
+    const right = offset.x + width;
+    const bottom = offset.y + height;
 
     const lines = [
       // horizontal lines
-      [left, upper, right, upper],
-      [left, (lower + upper) / 2, right, (lower + upper) / 2],
-      [left, lower, right, lower],
+      [left, top, right, top],
+      [left, bottom, right, bottom],
       // vertical lines
-      [left, upper, left, lower],
-      [(left + right) / 2, upper, (left + right) / 2, lower],
-      [right, upper, right, lower],
+      [left, top, left, bottom],
+      [right, top, right, bottom],
     ];
 
     for (const [x, y, xx, yy] of lines) {
@@ -119,7 +141,7 @@ export default class BeaconsMapController extends CanvasController {
     }
   }
 
-  #drawBeacons(surface) {
+  #drawBeacons(surface, offset) {
     let strokeWeight = this.#calcStrokeWeight();
     this._p5Instance.strokeWeight(strokeWeight);
     this._p5Instance.fill(
@@ -129,17 +151,21 @@ export default class BeaconsMapController extends CanvasController {
       255 * (BeaconsMapController.MAX_PULSE_SCALE - this._pulseScale),
     );
 
-    for (let i = 0; i < this.#getRowsCount(); i++) {
-      for (let j = 0; j < this.#getColumnsCount(); j++) {
+    for (let i = 0; i < this.#getRowsCount() / 2; i++) {
+      for (let j = 0; j < this.#getColsCount() / 2; j++) {
         if (surface[i][j] === "*") {
-          const { x, y } = this._mapUtils.squareCenterCoordinates(i, j);
-          this.#drawBeacon(x, y, strokeWeight);
+          this.#drawBeacon(i, j, offset);
         }
       }
     }
   }
 
-  #drawBeacon(x, y) {
+  #drawBeacon(row, col, offset) {
+    const squareSize = this._mapUtils.getSquareSize();
+
+    const x = offset.x + squareSize * col + squareSize / 2;
+    const y = offset.y + squareSize * row + squareSize / 2;
+
     this._p5Instance.stroke("white");
     this._p5Instance.point(x, y);
 
@@ -151,41 +177,25 @@ export default class BeaconsMapController extends CanvasController {
     return this.#calcStrokeWeight() * this._pulseScale;
   }
 
-  #drawTerrains(shuffledMaps) {
+  #drawTerrains(field, offset) {
     this._p5Instance.strokeWeight(0);
 
-    for (let i = 0; i < this.#getRowsCount(); i++) {
-      for (let j = 0; j < this.#getColumnsCount(); j++) {
-        const color = this._mapUtils.getTerrainColor(shuffledMaps[i][j]);
-        this.#drawTerrain(i, j, color);
+    for (let i = 0; i < this.#getRowsCount() / 2; i++) {
+      for (let j = 0; j < this.#getColsCount() / 2; j++) {
+        const color = this._mapUtils.getTerrainColor(field[i][j]);
+        this.#drawTerrain(i, j, color, offset);
       }
     }
   }
 
-  #drawTerrain(row, col, color) {
-    const { x, y } = this._mapUtils.squareCoordinates(row, col);
+  #drawTerrain(row, col, color, offset) {
     const squareSize = this._mapUtils.getSquareSize();
+
+    const x = offset.x + squareSize * col;
+    const y = offset.y + squareSize * row;
 
     this._p5Instance.fill(color.r, color.g, color.b);
     this._p5Instance.rect(x, y, squareSize);
-  }
-
-  mergeShuffledMaps(order) {
-    let resultMap = [];
-
-    for (let row = 0; row < this.#getRowsCount() / 2; row++) {
-      resultMap.push(
-        this._mapArray[order[0]][row] + this._mapArray[order[1]][row],
-      );
-    }
-
-    for (let row = 0; row < this.#getRowsCount() / 2; row++) {
-      resultMap.push(
-        this._mapArray[order[2]][row] + this._mapArray[order[3]][row],
-      );
-    }
-
-    return resultMap;
   }
 
   #updatePulseEffects() {
