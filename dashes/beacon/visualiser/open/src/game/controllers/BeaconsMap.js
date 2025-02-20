@@ -6,9 +6,11 @@ import MapUtils from "./MapUtils.js";
  * @brief Manages and renders the game map and beacon animation.
  */
 export default class BeaconsMapController extends CanvasController {
-  static PULSE_SPEED = 15; // Frames per second
+  static ANIMATION_SPEED = 50; // Frames per second
   static MAX_PULSE_SCALE = 2.5; // Max size multiplier for pulsing effect
   static STROKE_WEIGHT = 1; // Weight of map border
+  static MAP_ANIMATION_SPEED = 0.01; // speed of maps movement (step per iteration)
+  static PULSE_ANIMATION_SPEED = 0.02; // speed of beacons growth (step per iteration)
 
   constructor(mapArray, beaconSizes) {
     super();
@@ -16,11 +18,32 @@ export default class BeaconsMapController extends CanvasController {
     this._mapArray = mapArray;
     this._pulseScale = 1; // Controls the beacon pulsing effect
     this._mapUtils = new MapUtils();
+
     this._mapsOrder = [0, 1, 2, 3];
+    this._mapAnimationProgress = 0;
+    this._offsets = this.#getOffsets();
+    this._trajectories = this.#calcTrajectories();
   }
 
-  setMapsOrder(mapsOrder) {
+  updateMapsOrder(mapsOrder) {
     this._mapsOrder = mapsOrder;
+    this._mapAnimationProgress = 0;
+    this._offsets = this.#getOffsets();
+    this._trajectories = this.#calcTrajectories();
+  }
+
+  #calcTrajectories() {
+    return this._offsets.map((offset, index) => ({
+      dest: { x: offset.x, y: offset.y },
+      source: {
+        x: this._offsets[this._mapsOrder[index]].x,
+        y: this._offsets[this._mapsOrder[index]].y,
+      },
+    }));
+  }
+
+  isMapAnimationInProgress() {
+    return this._mapAnimationProgress === 1;
   }
 
   updateBeacons(newBeacons) {
@@ -45,7 +68,7 @@ export default class BeaconsMapController extends CanvasController {
 
   setup() {
     this._p5Instance.createCanvas(this.width, this.height, this._canvasElement);
-    this._p5Instance.frameRate(BeaconsMapController.PULSE_SPEED);
+    this._p5Instance.frameRate(BeaconsMapController.ANIMATION_SPEED);
   }
 
   draw() {
@@ -54,7 +77,7 @@ export default class BeaconsMapController extends CanvasController {
     this._p5Instance.stroke([10, 10, 40]);
     this._p5Instance.noStroke();
     this._p5Instance.fill(0);
-    this.#drawMap();
+    this.#drawMap(this._mapsOrder);
   }
 
   getBoardLimits() {
@@ -94,7 +117,7 @@ export default class BeaconsMapController extends CanvasController {
     ];
   }
 
-  #drawMap(order = this._mapsOrder) {
+  #drawMap(order) {
     this._mapUtils.refresh(
       this.#getRowsCount(),
       this.#getColsCount(),
@@ -102,16 +125,28 @@ export default class BeaconsMapController extends CanvasController {
       this.height,
     );
 
-    const offsets = this.#getOffsets();
-
     for (let iter = 0; iter < 4; ++iter) {
-      this.#drawTerrains(this._mapArray[order[iter]], offsets[iter]);
-      this.#drawBeacons(this._mapArray[order[iter]], offsets[iter]);
-      this.#drawGrid(offsets[iter]);
-    }
+      const offset = {
+        x: this._p5Instance.lerp(
+          this._trajectories[iter].source.x,
+          this._trajectories[iter].dest.x,
+          this._mapAnimationProgress,
+        ),
+        y: this._p5Instance.lerp(
+          this._trajectories[iter].source.y,
+          this._trajectories[iter].dest.y,
+          this._mapAnimationProgress,
+        ),
+      };
 
-    for (const offset of offsets) {
-      this._p5Instance.ellipse(offset.x, offset.y, 10);
+      this.#drawTerrains(this._mapArray[order[iter]], offset);
+      this.#drawBeacons(this._mapArray[order[iter]], offset);
+      this.#drawGrid(offset);
+
+      this._mapAnimationProgress += BeaconsMapController.MAP_ANIMATION_SPEED;
+      if (this._mapAnimationProgress > 1) {
+        this._mapAnimationProgress = 1;
+      }
     }
   }
 
@@ -199,7 +234,7 @@ export default class BeaconsMapController extends CanvasController {
   }
 
   #updatePulseEffects() {
-    this._pulseScale += 0.1;
+    this._pulseScale += BeaconsMapController.PULSE_ANIMATION_SPEED;
     if (this._pulseScale >= BeaconsMapController.MAX_PULSE_SCALE) {
       this._pulseScale = 1;
     }

@@ -1,5 +1,6 @@
 import CanvasController from "./Canvas.js";
 import BeaconsMapController from "./BeaconsMap.js";
+import MapUtils from "./MapUtils.js";
 
 /**
  * @class BeaconController
@@ -96,7 +97,7 @@ export default class BeaconController extends CanvasController {
   }
 
   #getBeaconTargetSizes() {
-    const gameMap = this._mapController.mapUtils.mergeShuffledMaps(
+    const gameMap = MapUtils.mergeShuffledMaps(
       this._mapController.getMaps(),
       this._mapOrder,
     );

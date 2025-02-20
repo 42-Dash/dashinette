@@ -90,7 +90,7 @@ export default class MapUtils {
    * @param {array<number>} order of the maps
    * @returns {array<array<string>>}
    */
-  mergeShuffledMaps(mapsArray, order) {
+  static mergeShuffledMaps(mapsArray, order) {
     let resultMap = [];
 
     for (let row = 0; row < mapsArray[0].length; row++) {

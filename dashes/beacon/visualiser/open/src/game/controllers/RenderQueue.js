@@ -41,9 +41,26 @@ export default class RenderQueueController {
     this._currentIndex++;
   }
 
+  async #awaitMapAnimation() {
+    return new Promise((resolve) => {
+      const checkStage = () => {
+        if (this._mapController.isMapAnimationInProgress()) {
+          clearInterval(interval);
+          resolve();
+        }
+      };
+
+      const interval = setInterval(checkStage, 100);
+    });
+  }
+
   async draw() {
     for (let beaconElement of this._renderQueue) {
-      this._mapController.setMapsOrder(beaconElement.controller.getMapOrder());
+      this._mapController.updateMapsOrder(
+        beaconElement.controller.getMapOrder(),
+      );
+      await this.#awaitMapAnimation();
+
       beaconElement.controller.start();
       beaconElement.status = STATUS.RENDERED;
       await new Promise((resolve) => {
