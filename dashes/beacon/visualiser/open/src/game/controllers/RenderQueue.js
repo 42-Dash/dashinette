@@ -41,32 +41,15 @@ export default class RenderQueueController {
     this._currentIndex++;
   }
 
-  async #awaitMapAnimation() {
-    return new Promise((resolve) => {
-      const checkStage = () => {
-        if (this._mapController.isMapAnimationInProgress()) {
-          clearInterval(interval);
-          resolve();
-        }
-      };
-
-      const interval = setInterval(checkStage, 100);
-    });
-  }
-
   async draw() {
-    for (let beaconElement of this._renderQueue) {
-      this._mapController.updateMapsOrder(
-        beaconElement.controller.getMapOrder(),
-      );
+    for (let queueItem of this._renderQueue) {
+      this._mapController.updateMapsOrder(queueItem.controller.getMapOrder());
       await this.#awaitMapAnimation();
 
-      beaconElement.controller.start();
-      beaconElement.status = STATUS.RENDERED;
-      await new Promise((resolve) => {
-        setTimeout(resolve, 3000);
-      });
-      beaconElement.element.remove();
+      queueItem.controller.start();
+      queueItem.status = STATUS.RENDERED;
+      await new Promise((resolve) => setTimeout(resolve, 3000));
+      queueItem.element.remove();
     }
   }
 
@@ -79,7 +62,20 @@ export default class RenderQueueController {
     this._renderQueue = [];
   }
 
-  animationEnded() {
+  isQueueFinished() {
     return this._renderQueue.every((beacon) => !beacon.controller.isStarted());
+  }
+
+  async #awaitMapAnimation() {
+    return new Promise((resolve) => {
+      const checkStage = () => {
+        if (!this._mapController.isMapAnimationInProgress()) {
+          clearInterval(interval);
+          resolve();
+        }
+      };
+
+      const interval = setInterval(checkStage, 100);
+    });
   }
 }

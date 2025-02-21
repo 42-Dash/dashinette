@@ -65,7 +65,7 @@ export default class RenderQueueController {
     this._renderQueue = [];
   }
 
-  animationEnded() {
+  isQueueFinished() {
     return this._renderQueue.every((beacon) => !beacon.controller.isStarted());
   }
 }

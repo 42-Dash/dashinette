@@ -18,35 +18,32 @@ export default class BeaconsMapController extends CanvasController {
     this._mapArray = mapArray.map((field) => new SubMapController(field));
 
     this._mapsOrder = [0, 1, 2, 3];
+    this._oldMapOrder = [0, 1, 2, 3];
     this._mapAnimationProgress = 0;
-    this._offsets = this.#getOffsets();
-    this._trajectories = this.#calcTrajectories();
+
+    this._mapPositions = this.#calculateMapPositions();
+    this._animationPaths = this.#calculateMovePaths();
   }
 
   updateMapsOrder(mapsOrder) {
     if (this.#arraysEqual(this._mapsOrder, mapsOrder)) return;
 
+    this._oldMapOrder = [...this._mapsOrder];
     this._mapsOrder = mapsOrder;
-    this._mapAnimationProgress = 0;
-    this._offsets = this.#getOffsets();
-    this._trajectories = this.#calcTrajectories();
-  }
 
-  #calcTrajectories() {
-    return this._offsets.map((offset, index) => ({
-      dest: offset,
-      source: this._offsets[this._mapsOrder[index]],
-    }));
+    this._mapAnimationProgress = 0;
+    this._mapPositions = this.#calculateMapPositions();
+    this._animationPaths = this.#calculateMovePaths();
   }
 
   isMapAnimationInProgress() {
-    return this._mapAnimationProgress === 1;
+    return this._mapAnimationProgress < 1;
   }
 
   updateLevel(newMapArray, newBeacons) {
     this._beaconSizes = newBeacons;
-    newMapArray.forEach((field, index) =>
-      this._mapArray[index].setField(field),
+    newMapArray.forEach((terrainGrid, index) =>
+      this._mapArray[index].setTerrainGrid(terrainGrid),
     );
   }
 
@@ -55,7 +52,7 @@ export default class BeaconsMapController extends CanvasController {
   }
 
   getMaps() {
-    return this._mapArray.map((subMap) => subMap.getField());
+    return this._mapArray.map((subMap) => subMap.getTerrainGrid());
   }
 
   setup() {
@@ -69,16 +66,16 @@ export default class BeaconsMapController extends CanvasController {
     const { rows, cols } = this._mapArray[0].getSize();
     this._mapUtils.refresh(rows * 2, cols * 2, this.width, this.height);
 
-    for (let iter = 0; iter < 4; ++iter) {
-      const { source, dest } = this._trajectories[iter];
+    this._mapArray.forEach((subMap, index) => {
+      const { startPos, endPos } = this._animationPaths[index];
 
       const offset = {
-        x: source.x + (dest.x - source.x) * this._mapAnimationProgress,
-        y: source.y + (dest.y - source.y) * this._mapAnimationProgress,
+        x: this.#lerp(startPos.x, endPos.x),
+        y: this.#lerp(startPos.y, endPos.y),
       };
 
-      this._mapArray[this._mapsOrder[iter]].draw(offset);
-    }
+      this._mapArray[this._mapsOrder[index]].render(offset);
+    });
 
     this.#updateMapAnimation();
   }
@@ -98,7 +95,14 @@ export default class BeaconsMapController extends CanvasController {
     };
   }
 
-  #getOffsets() {
+  #calculateMovePaths() {
+    return this._mapsOrder.map((newIndex, iter) => ({
+      endPos: this._mapPositions[iter],
+      startPos: this._mapPositions[this._oldMapOrder.indexOf(newIndex)],
+    }));
+  }
+
+  #calculateMapPositions() {
     const { rows, cols } = this._mapArray[0].getSize();
 
     return [
@@ -114,6 +118,10 @@ export default class BeaconsMapController extends CanvasController {
     if (this._mapAnimationProgress >= 1) {
       this._mapAnimationProgress = 1;
     }
+  }
+
+  #lerp(start, end) {
+    return start + (end - start) * this._mapAnimationProgress;
   }
 
   #arraysEqual(a, b) {

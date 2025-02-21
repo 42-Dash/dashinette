@@ -67,7 +67,7 @@ export default class GameController {
 
     return await new Promise((resolve) => {
       const id = setInterval(() => {
-        if (this._renderQueue.animationEnded()) {
+        if (this._renderQueue.isQueueFinished()) {
           clearInterval(id);
           this._ui.toggleNextLevelButton();
           resolve();

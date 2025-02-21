@@ -5,13 +5,14 @@ export default class SubMapController {
   static MAX_PULSE_SCALE = 2.5; // Max size multiplier for pulsing effect
   static PULSE_ANIMATION_SPEED = 0.02; // speed of beacons growth (step per iteration)
 
-  constructor(field) {
+  constructor(terrainGrid) {
     this._p5Instance = null;
     this._mapUtils = new SingletonMapUtils();
     this._pulseScale = 1;
 
-    this._field = field;
+    this._terrainGrid = terrainGrid;
     this._strokeWeight = 0;
+    this._mapPosition = { x: 0, y: 0 };
 
     this._gradient = new GradientGenerator();
   }
@@ -20,50 +21,51 @@ export default class SubMapController {
     this._p5Instance = p5Instance;
   }
 
-  setField(field) {
-    this._field = field;
+  setTerrainGrid(terrainGrid) {
+    this._terrainGrid = terrainGrid;
   }
 
-  getField() {
-    return this._field;
+  getTerrainGrid() {
+    return this._terrainGrid;
   }
 
   getSize() {
     return {
-      rows: this._field.length,
-      cols: this._field[0].length,
+      rows: this._terrainGrid.length,
+      cols: this._terrainGrid[0].length,
     };
   }
 
-  draw(offset) {
+  render(mapPosition) {
+    this._mapPosition = mapPosition;
     this.#updatePulse();
-    this.#drawTerrains(offset);
-    this.#drawBeacons(offset);
-    this.#drawGrid(offset);
+    this.#renderTerrain();
+    this.#renderBeacons();
+    this.#renderGrid();
   }
 
-  #drawTerrains(offset) {
+  #renderTerrain() {
     this._p5Instance.strokeWeight(0);
     const { rows, cols } = this.getSize();
 
     for (let row = 0; row < rows; row++) {
       for (let col = 0; col < cols; col++) {
-        const color = this._gradient.get(this._field[row][col]);
-        this.#drawTerrain(row, col, color, offset);
+        const color = this._gradient.get(this._terrainGrid[row][col]);
+        this.#renderSquare(row, col, color, this._mapPosition);
       }
     }
   }
 
-  #drawTerrain(row, col, color, offset) {
+  #renderSquare(row, col, color) {
     const squareSize = this._mapUtils.getSquareSize();
-    const x = offset.x + squareSize * col;
-    const y = offset.y + squareSize * row;
+    const x = this._mapPosition.x + squareSize * col;
+    const y = this._mapPosition.y + squareSize * row;
 
     this._p5Instance.fill(color.r, color.g, color.b);
     this._p5Instance.rect(x, y, squareSize);
   }
 
-  #drawBeacons(offset) {
+  #renderBeacons() {
     this._strokeWeight = Math.min(this._mapUtils.getSquareSize() / 2, 10);
 
     this._p5Instance.strokeWeight(this._strokeWeight);
@@ -73,18 +75,18 @@ export default class SubMapController {
 
     for (let row = 0; row < rows; row++) {
       for (let col = 0; col < cols; col++) {
-        if (this._field[row][col] === "*") {
-          this.#drawBeacon(row, col, offset);
+        if (this._terrainGrid[row][col] === "*") {
+          this.#renderBeacon(row, col, this._mapPosition);
         }
       }
     }
   }
 
-  #drawBeacon(row, col, offset) {
+  #renderBeacon(row, col) {
     const squareSize = this._mapUtils.getSquareSize();
 
-    const x = offset.x + squareSize * col + squareSize / 2;
-    const y = offset.y + squareSize * row + squareSize / 2;
+    const x = this._mapPosition.x + squareSize * col + squareSize / 2;
+    const y = this._mapPosition.y + squareSize * row + squareSize / 2;
 
     this._p5Instance.stroke("white");
     this._p5Instance.point(x, y);
@@ -93,7 +95,7 @@ export default class SubMapController {
     this._p5Instance.circle(x, y, this._strokeWeight * this._pulseScale);
   }
 
-  #drawGrid(offset) {
+  #renderGrid() {
     this._p5Instance.strokeWeight(1);
     this._p5Instance.stroke("white");
 
@@ -103,7 +105,12 @@ export default class SubMapController {
     const width = this._mapUtils.getSquareSize() * cols;
 
     this._p5Instance.noFill();
-    this._p5Instance.rect(offset.x, offset.y, width, height);
+    this._p5Instance.rect(
+      this._mapPosition.x,
+      this._mapPosition.y,
+      width,
+      height,
+    );
   }
 
   #updatePulse() {

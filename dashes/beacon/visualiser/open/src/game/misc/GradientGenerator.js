@@ -11,10 +11,11 @@ export default class GradientGenerator {
     8: { r: 58, g: 39, b: 118 },
     9: { r: 29, g: 38, b: 114 },
   };
-  static #index = 0;
+  static _total = 0;
 
   constructor() {
-    GradientGenerator.#index++;
+    this._id = GradientGenerator._total;
+    GradientGenerator._total++;
   }
 
   get(key) {
