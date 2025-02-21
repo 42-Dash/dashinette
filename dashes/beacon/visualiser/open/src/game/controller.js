@@ -58,8 +58,10 @@ export default class GameController {
     if (!this._mapController.hasRegisteredCanvas()) {
       this._ui.createMap(this._mapController);
     } else {
-      this._mapController.updateMaps(this._gameData.getMaps());
-      this._mapController.updateBeacons(this._gameData.getBeacons());
+      this._mapController.updateLevel(
+        this._gameData.getMaps(),
+        this._gameData.getBeacons(),
+      );
       this._mapController.draw();
     }
   }
