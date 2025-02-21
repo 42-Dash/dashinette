@@ -1,5 +1,5 @@
 import CanvasController from "./Canvas.js";
-import MapUtils from "./MapUtils.js";
+import SingletonMapUtils from "./MapUtils.js";
 
 /**
  * @class BeaconsMapController
@@ -15,7 +15,7 @@ export default class BeaconsMapController extends CanvasController {
     this._beaconSizes = beaconSizes;
     this._mapArray = mapArray;
     this._pulseScale = 1; // Controls the beacon pulsing effect
-    this._mapUtils = new MapUtils();
+    this._mapUtils = new SingletonMapUtils();
   }
 
   updateBeacons(newBeacons) {
@@ -24,10 +24,6 @@ export default class BeaconsMapController extends CanvasController {
 
   getBeacons() {
     return this._beaconSizes;
-  }
-
-  get mapUtils() {
-    return this._mapUtils;
   }
 
   updateJson(newMapArray) {

@@ -2,11 +2,19 @@
  * @class MapUtils
  * @brief Handles map-related calculations, including square sizes, distances, and positions.
  */
-export default class MapUtils {
+export default class SingletonMapUtils {
+  static _instance = null; // Holds the single instance
+
   constructor() {
+    if (SingletonMapUtils._instance) {
+      return SingletonMapUtils._instance; // Return existing instance if already created
+    }
+
     this._squareSize = 0;
     this._leftPadding = 0;
     this._upPadding = 0;
+
+    SingletonMapUtils._instance = this;
   }
 
   getSquareSize() {
@@ -73,7 +81,7 @@ export default class MapUtils {
    * @param {array<number>} order of the maps
    * @returns {array<array<string>>}
    */
-  static mergeShuffledMaps(mapsArray, order) {
+  mergeShuffledMaps(mapsArray, order) {
     let resultMap = [];
 
     for (let row = 0; row < mapsArray[0].length; row++) {

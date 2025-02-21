@@ -1,5 +1,5 @@
 import CanvasController from "./Canvas.js";
-import MapUtils from "./MapUtils.js";
+import SingletonMapUtils from "./MapUtils.js";
 import SubMapController from "./SubMap.js";
 
 /**
@@ -14,10 +14,8 @@ export default class BeaconsMapController extends CanvasController {
   constructor(mapArray, beaconSizes) {
     super();
     this._beaconSizes = beaconSizes;
-    this._mapUtils = new MapUtils();
-    this._mapArray = mapArray.map(
-      (field) => new SubMapController(field, this._mapUtils),
-    );
+    this._mapUtils = new SingletonMapUtils();
+    this._mapArray = mapArray.map((field) => new SubMapController(field));
 
     this._mapsOrder = [0, 1, 2, 3];
     this._mapAnimationProgress = 0;
@@ -54,10 +52,6 @@ export default class BeaconsMapController extends CanvasController {
 
   getBeacons() {
     return this._beaconSizes;
-  }
-
-  get mapUtils() {
-    return this._mapUtils;
   }
 
   getMaps() {

@@ -1,13 +1,13 @@
-import BeaconsMapController from "./BeaconsMap.js";
 import GradientGenerator from "../misc/GradientGenerator.js";
+import SingletonMapUtils from "./MapUtils.js";
 
 export default class SubMapController {
   static MAX_PULSE_SCALE = 2.5; // Max size multiplier for pulsing effect
   static PULSE_ANIMATION_SPEED = 0.02; // speed of beacons growth (step per iteration)
 
-  constructor(field, mapUtils) {
+  constructor(field) {
     this._p5Instance = null;
-    this._mapUtils = mapUtils;
+    this._mapUtils = new SingletonMapUtils();
     this._pulseScale = 1;
 
     this._field = field;

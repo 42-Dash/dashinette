@@ -1,5 +1,6 @@
 import CanvasController from "./Canvas.js";
 import BeaconsMapController from "./BeaconsMap.js";
+import SingletonMapUtils from "./MapUtils.js";
 
 /**
  * @class BeaconController
@@ -16,6 +17,8 @@ export default class BeaconController extends CanvasController {
     this._color = color;
     this._circleCoordinates = [];
     this._isStarted = false;
+
+    this._mapUtils = new SingletonMapUtils();
 
     this.#initPoints(path);
     this._circleSizes = new Array(this._circleCoordinates.length).fill(1);
@@ -58,13 +61,11 @@ export default class BeaconController extends CanvasController {
     const strokeWeight = this.#calcStrokeWeight();
 
     this._circleCoordinates.forEach((circle, index) => {
-      let pos = this._mapController.mapUtils.squareCenterCoordinates(
-        circle.x,
-        circle.y,
-      );
+      let pos = this._mapUtils.squareCenterCoordinates(circle.x, circle.y);
       this._p5Instance.fill(this._color.r, this._color.g, this._color.b, 50);
 
-      const radius = this._circleSizes[index] + this.#getSquaresDistance() / 2;
+      const radius =
+        this._circleSizes[index] + this._mapUtils.getSquareSize() / 2;
       const [left, top, right, bottom] = this.#calculateBoundaries(pos, radius);
       this._p5Instance.strokeWeight(strokeWeight / 4);
       this._p5Instance.rect(
@@ -93,7 +94,7 @@ export default class BeaconController extends CanvasController {
   #getBeaconTargetSizes() {
     return this._mapController
       .getBeacons()
-      .map((element) => element * this._mapController.mapUtils.getSquareSize());
+      .map((element) => element * this._mapUtils.getSquareSize());
   }
 
   #hasGrowingBeacons() {
@@ -108,14 +109,14 @@ export default class BeaconController extends CanvasController {
 
   #calcStrokeWeight() {
     return Math.max(
-      this._mapController.mapUtils.getSquareSize() / 10,
+      this._mapUtils.getSquareSize() / 10,
       BeaconController.MIN_STROKE_WEIGHT,
     );
   }
 
   #calculateBeaconDiameter() {
     return Math.min(
-      this._mapController.mapUtils.getSquareSize() / 2,
+      this._mapUtils.getSquareSize() / 2,
       BeaconController.MIN_BEACON_DIAMETER,
     );
   }
@@ -134,10 +135,6 @@ export default class BeaconController extends CanvasController {
       Math.min(pos.x + radius, screenRightBorder),
       Math.min(pos.y + radius, screenBottomBorder),
     ];
-  }
-
-  #getSquaresDistance() {
-    return this._mapController.mapUtils.getSquareSize();
   }
 
   #reset() {
