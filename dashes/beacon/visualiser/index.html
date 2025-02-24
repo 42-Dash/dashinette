@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<title>Beacon visualiser</title>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <link rel="icon" href="media/images/purple.png" type="image/png">
+        <link rel="stylesheet" href="media/css/styles.css">
+
+		<script src="node_modules/p5/lib/p5.js"></script>
+        <script src="src/game.js" type="module"></script>
+        <script src="src/game/controller.js" type="module"></script>
+        <script src="src/game/controllers/CanvasBase.js" type="module"></script>
+        <script src="src/game/controllers/maps/MapOpenLeague.js" type="module"></script>
+        <script src="src/game/controllers/maps/MapRookieLeague.js" type="module"></script>
+        <script src="src/game/controllers/maps/MapUtils.js" type="module"></script>
+        <script src="src/game/controllers/maps/SubMapOpenLeague.js" type="module"></script>
+        <script src="src/game/controllers/beacons/BeaconOpenLeague.js" type="module"></script>
+        <script src="src/game/controllers/beacons/BeaconRookieLeague.js" type="module"></script>
+        <script src="src/game/controllers/render-queue/RenderQueueOpenLeague.js" type="module"></script>
+        <script src="src/game/controllers/render-queue/RenderQueueRookieLeague.js" type="module"></script>
+        <script src="src/game/data.js" type="module"></script>
+        <script src="src/game/ui.js" type="module"></script>
+        <script src="src/web-components/Canvas.js" type="module"></script>
+        <script src="src/web-components/CanvasContainer.js" type="module"></script>
+        <script src="src/config.js" type="module"></script>
+        <script src="src/index.js" type="module"></script>
+	</head>
+	<body class="main">
+        <nav class="navigation-bar">
+            <dash-logo class="dash-logo"></dash-logo>
+            <button type="button" id="next-level-btn">Next Level</button>
+            <button type="button" id="start-btn">Start</button>
+            <p id="level-text"></p>
+        </nav>
+        <main>
+            <div class="animation">
+                <dash-logo class="dash-logo" id="blocking-screen"></dash-logo>
+                <canvas-container id="canvas-container"></canvas-container>
+            </div>
+            <dash-leaderboard id="ranking"></dash-leaderboard>
+        </main>
+	</body>
+    <template id="ranking-group">
+		<div class="ranking-entry">
+            <p class="name"></p>
+            <p class="current_points"></p>
+            <p class="total_score"></p>
+        </div>
+    </template>
+    <template id="ranking-header">
+        <div class="ranking-header">
+            <p class="name">group name</p>
+            <p class="current_points">score</p>
+            <p class="total_score">total</p>
+        </div>
+    </template>
+</html>
