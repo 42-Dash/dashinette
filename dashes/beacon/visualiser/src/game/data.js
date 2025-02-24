@@ -1,4 +1,5 @@
 import ColorGenerator from "./misc/ColorGenerator.js";
+import { currentLeague, LEAGUES } from "../config.js";
 
 /**
  * @class GameData
@@ -35,11 +36,11 @@ export default class GameData {
   }
 
   getMaps(level = this._level) {
-    return this._jsonData.levels[level].maps;
-  }
-
-  getMap(level = this._level) {
-    return this._jsonData.levels[level].maps[0];
+    if (currentLeague === LEAGUES.OPEN) {
+      return this._jsonData.levels[level].maps;
+    } else if (currentLeague === LEAGUES.ROOKIE) {
+      return this._jsonData.levels[level].maps[0];
+    }
   }
 
   getGroupsCount(level = this._level) {

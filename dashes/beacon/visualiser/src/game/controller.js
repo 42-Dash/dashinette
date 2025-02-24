@@ -1,11 +1,9 @@
-import RenderQueueOpenLeagueController from "./controllers/render-queue/RenderQueueOpenLeague.js";
-import RenderQueueRookieLeagueController from "./controllers/render-queue/RenderQueueRookieLeague.js";
-import BeaconOpenLeagueController from "./controllers/beacons/BeaconOpenLeague.js";
-import BeaconRookieLeagueController from "./controllers/beacons/BeaconRookieLeague.js";
+import {
+  createMapController,
+  createRenderQueue,
+  createBeaconController,
+} from "./controllerFactory.js";
 import LeaderboardController from "./controllers/leaderboard/Leaderboard.js";
-import BeaconsMapRookieLeagueController from "./controllers/maps/MapRookieLeague.js";
-import BeaconsMapOpenLeagueController from "./controllers/maps/MapOpenLeague.js";
-import { LEAGUES, currentLeague } from "../config.js";
 
 /**
  * @class GameController
@@ -18,26 +16,11 @@ export default class GameController {
   constructor(gameData, ui) {
     this._ui = ui;
     this._gameData = gameData;
-
-    if (currentLeague === LEAGUES.OPEN) {
-      this._mapController = new BeaconsMapOpenLeagueController(
-        gameData.getMaps(),
-        gameData.getBeacons(),
-      );
-      this._renderQueue = new RenderQueueOpenLeagueController(
-        ui.getContainer(),
-        this._mapController,
-      );
-    } else if (currentLeague === LEAGUES.ROOKIE) {
-      this._mapController = new BeaconsMapRookieLeagueController(
-        gameData.getMap(),
-        gameData.getBeacons(),
-      );
-      this._renderQueue = new RenderQueueRookieLeagueController(
-        ui.getContainer(),
-      );
-    }
-
+    this._mapController = createMapController(gameData);
+    this._renderQueue = createRenderQueue(
+      ui.getContainer(),
+      this._mapController,
+    );
     this._leaderboard = new LeaderboardController(
       gameData,
       ui.getLeaderboard(),
@@ -74,17 +57,10 @@ export default class GameController {
     if (!this._mapController.hasRegisteredCanvas()) {
       this._ui.createMap(this._mapController);
     } else {
-      if (currentLeague === LEAGUES.OPEN) {
-        this._mapController.updateLevel(
-          this._gameData.getMaps(),
-          this._gameData.getBeacons(),
-        );
-      } else if (currentLeague === LEAGUES.ROOKIE) {
-        this._mapController.updateLevel(
-          this._gameData.getMap(),
-          this._gameData.getBeacons(),
-        );
-      }
+      this._mapController.updateLevel(
+        this._gameData.getMaps(),
+        this._gameData.getBeacons(),
+      );
       this._mapController.draw();
     }
   }
@@ -114,25 +90,10 @@ export default class GameController {
 
   #getOrCreateControllerAt(groupIndex) {
     if (!this._controllers.has(groupIndex)) {
-      if (currentLeague === LEAGUES.OPEN) {
-        this._controllers.set(
-          groupIndex,
-          new BeaconOpenLeagueController(
-            this._gameData.getGroupOutput(groupIndex),
-            this._mapController,
-            this._gameData.getGroupColor(groupIndex),
-          ),
-        );
-      } else if (currentLeague === LEAGUES.ROOKIE) {
-        this._controllers.set(
-          groupIndex,
-          new BeaconRookieLeagueController(
-            this._gameData.getGroupOutput(groupIndex),
-            this._mapController,
-            this._gameData.getGroupColor(groupIndex),
-          ),
-        );
-      }
+      this._controllers.set(
+        groupIndex,
+        createBeaconController(groupIndex, this._gameData, this._mapController),
+      );
     }
     return this._controllers.get(groupIndex);
   }

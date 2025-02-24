@@ -1,19 +1,15 @@
 import { CANVAS_RENDER_ELEMENT } from "../../../index.js";
 
-const STATUS = {
-  REQUIRES_RENDERING: "requires-rendering",
-  RENDERED: "rendered",
-};
-
 /**
  * @class RenderQueueController
- * @brief Manages the rendering queue of beacon animations.
- *
- * This class handles the queue of animation paths to be rendered sequentially.
- * It ensures that each beacon animation starts at the correct time and
- * provides methods to manage and reset the rendering queue.
+ * Base class for managing the rendering queue of beacon animations
  */
-export default class RenderQueueRookieLeagueController {
+export default class RenderQueueBase {
+  static STATUS = {
+    REQUIRES_RENDERING: "requires-rendering",
+    RENDERED: "rendered",
+  };
+
   constructor(container) {
     this._renderQueue = [];
     this._currentIndex = 0;
@@ -25,7 +21,7 @@ export default class RenderQueueRookieLeagueController {
 
     if (existingEntry) {
       existingEntry.data = beaconController;
-      existingEntry.status = STATUS.REQUIRES_RENDERING;
+      existingEntry.status = RenderQueueBase.STATUS.REQUIRES_RENDERING;
     } else {
       const beaconElement = document.createElement(CANVAS_RENDER_ELEMENT);
       this._container.appendChild(beaconElement);
@@ -33,27 +29,16 @@ export default class RenderQueueRookieLeagueController {
       this._renderQueue[this._currentIndex] = {
         element: beaconElement,
         controller: beaconController,
-        status: STATUS.REQUIRES_RENDERING,
+        status: RenderQueueBase.STATUS.REQUIRES_RENDERING,
       };
     }
 
     this._currentIndex++;
   }
 
+  // this function must be implemented by subclasses!
   async draw() {
-    for (let [index, beaconElement] of this._renderQueue.entries()) {
-      new Promise((resolve) => {
-        setTimeout(() => {
-          if (beaconElement.status === STATUS.REQUIRES_RENDERING) {
-            beaconElement.controller.start();
-          } else if (beaconElement.status === STATUS.RENDERED) {
-            beaconElement.controller.clear();
-          }
-          beaconElement.status = STATUS.RENDERED;
-          resolve();
-        }, 1500 * index);
-      });
-    }
+    throw new Error("draw() must be implemented in subclasses");
   }
 
   resetRenderQueue() {
