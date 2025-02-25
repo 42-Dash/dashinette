@@ -1,5 +1,5 @@
 export default class GradientGenerator {
-  static TERRAIN_GRADIENT = {
+  static PURPLE_GRADIENT = {
     "*": { r: 195, g: 55, b: 99 },
     1: { r: 183, g: 47, b: 105 },
     2: { r: 170, g: 41, b: 111 },
@@ -11,14 +11,16 @@ export default class GradientGenerator {
     8: { r: 58, g: 39, b: 118 },
     9: { r: 29, g: 38, b: 114 },
   };
-  static _total = 0;
+  static GRADIENTS = [GradientGenerator.PURPLE_GRADIENT];
+  static _prevId = 0;
 
   constructor() {
-    this._id = GradientGenerator._total;
-    GradientGenerator._total++;
+    this._id = GradientGenerator._prevId;
+    GradientGenerator._prevId++;
+    GradientGenerator._prevId %= GradientGenerator.GRADIENTS.length;
   }
 
   get(key) {
-    return GradientGenerator.TERRAIN_GRADIENT[key];
+    return GradientGenerator.GRADIENTS[this._id][key];
   }
 }
