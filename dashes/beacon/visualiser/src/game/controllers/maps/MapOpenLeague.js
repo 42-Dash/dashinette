@@ -8,7 +8,6 @@ import SubMapController from "./SubMapOpenLeague.js";
  */
 export default class BeaconsMapOpenLeagueController extends CanvasController {
   static ANIMATION_SPEED = 50; // Frames per second
-  static STROKE_WEIGHT = 1; // Weight of map border
   static MAP_ANIMATION_SPEED = 0.03; // speed of maps movement (step per iteration)
 
   constructor(mapArray, beaconSizes) {
