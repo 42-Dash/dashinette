@@ -10,5 +10,11 @@ export async function loadGameData(filename) {
   const data = await response.json();
 
   currentLeague = data.league;
+
+  const leagueNameElement = document.getElementById("league-name");
+  if (leagueNameElement) {
+    leagueNameElement.textContent = currentLeague;
+  }
+
   return data;
 }
