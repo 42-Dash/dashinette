@@ -1,9 +1,12 @@
-FROM python:3.12.4-slim
+FROM node:18
 
 WORKDIR /app
+
+COPY package.json package-lock.json ./
+RUN npm install
 
 COPY . .
 
 EXPOSE 8080
 
-CMD ["python3", "-m", "http.server", "8080"]
+CMD ["npm", "start"]

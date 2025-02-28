@@ -8,8 +8,14 @@ import (
 )
 
 const DOCKERFILE_PATH = "dashes/marvin/visualiser/"
-const DOCKER_IMAGE_NAME = "dashinette-visualiser"
-const DOCKER_CONTAINER_NAME = "visualiser"
+const DOCKER_IMAGE_NAME = "marvin-visualiser"
+const DOCKER_CONTAINER_PREFIX = "visualiser"
+
+var (
+	port          string
+	resultFile    string
+	containerName string
+)
 
 func createDockerImage() {
 	log.Printf("Building docker image %s...", DOCKER_IMAGE_NAME)
@@ -17,6 +23,7 @@ func createDockerImage() {
 	buildCmd.Stdout = os.Stdout
 	buildCmd.Stderr = os.Stderr
 	buildCmd.Dir = DOCKERFILE_PATH
+
 	if err := buildCmd.Run(); err != nil {
 		log.Fatalf("Failed to build Docker image %s: %v", DOCKER_IMAGE_NAME, err)
 	}
@@ -27,8 +34,8 @@ func runDockerContainer() {
 	runCmd := exec.Command(
 		"docker", "run",
 		"--detach",
-		"--publish", "8080:8080",
-		"--name", DOCKER_CONTAINER_NAME,
+		"--publish", port+":8080",
+		"--name", containerName,
 		DOCKER_IMAGE_NAME,
 	)
 	runCmd.Stdout = os.Stdout
@@ -39,7 +46,7 @@ func runDockerContainer() {
 }
 
 func copyFileToDockerDirectory() {
-	copyCmd := exec.Command("cp", os.Args[1], DOCKERFILE_PATH+"/results.json")
+	copyCmd := exec.Command("cp", resultFile, DOCKERFILE_PATH+"results.json")
 	copyCmd.Stdout = os.Stdout
 	copyCmd.Stderr = os.Stderr
 	if err := copyCmd.Run(); err != nil {
@@ -52,18 +59,21 @@ func main() {
 	createDockerImage()
 	runDockerContainer()
 
-	fmt.Println("\n\033[32mVisualiser is running at http://localhost:8080\033[0m")
-	fmt.Println("Container name:", "\033[32m", DOCKER_CONTAINER_NAME, "\033[0m")
+	fmt.Printf("\n\033[32mVisualiser is running at http://localhost:%s\033[0m\n", port)
+	fmt.Printf("Container name: \033[32m%s\033[0m\n", containerName)
 }
 
 func init() {
-	if len(os.Args) != 2 {
-		log.Fatalf("Usage: ./main <result-file.json>")
+	if len(os.Args) != 3 {
+		log.Fatalf("Usage: ./main <result-file.json> <port>")
 	}
-	if _, err := os.Stat(os.Args[1]); err != nil {
+	resultFile = os.Args[1]
+	if _, err := os.Stat(resultFile); err != nil {
 		log.Fatalf("Error: %v", err)
 	}
+	port = os.Args[2]
 	if _, err := os.Stat(DOCKERFILE_PATH); err != nil {
 		log.Fatalf("Error: %v", err)
 	}
+	containerName = DOCKER_CONTAINER_PREFIX + port
 }
