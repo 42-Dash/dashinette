@@ -39,12 +39,23 @@ export default class GameController {
   }
 
   loadAllBeaconControllers() {
+    let renderGroups = [];
+
     for (let group = 0; group < this._gameData.getGroupsCount(); group++) {
       if (!this._gameData.isValidGroupStatus(group)) {
         continue;
       }
-      this._renderQueue.addToRenderQueue(this.#getOrCreateControllerAt(group));
+      renderGroups.push({
+        score: this._gameData.getGroupsScoreByIndex(group),
+        controller: this.#getOrCreateControllerAt(group),
+      });
     }
+
+    renderGroups
+      .sort((a, b) => a.score - b.score)
+      .forEach(({ controller }) => {
+        this._renderQueue.addToRenderQueue(controller);
+      });
   }
 
   resetGameState() {
