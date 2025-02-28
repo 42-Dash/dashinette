@@ -7,8 +7,8 @@ import (
 	"os/exec"
 )
 
-const DOCKERFILE_PATH = "dashes/marvin/visualiser/"
-const DOCKER_IMAGE_NAME = "marvin-visualiser"
+const DOCKERFILE_PATH = "dashes/beacon/visualiser/"
+const DOCKER_IMAGE_NAME = "beacon-visualiser"
 const DOCKER_CONTAINER_PREFIX = "visualiser"
 
 var (
@@ -46,7 +46,7 @@ func runDockerContainer() {
 }
 
 func copyFileToDockerDirectory() {
-	copyCmd := exec.Command("cp", resultFile, DOCKERFILE_PATH+"results.json")
+	copyCmd := exec.Command("cp", resultFile, DOCKERFILE_PATH+"/results.json")
 	copyCmd.Stdout = os.Stdout
 	copyCmd.Stderr = os.Stderr
 	if err := copyCmd.Run(); err != nil {
