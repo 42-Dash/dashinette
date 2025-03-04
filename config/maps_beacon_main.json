@@ -1,0 +1,193 @@
+{
+    "rookieleague": [
+        {
+            "paths": ["dashes/beacon/maps/rookieleague/final_0.txt"],
+            "name": "Level 0",
+            "beacons": "1 1",
+            "timeout": 1
+        },
+        {
+            "paths": ["dashes/beacon/maps/rookieleague/final_1.txt"],
+            "name": "Level 1",
+            "beacons": "2 1 1",
+            "timeout": 1
+        },
+        {
+            "paths": ["dashes/beacon/maps/rookieleague/final_2.txt"],
+            "name": "Level 2",
+            "beacons": "3 2 2 1",
+            "timeout": 1
+        },
+        {
+            "paths": ["dashes/beacon/maps/rookieleague/final_3.txt"],
+            "name": "Level 3",
+            "beacons": "3 3 2 2 2 2 2 1",
+            "timeout": 1
+        },
+        {
+            "paths": ["dashes/beacon/maps/rookieleague/final_4.txt"],
+            "name": "Level 4",
+            "beacons": "5 5 4 4 3 3 2 2 1 1",
+            "timeout": 1
+        },
+        {
+            "paths": ["dashes/beacon/maps/rookieleague/final_5.txt"],
+            "name": "Level 5",
+            "beacons": "4 4 4 4 3 3 3 3 3 3 3 3 2 2 2 2 2 2 2 2 2 2 2 1 1 1 1",
+            "timeout": 1
+        },
+        {
+            "paths": ["dashes/beacon/maps/rookieleague/final_6.txt"],
+            "name": "Level 6",
+            "beacons": "5 5 5 5 5 5 5 4 4 3 3 3 3 3 3 3 3 2 2 2 2 2 2",
+            "timeout": 1
+        },
+        {
+            "paths": ["dashes/beacon/maps/rookieleague/final_7.txt"],
+            "name": "Level 7",
+            "beacons": "10 3 3 3 3 3 3 3 3 3 3 3 3 2 2 2 2 2 2 2 2 2 2 2 2",
+            "timeout": 1
+        },
+        {
+            "paths": ["dashes/beacon/maps/rookieleague/final_8.txt"],
+            "name": "Level 8",
+            "beacons": "8 8 8 8 7 7 7 7 6 6 6 5 5 5 4 4 4 4 3 3 3 3 3 3 3 3 2 2 2 2 2 2 2 2 2 2 2 1 1 1 1",
+            "timeout": 1
+        },
+        {
+            "paths": ["dashes/beacon/maps/rookieleague/final_9.txt"],
+            "name": "Level 9",
+            "beacons": "15 14 14 13 13 13 12 12 12 12 11 11 11 10 10 10 10 10 9 9 9 9 8 8 8 8 8 8 8 8 8 8 8 8 8 8",
+            "timeout": 1
+        },
+        {
+            "paths": ["dashes/beacon/maps/rookieleague/final_10.txt"],
+            "name": "Level 10",
+            "beacons": "20 20 20 18 18 18 17 17 17 16 16 16 15 14 14 13 13 13 12 12 12 12 11 11 11 10 10 10 10 10 9 9 9 9 8 8 8 8 8 8 8 8 8 8 8 8 8 8",
+            "timeout": 1
+        }
+    ],
+    "openleague": [
+        {
+            "paths": [
+                "dashes/beacon/maps/openleague/final_0_0.txt",
+                "dashes/beacon/maps/openleague/final_0_1.txt",
+                "dashes/beacon/maps/openleague/final_0_2.txt",
+                "dashes/beacon/maps/openleague/final_0_3.txt"
+            ],
+            "name": "Level 0",
+            "beacons": "1 1 1",
+            "timeout": 1
+        },
+        {
+            "paths": [
+                "dashes/beacon/maps/openleague/final_1_0.txt",
+                "dashes/beacon/maps/openleague/final_1_1.txt",
+                "dashes/beacon/maps/openleague/final_1_2.txt",
+                "dashes/beacon/maps/openleague/final_1_3.txt"
+            ],
+            "name": "Level 1",
+            "beacons": "2 2 1 1 1",
+            "timeout": 1
+        },
+        {
+            "paths": [
+                "dashes/beacon/maps/openleague/final_2_0.txt",
+                "dashes/beacon/maps/openleague/final_2_1.txt",
+                "dashes/beacon/maps/openleague/final_2_2.txt",
+                "dashes/beacon/maps/openleague/final_2_3.txt"
+            ],
+            "name": "Level 2",
+            "beacons": "2 2 2 1 1 1",
+            "timeout": 1
+        },
+        {
+            "paths": [
+                "dashes/beacon/maps/openleague/final_3_0.txt",
+                "dashes/beacon/maps/openleague/final_3_1.txt",
+                "dashes/beacon/maps/openleague/final_3_2.txt",
+                "dashes/beacon/maps/openleague/final_3_3.txt"
+            ],
+            "name": "Level 3",
+            "beacons": "3 3 3 3 2 2 2 2 1 1 1 1",
+            "timeout": 1
+        },
+        {
+            "paths": [
+                "dashes/beacon/maps/openleague/final_4_0.txt",
+                "dashes/beacon/maps/openleague/final_4_1.txt",
+                "dashes/beacon/maps/openleague/final_4_2.txt",
+                "dashes/beacon/maps/openleague/final_4_3.txt"
+            ],
+            "name": "Level 4",
+            "beacons": "2 2 2 2 2 2 2 2 2 2 1 1 1 1 1 1 1 1 1 1 1 1",
+            "timeout": 1
+        },
+        {
+            "paths": [
+                "dashes/beacon/maps/openleague/final_5_0.txt",
+                "dashes/beacon/maps/openleague/final_5_1.txt",
+                "dashes/beacon/maps/openleague/final_5_2.txt",
+                "dashes/beacon/maps/openleague/final_5_3.txt"
+            ],
+            "name": "Level 5",
+            "beacons": "1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1",
+            "timeout": 1
+        },
+        {
+            "paths": [
+                "dashes/beacon/maps/openleague/final_6_0.txt",
+                "dashes/beacon/maps/openleague/final_6_1.txt",
+                "dashes/beacon/maps/openleague/final_6_2.txt",
+                "dashes/beacon/maps/openleague/final_6_3.txt"
+            ],
+            "name": "Level 6",
+            "beacons": "1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1",
+            "timeout": 1
+        },
+        {
+            "paths": [
+                "dashes/beacon/maps/openleague/final_7_0.txt",
+                "dashes/beacon/maps/openleague/final_7_1.txt",
+                "dashes/beacon/maps/openleague/final_7_2.txt",
+                "dashes/beacon/maps/openleague/final_7_3.txt"
+            ],
+            "name": "Level 7",
+            "beacons": "4 4 4 4 4 4 4 4 3 3 3 3 3 3 3 3 3 3 3 3 2 2 2 2 2 2 2 2 2 2 2 2 1 1 1 1 1 1 1 1 1 1 1 1",
+            "timeout": 1
+        },
+        {
+            "paths": [
+                "dashes/beacon/maps/openleague/final_8_0.txt",
+                "dashes/beacon/maps/openleague/final_8_1.txt",
+                "dashes/beacon/maps/openleague/final_8_2.txt",
+                "dashes/beacon/maps/openleague/final_8_3.txt"
+            ],
+            "name": "Level 8",
+            "beacons": "5 5 5 5 5 5 5 5 5 5 4 4 4 4 4 4 4 4 3 3 3 3 3 3 3 3 3 3 3 3 2 2 2 2 2 2 2 2 2 2 2 2 1 1 1 1 1 1 1 1 1 1 1 1",
+            "timeout": 1
+        },
+        {
+            "paths": [
+                "dashes/beacon/maps/openleague/final_9_0.txt",
+                "dashes/beacon/maps/openleague/final_9_1.txt",
+                "dashes/beacon/maps/openleague/final_9_2.txt",
+                "dashes/beacon/maps/openleague/final_9_3.txt"
+            ],
+            "name": "Level 9",
+            "beacons": "5 5 5 5 5 5 5 5 5 5 4 4 4 4 4 4 4 4 3 3 3 3 3 3 3 3 3 3 3 3 2 2 2 2 2 2 2 2 2 2 2 2 1 1 1 1 1 1 1 1 1 1 1 1",
+            "timeout": 1
+        },
+        {
+            "paths": [
+                "dashes/beacon/maps/openleague/final_10_0.txt",
+                "dashes/beacon/maps/openleague/final_10_1.txt",
+                "dashes/beacon/maps/openleague/final_10_2.txt",
+                "dashes/beacon/maps/openleague/final_10_3.txt"
+            ],
+            "name": "Level 10",
+            "beacons": "9 9 9 9 8 8 8 8 7 7 7 7 6 6 5 5 5 5 5 5 5 5 5 5 5 4 4 4 4 4 4 4 4 3 3 3 3 3 3 3 3 3 3 3 3 2 2 2 2 2 2 2 2 2 2 2 2 1 1 1 1 1 1 1 1 1 1 1 1",
+            "timeout": 1
+        }
+    ]
+}

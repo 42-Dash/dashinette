@@ -38,7 +38,7 @@ func getFirstValue(traces map[string]Traces) (res Traces) {
 }
 
 func extractLevel(line string) int {
-	match := regexp.MustCompile(`level_(\d+)`).FindStringSubmatch(line)[1]
+	match := regexp.MustCompile(`_(\d+)`).FindStringSubmatch(line)[1]
 	if match == "" {
 		panic("No level found")
 	}
