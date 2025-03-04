@@ -3,10 +3,10 @@ import SingletonMapUtils from "./MapUtils.js";
 import SubMapController from "./SubMapOpenLeague.js";
 
 /**
- * @class BeaconsMapOpenLeagueController
+ * @class MapOpenLeague
  * @brief Manages and renders the game map and beacon animation.
  */
-export default class BeaconsMapOpenLeagueController extends CanvasController {
+export default class MapOpenLeague extends CanvasController {
   static ANIMATION_SPEED = 50; // Frames per second
   static MAP_ANIMATION_SPEED = 0.03; // speed of maps movement (step per iteration)
 
@@ -16,10 +16,10 @@ export default class BeaconsMapOpenLeagueController extends CanvasController {
     this._mapUtils = new SingletonMapUtils();
     this._mapArray = mapArray.map((field) => new SubMapController(field));
 
-    this._mapsOrder = [0, 1, 2, 3];
     this._oldMapOrder = [0, 1, 2, 3];
-    this._mapAnimationProgress = 0;
+    this._mapsOrder = [0, 1, 2, 3];
 
+    this._mapAnimationProgress = 0;
     this._mapPositions = this.#calculateMapPositions();
     this._animationPaths = this.#calculateMovePaths();
   }
@@ -42,7 +42,7 @@ export default class BeaconsMapOpenLeagueController extends CanvasController {
   updateLevel(newMapArray, newBeacons) {
     this._beaconSizes = newBeacons;
     newMapArray.forEach((terrainGrid, index) =>
-      this._mapArray[index].setTerrainGrid(terrainGrid),
+      this._mapArray[index].updateLevel(terrainGrid),
     );
   }
 
@@ -56,8 +56,8 @@ export default class BeaconsMapOpenLeagueController extends CanvasController {
 
   setup() {
     this._p5Instance.createCanvas(this.width, this.height, this._canvasElement);
-    this._p5Instance.frameRate(BeaconsMapOpenLeagueController.ANIMATION_SPEED);
-    this._mapArray.forEach((subMap) => subMap.setP5Instance(this._p5Instance));
+    this._p5Instance.frameRate(MapOpenLeague.ANIMATION_SPEED);
+    this._mapArray.forEach((subMap) => subMap.setup(this._p5Instance));
   }
 
   draw() {
@@ -114,7 +114,7 @@ export default class BeaconsMapOpenLeagueController extends CanvasController {
 
   #updateMapAnimation() {
     this._mapAnimationProgress +=
-      BeaconsMapOpenLeagueController.MAP_ANIMATION_SPEED;
+      MapOpenLeague.MAP_ANIMATION_SPEED;
     if (this._mapAnimationProgress >= 1) {
       this._mapAnimationProgress = 1;
     }
