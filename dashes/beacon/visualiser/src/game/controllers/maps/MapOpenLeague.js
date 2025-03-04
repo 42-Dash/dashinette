@@ -7,7 +7,7 @@ import SubMapController from "./SubMapOpenLeague.js";
  * @brief Manages and renders the game map and beacon animation.
  */
 export default class MapOpenLeague extends CanvasController {
-  static ANIMATION_SPEED = 50; // Frames per second
+  static ANIMATION_SPEED = 100; // Frames per second
   static MAP_ANIMATION_SPEED = 0.03; // speed of maps movement (step per iteration)
 
   constructor(mapArray, beaconSizes) {
@@ -42,7 +42,7 @@ export default class MapOpenLeague extends CanvasController {
   updateLevel(newMapArray, newBeacons) {
     this._beaconSizes = newBeacons;
     newMapArray.forEach((terrainGrid, index) =>
-      this._mapArray[index].updateLevel(terrainGrid),
+      this._mapArray[index].updateLevel(terrainGrid)
     );
   }
 
@@ -113,8 +113,7 @@ export default class MapOpenLeague extends CanvasController {
   }
 
   #updateMapAnimation() {
-    this._mapAnimationProgress +=
-      MapOpenLeague.MAP_ANIMATION_SPEED;
+    this._mapAnimationProgress += MapOpenLeague.MAP_ANIMATION_SPEED;
     if (this._mapAnimationProgress >= 1) {
       this._mapAnimationProgress = 1;
     }

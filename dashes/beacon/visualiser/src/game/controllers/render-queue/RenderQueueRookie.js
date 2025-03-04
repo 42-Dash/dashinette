@@ -26,7 +26,7 @@ export default class RenderQueueRookie extends RenderQueueBase {
           }
           beaconElement.status = RenderQueueBase.STATUS.RENDERED;
           resolve();
-        }, 1500 * index);
+        }, 1000 * index);
       });
     }
   }

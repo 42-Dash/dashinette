@@ -6,7 +6,7 @@ import SingletonMapUtils from "../maps/MapUtils.js";
  * @brief Manages the animation of beacons expanding on a map.
  */
 export default class BeaconBaseController extends CanvasController {
-  static GROWTH_SPEED = 50; // speed of beacons expansion
+  static GROWTH_SPEED = 30; // steps of beacons expansion
   static MIN_BEACON_CORE_DIAMETER = 10;
   static MIN_STROKE_WEIGHT = 5;
   static RECT_CORNER_RADIUS = 2;
