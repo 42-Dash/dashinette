@@ -5,8 +5,8 @@ import BeaconBaseController from "./BeaconBaseController.js";
  * @brief Manages the animation of beacons expanding on a map.
  */
 export default class BeaconOpenLeagueController extends BeaconBaseController {
-  constructor(output, mapController, color) {
-    super(mapController, color);
+  constructor(output, mapController, color, name) {
+    super(mapController, color, name);
 
     this._mapOrder = this.#parseMapOrder(output.substring(0, 4));
     this._circleCoordinates = this.#parseOutput(output.substring(5));

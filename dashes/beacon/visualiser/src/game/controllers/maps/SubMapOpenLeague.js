@@ -2,8 +2,6 @@ import GradientGenerator from "../../misc/GradientGenerator.js";
 import SingletonMapUtils from "./MapUtils.js";
 
 export default class SubMapController {
-  static PULSE_ANIMATION_SPEED = 0.02; // speed of beacons growth (step per iteration)
-
   constructor(terrainGrid) {
     this._p5Instance = null;
     this._mapUtils = new SingletonMapUtils();

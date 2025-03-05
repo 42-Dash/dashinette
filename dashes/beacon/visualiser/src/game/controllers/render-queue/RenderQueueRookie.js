@@ -14,20 +14,17 @@ export default class RenderQueueRookie extends RenderQueueBase {
   }
 
   async draw() {
+    const totalElements = this._renderQueue.length;
+
     for (let [index, beaconElement] of this._renderQueue.entries()) {
-      new Promise((resolve) => {
-        setTimeout(() => {
-          if (
-            beaconElement.status === RenderQueueBase.STATUS.REQUIRES_RENDERING
-          ) {
-            beaconElement.controller.start();
-          } else if (beaconElement.status === RenderQueueBase.STATUS.RENDERED) {
-            beaconElement.controller.clear();
-          }
-          beaconElement.status = RenderQueueBase.STATUS.RENDERED;
-          resolve();
-        }, 1000 * index);
-      });
+      this.initHeader(totalElements - index, beaconElement);
+
+      if (beaconElement.status === RenderQueueBase.STATUS.REQUIRES_RENDERING) {
+        beaconElement.controller.clear();
+        beaconElement.controller.start();
+      }
+
+      await new Promise((resolve) => setTimeout(resolve, 1500));
     }
   }
 }

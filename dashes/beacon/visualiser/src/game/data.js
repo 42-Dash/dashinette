@@ -75,6 +75,10 @@ export default class GameData {
     return this.getColorByGroupName(this.getGroupByIndex(groupIndex).name);
   }
 
+  getGroupName(groupIndex) {
+    return this.getGroupByIndex(groupIndex).name;
+  }
+
   getColorByGroupName(groupName) {
     if (!this._colors.has(groupName)) {
       this._colors.set(groupName, this._colorGenerator.next());

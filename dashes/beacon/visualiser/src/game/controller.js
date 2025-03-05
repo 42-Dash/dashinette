@@ -52,6 +52,7 @@ export default class GameController {
     }
 
     renderGroups
+      .reverse()
       .sort((a, b) => a.score - b.score)
       .forEach(({ controller }) => {
         this._renderQueue.addToRenderQueue(controller);

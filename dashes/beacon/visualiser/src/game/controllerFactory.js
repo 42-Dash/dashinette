@@ -24,10 +24,12 @@ export function createBeaconController(groupIndex, gameData, mapController) {
         gameData.getGroupOutput(groupIndex),
         mapController,
         gameData.getGroupColor(groupIndex),
+        gameData.getGroupName(groupIndex),
       )
     : new BeaconRookieLeague(
         gameData.getGroupOutput(groupIndex),
         mapController,
         gameData.getGroupColor(groupIndex),
+        gameData.getGroupName(groupIndex),
       );
 }

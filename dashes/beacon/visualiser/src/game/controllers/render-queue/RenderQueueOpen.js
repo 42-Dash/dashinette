@@ -15,7 +15,11 @@ export default class RenderQueueOpen extends RenderQueueBase {
   }
 
   async draw() {
-    for (let queueItem of this._renderQueue) {
+    const totalElements = this._renderQueue.length;
+
+    for (let [index, queueItem] of this._renderQueue.entries()) {
+      this.initHeader(totalElements - index, queueItem);
+
       this._mapController.updateMapsOrder(queueItem.controller.getMapOrder());
       await this.#awaitMapAnimation();
 
