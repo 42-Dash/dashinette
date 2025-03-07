@@ -5,8 +5,8 @@ import BeaconBaseController from "./BeaconBaseController.js";
  * @brief Manages the animation of beacons expanding on a map.
  */
 export default class BeaconRookieLeagueController extends BeaconBaseController {
-  constructor(output, mapController, color, name) {
-    super(mapController, color, name);
+  constructor(output, mapController, color, name, score) {
+    super(mapController, color, name, score);
 
     this._circleCoordinates = this.#parseOutput(output);
     this._targetSizes = this._mapController.getBeacons();

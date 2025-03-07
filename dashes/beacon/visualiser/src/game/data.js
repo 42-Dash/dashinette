@@ -43,6 +43,10 @@ export default class GameData {
     }
   }
 
+  getGroupsLevelScoreByIndex(index, level = this._level) {
+    return this.getGroupByIndex(index, level).score;
+  }
+
   getGroupsScoreByIndex(index, level = this._level) {
     return Array.from(
       { length: level + 1 },

@@ -26,7 +26,9 @@ export default class RenderQueueOpen extends RenderQueueBase {
       queueItem.controller.start();
       queueItem.status = RenderQueueBase.STATUS.RENDERED;
       await new Promise((resolve) => setTimeout(resolve, 2000));
-      queueItem.element.remove();
+      if (index !== totalElements - 1) {
+        queueItem.element.remove();
+      }
     }
   }
 
