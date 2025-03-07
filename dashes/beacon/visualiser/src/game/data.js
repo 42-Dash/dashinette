@@ -43,6 +43,10 @@ export default class GameData {
     }
   }
 
+  getGroupsLevelScoreByIndex(index, level = this._level) {
+    return this.getGroupByIndex(index, level).score;
+  }
+
   getGroupsScoreByIndex(index, level = this._level) {
     return Array.from(
       { length: level + 1 },
@@ -73,6 +77,10 @@ export default class GameData {
 
   getGroupColor(groupIndex) {
     return this.getColorByGroupName(this.getGroupByIndex(groupIndex).name);
+  }
+
+  getGroupName(groupIndex) {
+    return this.getGroupByIndex(groupIndex).name;
   }
 
   getColorByGroupName(groupName) {

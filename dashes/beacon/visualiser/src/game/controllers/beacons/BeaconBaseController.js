@@ -11,16 +11,30 @@ export default class BeaconBaseController extends CanvasController {
   static MIN_STROKE_WEIGHT = 5;
   static RECT_CORNER_RADIUS = 2;
 
-  constructor(mapController, color) {
+  constructor(mapController, color, name, score) {
     super();
     this._mapController = mapController;
     this._color = color;
+    this._name = name;
+    this._score = score;
     this._mapUtils = new SingletonMapUtils();
     this._isStarted = false;
 
     this._circleCoordinates = [];
     this._targetSizes = [];
     this._beaconRadii = [];
+  }
+
+  getScore() {
+    return this._score;
+  }
+
+  getName() {
+    return this._name;
+  }
+
+  getColor() {
+    return this._color;
   }
 
   init(circleCoordinates, targetSizes) {

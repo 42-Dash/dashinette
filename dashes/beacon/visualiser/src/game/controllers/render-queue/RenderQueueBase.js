@@ -46,11 +46,37 @@ export default class RenderQueueBase {
   }
 
   clear() {
+    this.setCanvasHeader("");
     this._renderQueue.forEach((beacon) => beacon.element.remove());
     this._renderQueue = [];
   }
 
   isQueueFinished() {
     return this._renderQueue.every((beacon) => !beacon.controller.isStarted());
+  }
+
+  initHeader(place, queueItem) {
+    const { r, g, b } = queueItem.controller.getColor();
+    const displayTitle = `${queueItem.controller.getName()} - ${RenderQueueBase.toOrdinalNotation(place)} place`;
+    this.setCanvasHeader(displayTitle, `rgb(${r}, ${g}, ${b})`);
+  }
+
+  setCanvasHeader(groupName, color = "") {
+    const container = document.getElementById("dynamic-header");
+
+    container.textContent = groupName;
+    container.style.color = color;
+  }
+
+  static toOrdinalNotation(number) {
+    if (number % 10 === 1 && number % 100 !== 11) {
+      return `${number}st`;
+    } else if (number % 10 === 2 && number % 100 !== 12) {
+      return `${number}nd`;
+    } else if (number % 10 === 3 && number % 100 !== 13) {
+      return `${number}rd`;
+    } else {
+      return `${number}th`;
+    }
   }
 }

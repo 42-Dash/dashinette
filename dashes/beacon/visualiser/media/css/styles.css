@@ -80,18 +80,36 @@ main {
     position: relative;
     width: 70%;
     height: var(--content-padding);
+    display: flex;
+    flex-direction: column; /* Stack children vertically */
+    align-items: center; /* Center children horizontally */
 }
 
-.animation > * {
-    display: block;
+.animation > .dash-logo {
     position: absolute;
+    z-index: 3; /* Ensure the logo is above everything */
+    opacity: 1;
     width: 100%;
     height: 100%;
 }
 
-.animation > .dash-logo {
+.animation > #canvas-container {
+    position: relative; /* Change to relative to respect document flow */
+    z-index: 1; /* Ensure the canvas is below the header */
+    width: 100%;
+    height: calc(100% - 60px); /* Adjust height to account for the header */
+    top: 0;
+    left: 0;
+}
+
+.canvas-header {
+    position: relative;
     z-index: 2;
-    opacity: 1;
+    width: 100%;
+    text-align: center;
+    margin-bottom: 10px;
+    color: white;
+    height: 50px;
 }
 
 render-canvas {
@@ -100,7 +118,6 @@ render-canvas {
     left: 0;
     width: 100%;
     height: 100%;
-    /*aspect-ratio: 1;*/
 }
 
 .animation > #canvas-container {

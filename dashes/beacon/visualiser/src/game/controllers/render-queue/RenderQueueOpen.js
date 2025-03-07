@@ -15,14 +15,20 @@ export default class RenderQueueOpen extends RenderQueueBase {
   }
 
   async draw() {
-    for (let queueItem of this._renderQueue) {
+    const totalElements = this._renderQueue.length;
+
+    for (let [index, queueItem] of this._renderQueue.entries()) {
+      this.initHeader(totalElements - index, queueItem);
+
       this._mapController.updateMapsOrder(queueItem.controller.getMapOrder());
       await this.#awaitMapAnimation();
 
       queueItem.controller.start();
       queueItem.status = RenderQueueBase.STATUS.RENDERED;
       await new Promise((resolve) => setTimeout(resolve, 2000));
-      queueItem.element.remove();
+      if (index !== totalElements - 1) {
+        queueItem.element.remove();
+      }
     }
   }
 
