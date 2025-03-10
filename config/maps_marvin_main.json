@@ -51,67 +51,67 @@
 			"timeout": 1
 		},
 		{
-			"path": "dashes/marvin/maps/rookieleague/level_0.txt",
+			"path": "dashes/marvin/maps/rookieleague/level_10.txt",
 			"name": "10",
 			"timeout": 2
 		},
 		{
-			"path": "dashes/marvin/maps/rookieleague/level_1.txt",
+			"path": "dashes/marvin/maps/rookieleague/level_11.txt",
 			"name": "11",
 			"timeout": 2
 		},
 		{
-			"path": "dashes/marvin/maps/rookieleague/level_2.txt",
+			"path": "dashes/marvin/maps/rookieleague/level_12.txt",
 			"name": "12",
 			"timeout": 2
 		},
 		{
-			"path": "dashes/marvin/maps/rookieleague/level_3.txt",
+			"path": "dashes/marvin/maps/rookieleague/level_13.txt",
 			"name": "13",
 			"timeout": 2
 		},
 		{
-			"path": "dashes/marvin/maps/rookieleague/level_4.txt",
+			"path": "dashes/marvin/maps/rookieleague/level_14.txt",
 			"name": "14",
 			"timeout": 2
 		},
 		{
-			"path": "dashes/marvin/maps/rookieleague/level_5.txt",
+			"path": "dashes/marvin/maps/rookieleague/level_15.txt",
 			"name": "15",
 			"timeout": 2
 		},
 		{
-			"path": "dashes/marvin/maps/rookieleague/level_6.txt",
+			"path": "dashes/marvin/maps/rookieleague/level_16.txt",
 			"name": "16",
 			"timeout": 2
 		},
 		{
-			"path": "dashes/marvin/maps/rookieleague/level_7.txt",
+			"path": "dashes/marvin/maps/rookieleague/level_17.txt",
 			"name": "17",
 			"timeout": 5
 		},
 		{
-			"path": "dashes/marvin/maps/rookieleague/level_8.txt",
+			"path": "dashes/marvin/maps/rookieleague/level_18.txt",
 			"name": "18",
 			"timeout": 5
 		},
 		{
-			"path": "dashes/marvin/maps/rookieleague/level_9.txt",
+			"path": "dashes/marvin/maps/rookieleague/level_19.txt",
 			"name": "19",
 			"timeout": 5
 		},
 		{
-			"path": "dashes/marvin/maps/rookieleague/level_0.txt",
+			"path": "dashes/marvin/maps/rookieleague/level_20.txt",
 			"name": "20",
 			"timeout": 5
 		},
 		{
-			"path": "dashes/marvin/maps/rookieleague/level_1.txt",
+			"path": "dashes/marvin/maps/rookieleague/level_21.txt",
 			"name": "21",
 			"timeout": 5
 		},
 		{
-			"path": "dashes/marvin/maps/rookieleague/level_2.txt",
+			"path": "dashes/marvin/maps/rookieleague/level_22.txt",
 			"name": "22",
 			"timeout": 5
 		}
@@ -168,67 +168,67 @@
 			"timeout": 1
 		},
 		{
-			"path": "dashes/marvin/maps/openleague/level_0.txt",
+			"path": "dashes/marvin/maps/openleague/level_10.txt",
 			"name": "10",
 			"timeout": 2
 		},
 		{
-			"path": "dashes/marvin/maps/openleague/level_1.txt",
+			"path": "dashes/marvin/maps/openleague/level_11.txt",
 			"name": "11",
 			"timeout": 2
 		},
 		{
-			"path": "dashes/marvin/maps/openleague/level_2.txt",
+			"path": "dashes/marvin/maps/openleague/level_12.txt",
 			"name": "12",
 			"timeout": 2
 		},
 		{
-			"path": "dashes/marvin/maps/openleague/level_3.txt",
+			"path": "dashes/marvin/maps/openleague/level_13.txt",
 			"name": "13",
 			"timeout": 2
 		},
 		{
-			"path": "dashes/marvin/maps/openleague/level_4.txt",
+			"path": "dashes/marvin/maps/openleague/level_14.txt",
 			"name": "14",
 			"timeout": 2
 		},
 		{
-			"path": "dashes/marvin/maps/openleague/level_5.txt",
+			"path": "dashes/marvin/maps/openleague/level_15.txt",
 			"name": "15",
 			"timeout": 2
 		},
 		{
-			"path": "dashes/marvin/maps/openleague/level_6.txt",
+			"path": "dashes/marvin/maps/openleague/level_16.txt",
 			"name": "16",
 			"timeout": 2
 		},
 		{
-			"path": "dashes/marvin/maps/openleague/level_7.txt",
+			"path": "dashes/marvin/maps/openleague/level_17.txt",
 			"name": "17",
 			"timeout": 5
 		},
 		{
-			"path": "dashes/marvin/maps/openleague/level_8.txt",
+			"path": "dashes/marvin/maps/openleague/level_18.txt",
 			"name": "18",
 			"timeout": 5
 		},
 		{
-			"path": "dashes/marvin/maps/openleague/level_9.txt",
+			"path": "dashes/marvin/maps/openleague/level_19.txt",
 			"name": "19",
 			"timeout": 5
 		},
 		{
-			"path": "dashes/marvin/maps/openleague/level_0.txt",
+			"path": "dashes/marvin/maps/openleague/level_20.txt",
 			"name": "20",
 			"timeout": 5
 		},
 		{
-			"path": "dashes/marvin/maps/openleague/level_1.txt",
+			"path": "dashes/marvin/maps/openleague/level_21.txt",
 			"name": "21",
 			"timeout": 5
 		},
 		{
-			"path": "dashes/marvin/maps/openleague/level_2.txt",
+			"path": "dashes/marvin/maps/openleague/level_22.txt",
 			"name": "22",
 			"timeout": 5
 		}
