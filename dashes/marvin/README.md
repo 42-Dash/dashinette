@@ -7,7 +7,7 @@
 - The program must compile using the command `make` in the root directory.
 - You are not allowed to use any compile flags (yes this includes performance flags!)
 - The compiled executable should be named `marvin` and placed in the root directory during the compilation via the Makefile.
-- `C` is mandatory (C++, Go, Rust for `Open League`)
+- `C` is mandatory (C++, Go \<version 1.22.5\>, Rust for `Open League`)
 - No norm is required
 - Usage of external libraries is not allowed. Except for all libraries shipped with the compiler itself (example: #include <stdio.h>).
 - Feel free to use your libft or any other code you've written previously.

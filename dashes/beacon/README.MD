@@ -8,7 +8,7 @@
 - The program must compile using the command `make` in the root directory.
 - You are not allowed to use any compile flags (yes this includes performance flags!)
 - The compiled executable should be named `beacon` and placed in the root directory during the compilation via the Makefile.
-- `C` is mandatory (C++, Go, Rust for `Open League`)
+- `C` is mandatory (C++, Go \<version 1.22.5\>, Rust for `Open League`)
 - No norm is required
 - You may **only** use libraries natively included with the compiler (e.g., \<deque\> and \<math.h\>). Your program **must** compile and run entirely offline, relying solely on the compiler’s built-in libraries.
 - Memory leaks are not a concern.
