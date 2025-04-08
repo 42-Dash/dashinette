@@ -40,16 +40,29 @@ func fileRead(filename string) grader.Results {
 	return content
 }
 
+func findTeamIndex(name string, groups []grader.Group) int {
+	for index, team := range groups {
+		if team.Name == name {
+			return index
+		}
+	}
+	return -1
+}
+
 func combineResults() grader.Results {
 	results := traces[0]
 
 	for _, team := range traces[1:] {
 		for level, trace := range team.Levels {
-			for index, group := range trace.Groups {
-				if results.Levels[level].Groups[index].Score < group.Score {
-					results.Levels[level].Groups[index].Status = group.Status
-					results.Levels[level].Groups[index].Score = group.Score
-					results.Levels[level].Groups[index].Output = group.Output
+			for _, group := range trace.Groups {
+				teamIndex := findTeamIndex(group.Name, results.Levels[level].Groups)
+				if teamIndex == -1 {
+					log.Fatal("error: team not found")
+				}
+				if results.Levels[level].Groups[teamIndex].Score < group.Score {
+					results.Levels[level].Groups[teamIndex].Status = group.Status
+					results.Levels[level].Groups[teamIndex].Score = group.Score
+					results.Levels[level].Groups[teamIndex].Output = group.Output
 				}
 			}
 		}
