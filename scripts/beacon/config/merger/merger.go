@@ -90,9 +90,23 @@ func serializeResults(results grader.Results) {
 	}
 }
 
+func sortGroupsNameWise(results grader.Results) {
+	for _, level := range results.Levels {
+		N := len(level.Groups)
+		for i := range N-1 {
+			for j := i + 1; j < N; j++ {
+				if level.Groups[i].Name > level.Groups[j].Name {
+					level.Groups[i], level.Groups[j] = level.Groups[j], level.Groups[i]
+				}
+			}
+		}
+	}
+}
+
 func main() {
 	verifyLeague()
 	results := combineResults()
+	sortGroupsNameWise(results)
 	serializeResults(results)
 }
 
