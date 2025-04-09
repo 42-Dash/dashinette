@@ -8,7 +8,7 @@
 - The program must compile using the command `make` in the root directory.
 - You are not allowed to use any compile flags (yes this includes performance flags!)
 - The compiled executable should be named `beacon` and placed in the root directory during the compilation via the Makefile.
-- `C` is mandatory (C++, Go \<version 1.22.5\>, Rust for `Open League`)
+- `C` is mandatory (C++, Go, Rust for `Open League`)
 - No norm is required
 - You may **only** use libraries natively included with the compiler (e.g., \<deque\> and \<math.h\>). Your program **must** compile and run entirely offline, relying solely on the compiler’s built-in libraries.
 - Memory leaks are not a concern.
@@ -22,7 +22,7 @@ Your program will always be tested as follows:
 > ./beacon "3 2 2" input.txt
 ```
 
-- The **first argument** (`argv[1]`) represents the available beacon radii, separated by spaces and arranged in descending order (duplicates are allowed). The first number indicates the **master beacon**, e.g., `"3 2 2"`. **Note:** This is passed as a string, not a file.
+- The **first argument** (`argv[1]`) represents the available beacons with their respective radii, separated by spaces and arranged in descending order (duplicates are allowed) e.g., `"3 2 2"`. **Note:** This is passed as a string, not a file.
 - Beacons must be placed on empty spaces (.) and cannot be placed directly on nodes (*).
 - The **second argument** (`argv[2]`) is the path to a file that contains the map. The map consists of two characters:
     - '*' represents a **node**.
@@ -36,11 +36,12 @@ Your program will always be tested as follows:
 
 ### Output:
 
-- The program should output the coordinates of the beacons in the specified order
+- The program should output the coordinates of the beacons in the specified order that they were given
 - Ensure beacon coordinates (`ROWx,COLx`) correspond to valid placement positions (on empty spaces `.`) while maximizing coverage of nodes (`*`).
 - The coordinates must follow this format: `{ROW1},{COL1}|{ROW2},{COL2}|{ROW3},{COL3}`.
-- You can place two beacons with overlapping coverage areas, but they cannot be placed on the same square; each beacon must occupy a distinct location.
+- You can place two beacons with overlapping coverage areas, but they cannot be placed on the same square.
 - Each node can only be counted once for coverage, regardless of how many beacons' areas it falls under.
+- The top left most point is 0,0
 
 **Example:**
 
@@ -71,6 +72,8 @@ The output might look like this (note: do not print an extra `'|'` at the end):
 
 ### Representation of beacon radii:
 
+- The beacon spreads evenly in all directions, maintaining a square-like shape.
+
 A beacon with a radius of 3 would cover an area like this:
 
 ```
@@ -83,15 +86,13 @@ ooooooo$
 ooooooo$
 ```
 
-A becon with a radius of 1:
+A becon with a radius of 1 would cover an area like this:
 
 ```
 ooo$
 o1o$
 ooo$
 ```
-
-- The beacon spreads evenly in all directions, maintaining a square-like shape.
 
 Multiple solutions can be submitted, but only the latest one ending with a newline will be considered.
 
@@ -106,18 +107,15 @@ Here the second line `3,20|2,14|3,3$` will be considered as the solution
 
 ### Assessment
 
-At the end of the coding phase, submitted programs will be compiled and tested against multiple unique maps, each with its own set of beacons and potentially different timeouts.
+At the end of the coding phase, submitted programs will be compiled and tested against multiple unique maps, each with its own set of beacons and potentially different timeouts. The maximum map size for the rookie league is 700x700 and the maximum number of beacons is 72.
 
 **For each map:**
 
 - Your program will have a fixed amount of time to compute solution. If your program exceeds the time limit, it will be stopped automatically (no need to handle program termination).
 - Points will be awarded based on the number of nodes covered, compared to other participants.
 
-**Scoring:**
-Points will be assigned similarly to a racing system (e.g., Mario Kart), where the number of nodes covered determines your ranking for each map.
-
 **Final Ranking:**
-After all challenges are completed, teams will be ranked based on their total points. The team with the highest score will be declared the winner.
+After all challenges are completed, teams will be ranked based on their total points. One covered beacon == one point. The team with the highest score will be declared the winner.
 
 ## Open League
 
@@ -126,12 +124,12 @@ For the Open League, the problem is the same as in the Rookie League, but with a
 1. **Terrain Influence**
    Beacons' effectiveness depends on the terrain they are placed on. The signal strength of a beacon is calculated as:
 
-    Effective Signal Strength = `Beacon Radius × Terrain Height`
+    Effective Signal Strength = `Beacon Radius + Terrain Height`
 
     Terrain heights range from 1 to 9. A beacon placed on a terrain with height `3` and radius `2` will cover an area equivalent to a range `5` beacon.
 
 2. **Multiple Maps**
-You will be given **4 maps** instead of one. These maps can be reshuffled and need to bebcombined into a single 2x2 square grid. The grid must always follow this structure:
+You will be given **4 maps** instead of one. These maps need to be combined into a single 2x2 square grid. The grid must always follow this structure:
 
 ```
 [map1][map2]
@@ -152,7 +150,7 @@ The maps must not overlap, and they must fit together seamlessly in the 2x2 layo
 An example of a terrain map, `input.txt`, might look like this:
 
 ```bash
-> cat input.txt | cat -e
+> cat map_1.txt | cat -e
 1123*33$
 1*22344$
 112234*$
@@ -182,5 +180,8 @@ For this reshuffeling arrangement
 > ./beacon "3 2 2" map_1.txt map_2.txt map_3.txt map_4.txt | cat -e
 4123|4,8|5,20|15,5$
 ```
+
+### Assesment
+The maximum map size will be 200x200 for each of the 4 sub-maps. And the maximum number of beacons will be 62.
 
 Keep in mind that the terrain where a beacon is placed can significantly influence its signal strength, so choose the placement carefully!
