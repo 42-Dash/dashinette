@@ -17,7 +17,8 @@ export default class MapOpenLeague extends CanvasController {
     this._mapArray = mapArray.map((field) => new SubMapController(field));
 
     this._oldMapOrder = [0, 1, 2, 3];
-    this._mapsOrder = [0, 1, 2, 3];
+    // impossible to have 8 maps, so redrawing function is triggered
+    this._mapsOrder = [0, 1, 2, 3, 0, 1, 2, 3];
 
     this._mapAnimationProgress = 0;
     this._mapPositions = this.#calculateMapPositions();
