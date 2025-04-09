@@ -6,7 +6,6 @@
 ### General instructions
 
 - The program must compile using the command `make` in the root directory.
-- You are not allowed to use any compile flags (yes this includes performance flags!)
 - The compiled executable should be named `beacon` and placed in the root directory during the compilation via the Makefile.
 - `C` is mandatory (C++, Go, Rust for `Open League`)
 - No norm is required
@@ -14,6 +13,17 @@
 - Memory leaks are not a concern.
 - Be prepared to explain your logic during presentation to ensure originality and authenticity.
 - **No multithreading or multiprocessing**
+
+### Optimization Flags
+We allow only the `-O2` optimization flag for C/C++. Go already uses this optimization by default so just compile with `go build file.go`.
+For rust you are not allowed to use the --release flag. Just add this into your Cargo.toml and compile with `cargo build`
+```toml
+[profile.dev]
+opt-level = 2              # O2 optimization
+debug = false              # No debug symbols
+debug-assertions = false   # Removes debug_assert! and related
+overflow-checks = false    # Allows wrapping/overflow without panic
+```
 
 ### Input:
 
