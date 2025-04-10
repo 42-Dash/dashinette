@@ -71,6 +71,10 @@ func splitNumbers(s string) []int {
 	var res []int
 
 	for _, num := range strings.Split(s, " ") {
+		if num == "" {
+			res = append(res, 0)
+			continue
+		}
 		n, err := strconv.Atoi(num)
 		if err != nil { // should never happen
 			panic(err)
