@@ -70,11 +70,7 @@ func readFiles(filenames []string) [][]string {
 func splitNumbers(s string) []int {
 	var res []int
 
-	for _, num := range strings.Split(s, " ") {
-		if num == "" {
-			res = append(res, 0)
-			continue
-		}
+	for _, num := range strings.Split(strings.Trim(s, " "), " ") {
 		n, err := strconv.Atoi(num)
 		if err != nil { // should never happen
 			panic(err)
